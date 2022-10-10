@@ -1,5 +1,6 @@
 
-dist_wslib5_DALY_DATA = aparse.apl              \
+dist_wslib5_DALY_DATA = README.md               \
+                        aparse.apl              \
                         assert.apl              \
                         cfg.apl                 \
                         cl.apl                  \
@@ -16,7 +17,6 @@ dist_wslib5_DALY_DATA = aparse.apl              \
                         utl.apl                 \
                         wblg.apl                \
                         wsinit.apl
-
 
 wslib5_DALYdir = $(pkglibdir)/wslib5/DALY
 

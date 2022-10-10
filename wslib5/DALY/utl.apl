@@ -442,6 +442,12 @@ st:t←t,1?max
   cleaned←(¯1×txt[⍴txt]=⎕tc[3])↓txt
 ∇
 
+∇ r←utl∆rm_trailing_space txt;drop
+  ⍝ Remove trailing spaces from text
+  drop←-+/∧\⌽txt=' '
+  r←drop↓txt
+∇
+
 ∇utl∆display msg
   ⍝ Function to display a message
   ⍞←⎕tc[3] utl∆join msg

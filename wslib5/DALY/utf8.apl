@@ -109,6 +109,15 @@ oneByte:
   flist ← ⎕FIO[29] path
 ∇
 
+∇b←utf8∆fileExists fullpath;files;pos;fname;parts
+  ⍝ Function tests the existance of a file.
+  parts←utl∆fileName∆parse fullpath
+  fname←'.' utl∆join 1↓parts
+  files← utf8∆dir 1⊃parts
+  pos←files utl∆listSearch fname
+  b←pos≤⍴files
+∇
+
 ∇ varName utf8∆saveVar fname;txt
   ⍝ Function saves a workspace variable as a script file to be copied
   ⍝ into other workspaces.

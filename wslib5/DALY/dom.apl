@@ -128,6 +128,17 @@ end:
   new[1]←⊂children
 ∇
 
+∇ node←old dom∆node∆postChildren list;lb;ix
+  ⍝ Function posts a nodelist of children to a node.
+  node←old
+  lb←((⍴list)⍴st),ed
+  ix←1
+st:
+  node←node dom∆node∆appendChild ix⊃list
+  →lb[ix←ix+1]
+ed:
+∇
+
 ∇n←dom∆node∆nodeName node
    n←(⊃node[2])lex∆lookup 'nodeName'
 ∇
@@ -181,6 +192,11 @@ end:
 ∇attrs←dom∆node∆attributes node
   ⍝ Function returns a named node map of attributes
   attrs←(⊃node[2]) lex∆lookup 'attributes'
+∇
+
+∇ value←node dom∆node∆getAttribute key
+  ⍝ Function returns nil or the value the attributed named by rarg.
+  value←(dom∆node∆attributes node) lex∆lookup key
 ∇
 
 ∇new←node dom∆node∆setAttribute item;attr;cix;attr_vector
@@ -272,6 +288,11 @@ note:				⍝ Notation
   b←1
 ∇
 
+∇b←dom∆node∆childless node
+  ⍝ Function test if a node has children
+  b←(dom∆node∆attributes node) lex∆haskey 'childless'
+∇
+
 ⍝ ********************************************************************
 ⍝
 ⍝			   Element Methods
@@ -288,7 +309,6 @@ note:				⍝ Notation
   ⍝ Method returns the childless attribute
   b←(2⊃elm) lex∆lookup 'childless'
 ∇
-
 
 ⍝ ********************************************************************
 ⍝
@@ -468,37 +488,58 @@ append:
 ⍝
 ⍝ ********************************************************************
 
-∇doc←dom∆parse txt;nl
-  ⍝ Function to parse an xml text buffer
-  nl←dom∆parse∆nodeFromSource ¨ '>' dom∆split txt
-  doc←dom∆parse∆foldNodeList nl
+∇doc←dom∆parse xml;dom∆xml∆buffer;dom∆xml∆pointer;rootNode
+  ⍝ Functions converts an xml string to a dom object doc.
+  dom∆xml∆init xml
+  doc←dom∆parse∆rootNode
 ∇
 
-∇node←dom∆parse∆nodeFromSource src;b
-  ⍝ dom∆parse subroutine returns a node list from the source once it
-  ⍝ has been split on '>'
-  →(0=⍴src)/txtNode
-  src←utl∆clean src
-    b←(∧/'<!-'=3↑src),(∧/'<!D'=3↑src),(∧/'</'=2↑src),(∧/'<?'=2↑src),('<'=1↑src),1
-  →b/(commentNode,doctypeNode,closeElm,proc,openElm,txtNode)
+∇ root←dom∆parse∆rootNode;doc_node;root_node;xml_dec;next_string
+⍝ Function returns a dom document populated with its root node.
+top:
+next_string←dom∆xml∆next
+b←(∧/'<!D'=3↑next_string),(∧/'<!d'=3↑next_string),(∧/'<?'=2↑next_string),('<'=1↑next_string),(0=⍴next_string),1
+→b/(doctype,doctype,top,rootfound,error,top)
+doctype: doc_node←dom∆parse∆doctypeNode next_string
+→top
+error:
+utl∆es 'Root node not found.'
+rootfound:
+root_node←dom∆parse∆openElm next_string
+root← dom∆createDocument dom∆node∆nodeName root_node
+⍝ root←root dom∆node∆appendChild doc_node
+root←root dom∆node∆appendChild root_node
+∇  
+
+∇ node_list←dom∆parse∆children;next_string;body;elm
+  ⍝ Function parses the body of the document (ie everything after the
+  ⍝ rootnode).
+  node_list←⍬
+loop:
+  next_string←dom∆xml∆next
+  b←(∧/'<!--'=4↑next_string),(∧/'<?'=2↑next_string),(∧/'</'=2↑next_string),('<'=1↑next_string),1
+  →b/commentNode,proc,closeElm,openElm,text
 commentNode:
-  node←dom∆parse∆commentNode src
-  →end
+  node_list←node_list,⊂dom∆parse∆commentNode next_string
+  →loop
 doctypeNode:
-  node←dom∆parse∆doctypeNode src
-  →end
+  node_list←node_list,⊂dom∆parse∆doctypeNode next_string
+  →loop
 proc:
-  node←dom∆parse∆processingInstruction src
-  →end
+  node_list←node_list,⊂dom∆parse∆processingInstruction next_string
+  →loop
 openElm:
-  node←dom∆parse∆openElm src
-  →end
+  elm←dom∆parse∆openElm next_string
+  ⍝→(dom∆node∆childless elm)/loop
+  node_list←node_list,⊂elm
+  →(dom∆node∆childless elm)/0
+  →loop
 closeElm:
-  node←dom∆parse∆closeElm src
-  →end
-txtNode:
-  node←dom∆createTextNode src
-end:
+  ⍝ node_list←node_list,⊂elm
+  →0
+text:
+  node_list←node_list,⊂dom∆parse∆text next_string
+  →loop
 ∇
 
 ∇node←dom∆parse∆commentNode source
@@ -516,117 +557,36 @@ end:
   node←dom∆createProcessingInstruction 2↓¯1↓source
 ∇
 
-∇elm←dom∆parse∆openElm source;b;name;closed;attr;ix
-  ⍝ Function returns an element node from source.
-  closed←'/'=¯1↑source                                                     
-  name←1↓(b←∧\source≠' ')/source←(-closed)↓source                          
-  elm←dom∆createElement name                                               
-  ⍎closed/'elm←dom∆element∆childless elm'                                  
+∇ node←dom∆parse∆openElm xml;ix;lb
+  ⍝ Function returns an element node from xml.
+  closed←∧/'/'=¯1↑xml                                                     
+  name←1↓(b←∧\xml≠' ')/xml←utl∆rm_trailing_space (-2×closed)↓xml
+  node←dom∆createElement name                                               
   →(∧/b)/ed                                                                
-  attr←,'=' utl∆split_with_quotes ¨ ' ' utl∆split_with_quotes 1↓(~b)/source
-  ix←1                                                                     
-st:                                                                      
-  →(ix>⍴attr)/ed                                                           
-  elm←elm dom∆node∆setAttribute ix⊃attr                                    
-  ix←ix+1                                                                  
-  →st                                                                      
-ed:                                                                      
-∇
-
-∇node←dom∆parse∆closeElm source
-  ⍝ Function returns a place holder from the end of an element.
-  node←dom∆createElement 1↓source
-  node←node dom∆node∆setNodeValue 'Closing element'
-  node←node dom∆node∆setNodeType dom∆special_ELEMENT_END
-∇
-
-∇doc←dom∆parse∆foldNodeList nl;curNode;nlix;nodeStack;b;docNode
-  ⍝  Function traverses node list nl finding children and assigning
-  ⍝  them to their parent.
-  doc←dom∆createDocument '#Document'
-  nodeStack← stack∆init
-  nlix←1
-  ⍝ First loop to find the root element
-st1:
-  curNode←nlix⊃nl
-  ⍎(dom∆DOCUMENT_TYPE_NODE=dom∆node∆nodeType curNode)/'doc←doc dom∆node∆appendChild curNode ◊ →nxt1'
-  ⍎('xml' utl∆stringEquals dom∆node∆nodeName curNode)/'doc←doc dom∆node∆appendChild curNode ◊ →nxt1'
-  →(dom∆ELEMENT_NODE ≠ dom∆node∆nodeType curNode)/nxt1
-  nodeStack←nodeStack stack∆push doc
-  nodeStack←nodeStack stack∆push curNode
-nxt1:
-  nlix←nlix+1
-  →(2=stack∆length nodeStack)/st2
-  →st1
-  ⍝ Second loop to find the children of the root element
-st2:
-  curNode←nlix⊃nl
-  →(dom∆ELEMENT_NODE dom∆special_ELEMENT_END dom∆TEXT_NODE = dom∆node∆nodeType curNode)/elm,elmEnd,txt
-  ⍝ What do I do now?
-  →nxt2
-elm:
-  nodeStack←nodeStack dom∆parse∆foldElement curNode
-  →nxt2
-elmEnd:
-  nodeStack←nodeStack dom∆parse∆endElement curNode
-  →nxt2
-txt:
-  nodeStack←nodeStack dom∆parse∆foldText curNode
-  →nxt2
-nxt2:
-  nlix←nlix+1
-  →(nlix>⍴nl)/ed
-  →st2
-ed:
-  doc←nodeStack stack∆nth stack∆length nodeStack
-st3:
-  →(1=stack∆length nodeStack)/0
-  curNode←stack∆peek nodeStack
-  nodeStack←stack∆pop nodeStack
-  doc←doc dom∆node∆appendChild curNode
-  →st3  
-∇
-
-∇ newStack←nodeStack dom∆parse∆foldText txt;words;tag;parent
-  ⍝ Function folds a text node into the nodeStack
-  words←dom∆node∆nodeValue txt
-  words←'<' utl∆split utl∆clean words
-  →('/'=1↑tag←,⊃¯1↑words)/endFound
-  newStack←nodeStack stack∆push txt
-  →0
-endFound:
-  tag←1↓tag 			⍝ For '/'
-  txt←txt dom∆node∆setNodeValue utl∆clean 1⊃words
-  parent←stack∆peek nodeStack
-  ⍎(~tag utl∆stringEquals dom∆node∆nodeName parent)/'newStack←nodeStack stack∆push txt ◊ →0'
-  nodeStack←stack∆pop nodeStack
-  parent←parent dom∆node∆appendChild txt
-  newStack←nodeStack stack∆push parent
-  →0
-∇
-
-∇ newStack←nodeStack dom∆parse∆foldElement elm;parent
-  ⍝ Function folds an element node into the nodelist
-  newStack←nodeStack stack∆push curNode
-∇
-
-∇ nodeStack←nodeStack dom∆parse∆endElement curNode;ix;iy;child;name
-  ⍝ Routine to append children on stack to the current element node.
-  name←('/'=name[1])↓name←dom∆node∆nodeName curNode
-  →(dom∆element∆isChildless curNode)/0
+  attr←,' ' utl∆split_with_quotes 1↓(~b)/xml
   ix←1
-st1:
-  →(name utl∆stringEquals dom∆node∆nodeName nodeStack stack∆nth ix)/nxt
-  ix←ix+1
-  →st1
-nxt:
-  →(ix=1)/ed
-  child←stack∆peek nodeStack
-  nodeStack←stack∆pop nodeStack
-  ix←ix - 1
-  nodeStack[ix]←⊂(ix⊃nodeStack) dom∆node∆prependChild child
-  →nxt
+  lb←((⍴attr)⍴st),ed
+st:
+  node←node dom∆parse∆elmAttr ix⊃attr
+  →lb[ix←ix+1]
 ed:
+  →closed/0
+  node←node dom∆node∆postChildren dom∆parse∆children
+tag:
+∇
+
+∇ node←old dom∆parse∆elmAttr attr;value
+  ⍝ Function called by dom∆parse∆openElm for found attributes.
+  →(~∨/'='=attr)/post
+  attr←'=' utl∆bifurcate attr
+  attr[2]←⊂(~value∊'''"')/value←2⊃attr
+post:
+  node←old dom∆node∆setAttribute attr
+∇
+
+∇ node←dom∆parse∆text string
+  ⍝ Function creates a text node.
+  node← dom∆createTextNode string
 ∇
 
 ⍝ ********************************************************************
@@ -645,8 +605,8 @@ ed:
   Z←Z⍪'Portability'     'L3'
   Z←Z⍪'Provides'        'dom'
   Z←Z⍪'Requires'        'util lex'
-  Z←Z⍪'Version'                  '0 2 7'
-  Z←Z⍪'Last update'         '2022-02-07'
+  Z←Z⍪'Version'                  '0 3 1'
+  Z←Z⍪'Last update'         '2022-10-03'
 ∇
 
 dom∆ELEMENT_NODE←1
@@ -710,5 +670,34 @@ dom∆error∆NOT_FOUND←'NOT FOUND'
   ⍝ length of the item.
   ix←ix[1]+⍳ix[2]
   item←string[ix]
+∇
+
+⍝ ********************************************************************
+⍝  The xml buffer
+⍝ ********************************************************************
+
+∇ dom∆xml∆init xml
+  ⍝ Function initiates a global variable to work with from an xml text
+  ⍝ string.
+  dom∆xml∆buffer←xml
+  ⍝ Set char pointer after the first left hairpin
+  dom∆xml∆pointer←+/∧\'<'≠dom∆xml∆buffer
+∇
+
+∇ next_string←dom∆xml∆next;txt
+  ⍝ Function returns the next node as characters
+  →(dom∆xml∆pointer ≥ ⍴ dom∆xml∆buffer)/no_node
+  →('<'=dom∆xml∆buffer[dom∆xml∆pointer+1])/elm_node
+txt_node:
+  next_string←(∧\txt≠'<')/txt←(dom∆xml∆pointer)↓dom∆xml∆buffer
+  dom∆xml∆pointer←dom∆xml∆pointer + ⍴ next_string
+  →0
+elm_node:
+  next_string←(∧\txt≠'>')/txt←dom∆xml∆pointer↓dom∆xml∆buffer
+  dom∆xml∆pointer←1 + dom∆xml∆pointer + ⍴ next_string
+  →0
+no_node:
+  next_string←''
+  →0
 ∇
 

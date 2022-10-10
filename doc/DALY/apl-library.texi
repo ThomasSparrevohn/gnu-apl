@@ -40,8 +40,7 @@ A collection of usefull functions for the APL programmer.
 @end ifnottex
 
 @menu
-*  apl_kbd:: Turn the apl keyboard on and off
-*  arg_parser:: Functions to parse a script's command line.
+*  aparse:: Functions to parse a script's command line.
 *  assert::   Workspace to test source code
 *  cfg:: Workspace to read a Windows' configuration file
 *  date::     Workspace to store dates by number of days
@@ -52,28 +51,24 @@ A collection of usefull functions for the APL programmer.
 *  html::     Workspace to create html pages
 *  import::   Functions to read delimited files
 *  lex::      Workspace for storing lexicons of name--value pairs
-*  lex1::     Workspace for storing name--value pairs in a hash
 *  cl::       Workspace for storing name--value pairs in a component file
 *  lpr::      Functions for printing
-*  password:: Generate pseudorandom passwords
-*  preferences:: Reading GNU-apl preferences
+*  pw:: Generate pseudorandom passwords
+*  pref:: Reading GNU-apl preferences
 *  prompt::   Prompt a user for answers
 *  seq::      Sequences with prefixes
 *  stack::    A Simple Stack
 *  stat::     Workspace of statistical functions
 *  utf8::     Access to disk files encoded with utf8.
 *  utl::      Workspace of general utility functions.
-*  web_log::  Workspace to read Apache access files.
+*  wblg::  Workspace to read Apache access files.
 *  wp::       Workspace to print workpapers
 *  xml::      Workspace to create xml applications
-*  apl-pkg-mgr::   Install the library's workspaces into APL Package Manager
 *  license::
 *  Index::
 
 @end menu
-@include apl_kbd.texi
-@page
-@include arg_parser.texi
+@include aparse.texi
 @page
 @include assert.texi
 @page
@@ -95,15 +90,13 @@ A collection of usefull functions for the APL programmer.
 @page
 @include lex.texi
 @page
-@include lex1.texi
-@page
 @include cl.texi
 @page
 @include lpr.texi
 @page
-@include password.texi
+@include pw.texi
 @page
-@include preferences.texi
+@include pref.texi
 @page
 @include prompt.texi
 @page
@@ -117,14 +110,13 @@ A collection of usefull functions for the APL programmer.
 @page
 @include utl.texi
 @page
-@include web_log.texi
+@include wblg.texi
 @page
 @include wp.texi
 @page
 @include xml.texi
 @page
-@include apl-pkg-mgr.texi
-@page
+
 @node license
 @chapter The GNU Free Documentation License.
 @include fdl-1.3.texi 

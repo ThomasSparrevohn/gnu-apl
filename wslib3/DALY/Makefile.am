@@ -1,5 +1,6 @@
 
-dist_wslib3_DALY_DATA = date.apl        \
+dist_wslib3_DALY_DATA = README.md       \
+                        date.apl        \
                         fin.apl         \
                         fmt.apl         \
                         lex.apl         \
