@@ -21,15 +21,19 @@
 
 /** @file **/
 
+#include "config.h"   // for HAVE_XXX
+#include "Quad_PNG.hh"
+
+Quad_PNG  Quad_PNG::_fun;
+Quad_PNG * Quad_PNG::fun = &Quad_PNG::_fun;
+
+#if defined( HAVE_LIBPNG ) && defined ( HAVE_PNG_H )
+
 #include <stdio.h>
 #include <zlib.h>
 #include <png.h>
 
 #include "Common.hh"
-#include "Quad_PNG.hh"
-
-Quad_PNG  Quad_PNG::_fun;
-Quad_PNG * Quad_PNG::fun = &Quad_PNG::_fun;
 
 sem_t __PNG_threads_sema;
 sem_t * Quad_PNG::PNG_threads_sema = &__PNG_threads_sema;
@@ -50,9 +54,12 @@ enum
 };
 int verbosity = SHOW_NONE;
 
-#if HAVE_GTK3 && defined( HAVE_LIBGTK_3 ) && defined(HAVE_LIBZ)
+#if defined( HAVE_GTK3     ) && \
+    defined( HAVE_LIBGTK_3 ) && \
+    defined(HAVE_LIBZ      ) && \
+    defined( HAVE_ZLIB_H   )
 
-#include <X11/Xlib.h>
+# include <X11/Xlib.h>
 # include <gtk/gtk.h>
 
 /// the number of open plot windows (to see when the last one was closed).
@@ -899,3 +906,4 @@ Quad_PNG::eval_AB(Value_P A, Value_P B) const
 
 #endif // HAVE_PNG_H
 
+#endif //  defined( HAVE_LIBPNG ) && defined ( HAVE_PNG_H )
