@@ -27,7 +27,12 @@
 Quad_PNG  Quad_PNG::_fun;
 Quad_PNG * Quad_PNG::fun = &Quad_PNG::_fun;
 
-#if defined( HAVE_LIBPNG ) && defined ( HAVE_PNG_H )
+#if defined( HAVE_GTK3     ) && \
+    defined( HAVE_LIBGTK_3 ) && \
+    defined( HAVE_LIBZ     ) && \
+    defined( HAVE_ZLIB_H   ) && \
+    defined( HAVE_LIBPNG   ) && \
+    defined ( HAVE_PNG_H   )
 
 #include <stdio.h>
 #include <zlib.h>
@@ -53,11 +58,6 @@ enum
    SHOW_ALL    = SHOW_EVENTS | SHOW_DATA | SHOW_DRAW
 };
 int verbosity = SHOW_NONE;
-
-#if defined( HAVE_GTK3     ) && \
-    defined( HAVE_LIBGTK_3 ) && \
-    defined(HAVE_LIBZ      ) && \
-    defined( HAVE_ZLIB_H   )
 
 # include <X11/Xlib.h>
 # include <gtk/gtk.h>
@@ -867,43 +867,24 @@ PNG_context * pctx = new PNG_context(B);
 }
 //-----------------------------------------------------------------------------
 
-#else // no GTK or no libz...
+#else
 
-//----------------------------------------------------------------------------
-Quad_PNG::Quad_PNG()
-  : QuadFunction(TOK_Quad_PNG)
-{
-   verbosity = SHOW_NONE;
-   if (verbosity)  {}   // prevent unused variable warning
-}
-//----------------------------------------------------------------------------
-Quad_PNG::~Quad_PNG()
-{
-}
-//-----------------------------------------------------------------------------
+extern Token missing_files(const char * qfun,  const char ** libs,
+                           const char ** hdrs, const char ** pkgs);
+
+Token
+Quad_PNG::eval_AB(Value_P A, Value_P B) const   { return eval_B(B); }
+
 Token
 Quad_PNG::eval_B(Value_P B) const
 {
-    MORE_ERROR() <<
-"⎕PNG is not available because either no GTK3 libraries were found on this\n"
-"system when GNU APL was compiled, or because GTK was disabled in ./configure.";
+const char * libs[] = { "libpng.so",  "libgtk-3.so",  0 };
+const char * hdrs[] = { "png.h",      "gtk/gtk.h",    0 };
+const char * pkgs[] = { "libpng-dev", "libgtk-3-dev", 0 };
 
-   SYNTAX_ERROR;
-   return Token();
+   return missing_files("⎕PNG", libs, hdrs, pkgs);
 }
-//-----------------------------------------------------------------------------
-Token
-Quad_PNG::eval_AB(Value_P A, Value_P B) const
-{
-    MORE_ERROR() <<
-"⎕PNG is not available because either no libfftw3 library was found on this\n"
-"system when GNU APL was compiled, or because it was disabled in ./configure.";
 
-   SYNTAX_ERROR;
-   return Token();
-}
-//-----------------------------------------------------------------------------
+Quad_PNG::Quad_PNG() : QuadFunction(TOK_Quad_PNG)   {}
 
-#endif // HAVE_PNG_H
-
-#endif //  defined( HAVE_LIBPNG ) && defined ( HAVE_PNG_H )
+#endif
