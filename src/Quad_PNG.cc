@@ -886,5 +886,6 @@ const char * pkgs[] = { "libpng-dev", "libgtk-3-dev", 0 };
 }
 
 Quad_PNG::Quad_PNG() : QuadFunction(TOK_Quad_PNG)   {}
+Quad_PNG::~Quad_PNG() {}
 
 #endif
