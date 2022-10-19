@@ -37,10 +37,10 @@ public:
    static Quad_PNG * fun;          ///< Built-in function.
    static Quad_PNG  _fun;          ///< Built-in function.
 
-   /// a semaphore blocking until the plot window has been EXPOSED
+   /// a semaphore blocking until gtk_widget_show_all() was called
    static sem_t * PNG_window_sema;
 
-   /// a semaphore protecting plot_threads
+   /// a semaphore waiting from pthread_create() until the thread has started.
    static sem_t * PNG_threads_sema;
 
    /// the type and compressed length of a PNG filter

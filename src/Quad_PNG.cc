@@ -40,13 +40,13 @@ Quad_PNG * Quad_PNG::fun = &Quad_PNG::_fun;
 
 #include "Common.hh"
 
+/// thread start-up semaphore
 sem_t __PNG_threads_sema;
 sem_t * Quad_PNG::PNG_threads_sema = &__PNG_threads_sema;
 
+/// window exposed semaphore
 sem_t __PNG_window_sema;
 sem_t * Quad_PNG::PNG_window_sema = &__PNG_window_sema;
-
-static vector<pthread_t> plot_threads;
 
 /// ⎕PNG verbosity bitmap
 enum
@@ -57,7 +57,7 @@ enum
    SHOW_DRAW   = 4,   ///< show draw details
    SHOW_ALL    = SHOW_EVENTS | SHOW_DATA | SHOW_DRAW
 };
-int verbosity = SHOW_NONE;
+int verbosity = SHOW_NONE;   ///< (Debug-) verbosity of ⎕PNG
 
 # include <X11/Xlib.h>
 # include <gtk/gtk.h>
@@ -68,6 +68,7 @@ static int plot_window_count = 0;
 /// the main() program of the thread that handles one PNG display window.
 extern void * plot_PNG_main(void * vp_props);
 
+/// a context binding window properties and data for one ⎕PNG window
 struct PNG_context
 {
    /// constructor
@@ -86,9 +87,11 @@ struct PNG_context
    ShapeItem get_total_height() const
       { return APL_value->get_shape_item(1); }
 
+   /// return the current pixel matrix as APL value
    Value_P get_APL_value() const
       { return APL_value; }
 
+   /// from ⎕PLOT, probably not used
    void PNG_stop()
       {}
 
@@ -104,6 +107,7 @@ struct PNG_context
    /// the RGB matrix to be displayed
    Value_P APL_value;
 
+   /// number of the window next handle returned by display_PNG_main()
    static int next_handle;
 };
 
@@ -116,7 +120,7 @@ Quad_PNG::Quad_PNG()
   : QuadFunction(TOK_Quad_PNG)
 {
    __sem_init(PNG_threads_sema,  /* threads */ 0, /* initial */ 1);
-   __sem_init(PNG_window_sema, /* processes */ 1, /* initial */ 0);
+   __sem_init(PNG_window_sema, /* processes */ 0, /* initial */ 0);
 }
 //----------------------------------------------------------------------------
 Quad_PNG::~Quad_PNG()
@@ -125,12 +129,14 @@ Quad_PNG::~Quad_PNG()
    __sem_destroy(PNG_window_sema);
 }
 //---------------------------------------------------------------------------
+/// callback for libpng warnings
 static void
 PNG_warn(png_structp png_ptr, png_const_charp reason)
 {
    CERR << "*** libpng warning: " << reason << " ***" << endl;
 }
 //---------------------------------------------------------------------------
+/// callback for libpng errors
 static void
 PNG_err(png_structp png_ptr, png_const_charp reason)
 {
@@ -321,6 +327,7 @@ Quad_PNG::eval_B(Value_P B) const
         sem_post(PNG_threads_sema);
 
         sem_wait(PNG_window_sema);   // blocks until window shown
+        sem_post(PNG_window_sema);   // restore for next ⎕PNG
 
         return Token(TOK_APL_VALUE1, IntScalar(handle, LOC));
       }
@@ -748,6 +755,7 @@ const int stride = cairo_image_surface_get_stride(ret);   // = row size (bytes)
    return ret;
 }
 //-----------------------------------------------------------------------------
+/// Gtk callback to draw the ⎕PNG window
 extern "C" gboolean
 PNG_draw_callback(GtkWidget * drawing_area, cairo_t * cr, gpointer user_data);
 
