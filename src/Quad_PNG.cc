@@ -19,7 +19,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/** @file **/
+/** @file
+*/
 
 #include "config.h"   // for HAVE_XXX
 #include "Quad_PNG.hh"
