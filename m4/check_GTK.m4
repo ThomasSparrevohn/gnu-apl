@@ -11,7 +11,7 @@ AC_SUBST(GTK_CFLAGS)
 GTK_LDFLAGS=
 GTK_CFLAGS=
 AC_MSG_CHECKING([whether support for ⎕GTK (needs GTK version 3) is desired])
-if test "x$with_gtk3" = "xno"       # user has explicitly disabled GTK
+if TEST_EQ($with_gtk3, no)       # user has explicitly disabled GTK
 then
     AC_MSG_RESULT([no - (user has explicitly disabled ⎕GTK)])
 else
@@ -39,10 +39,10 @@ else
 fi
 
 # export HAVE_GTK3 to Makefile
-AM_CONDITIONAL(HAVE_GTK3, test "x$HAVE_gtk3" = xyes)
+AM_CONDITIONAL(HAVE_GTK3, TEST_EQ($HAVE_gtk3, yes))
 
 # export HAVE_GTK3 to config.h
-if test "x$HAVE_gtk3" = xyes; then
+if TEST_EQ($HAVE_gtk3, yes); then
    AC_DEFINE_UNQUOTED(HAVE_GTK3, [1], [GTK+ version 3 installed])
 fi
 
