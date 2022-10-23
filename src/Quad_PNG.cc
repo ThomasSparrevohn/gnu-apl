@@ -28,7 +28,7 @@
 Quad_PNG  Quad_PNG::_fun;
 Quad_PNG * Quad_PNG::fun = &Quad_PNG::_fun;
 
-#if defined( HAVE_GTK3     ) && \
+#if defined( apl_GTK3     ) && \
     defined( HAVE_LIBGTK_3 ) && \
     defined( HAVE_LIBZ     ) && \
     defined( HAVE_ZLIB_H   ) && \
