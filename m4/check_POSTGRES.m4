@@ -4,7 +4,7 @@
 apl_POSTGRES=no
 
 # no point to proceed without libpq-fe.h
-AC_CHECK_HEADER([libpq-fe.h],
+AC_CHECK_HEADER([postgresql/libpq-fe.h],
 [
     m4_include([m4/ax_lib_postgresql.m4])
        AX_LIB_POSTGRESQL([])        # sets: found_postgresql, want_postgresql
