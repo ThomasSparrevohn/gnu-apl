@@ -93,7 +93,8 @@ host_triplet = @host@
 subdir = src/testcases
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/depend.m4 \
-	$(top_srcdir)/m4/apl_sugar.m4 $(top_srcdir)/m4/check_SQLITE.m4 \
+	$(top_srcdir)/m4/apl_sugar.m4 $(top_srcdir)/m4/check_X11.m4 \
+	$(top_srcdir)/m4/check_SQLITE.m4 \
 	$(top_srcdir)/m4/ax_lib_sqlite3.m4 \
 	$(top_srcdir)/m4/check_POSTGRES.m4 \
 	$(top_srcdir)/m4/ax_lib_postgresql.m4 \
@@ -425,7 +426,8 @@ dist_noinst_DATA = \
         Quad_RL.tc                              \
         Quad_R.tc                               \
         Quad_RE.tc                              \
-        Quad_SQL.tc                             \
+        Quad_SQL_postgres.tc                    \
+        Quad_SQL_sqlite.tc                      \
         Quad_SVE.tc                             \
         Quad_SYL.tc                             \
         Quad.tc                                 \

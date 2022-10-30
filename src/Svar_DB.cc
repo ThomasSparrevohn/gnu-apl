@@ -46,7 +46,7 @@
 
 extern ostream & get_CERR();
 
-uint16_t Svar_DB::APserver_port = APSERVER_PORT;
+uint16_t Svar_DB::APserver_port = cfg_APSERVER_PORT;
 
 TCP_socket Svar_DB::DB_tcp = NO_TCP_SOCKET;
 
@@ -62,8 +62,10 @@ union SockAddr
   /// an AF_INET socket address
   sockaddr_in inet;
 
+#if HAVE_SYS_UN_H
   ///  an AF_UNIX socket address
   sockaddr_un uNix;
+#endif
 };
 //----------------------------------------------------------------------------
 bool
@@ -155,13 +157,13 @@ Svar_DB::connect_to_APserver(const char * bin_dir, const char * prog,
                                       int retry_max, bool logit)
 {
 int sock = NO_TCP_SOCKET;
-const char * server_sockname = APSERVER_PATH;
+const char * server_sockname = cfg_APSERVER_PATH;
 char peer[100];
 
    // we use AF_UNIX sockets if the platform supports it and unix_socket_name
    // is provided. Otherwise fall back to TCP.
    //
-#if HAVE_SYS_UN_H && APSERVER_TRANSPORT != 0
+#if HAVE_SYS_UN_H && cfg_APSERVER_TRANSPORT != 0
       {
         logit && get_CERR() << prog
                             << ": Using AF_UNIX socket towards APserver..."

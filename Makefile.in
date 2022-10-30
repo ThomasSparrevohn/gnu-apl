@@ -94,7 +94,8 @@ host_triplet = @host@
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/depend.m4 \
-	$(top_srcdir)/m4/apl_sugar.m4 $(top_srcdir)/m4/check_SQLITE.m4 \
+	$(top_srcdir)/m4/apl_sugar.m4 $(top_srcdir)/m4/check_X11.m4 \
+	$(top_srcdir)/m4/check_SQLITE.m4 \
 	$(top_srcdir)/m4/ax_lib_sqlite3.m4 \
 	$(top_srcdir)/m4/check_POSTGRES.m4 \
 	$(top_srcdir)/m4/ax_lib_postgresql.m4 \
@@ -203,8 +204,8 @@ CTAGS = ctags
 CSCOPE = cscope
 am__DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.incl \
 	$(srcdir)/config.h.in AUTHORS COPYING ChangeLog INSTALL NEWS \
-	README compile config.guess config.rpath config.sub depcomp \
-	install-sh ltmain.sh missing texinfo.tex
+	README TODO compile config.guess config.rpath config.sub \
+	depcomp install-sh ltmain.sh missing texinfo.tex
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 distdir = $(PACKAGE)-$(VERSION)
 top_distdir = $(distdir)

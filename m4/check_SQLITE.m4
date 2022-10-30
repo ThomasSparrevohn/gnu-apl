@@ -1,27 +1,38 @@
 
-# check if SQLite3 is wanted and installed
+# {{ check if SQLite3 is wanted and installed...
 
-apl_SQLITE3=no
+apl_SQLITE3=no   # assume neither wanted nor installed
 
 # no point to proceed without sqlite3.h
 
-AC_CHECK_HEADER([sqlite3.h],
-[
-    m4_include([m4/ax_lib_sqlite3.m4])
-       AX_LIB_SQLITE3([])                   # sets: found_sqlite, WANT_SQLITE3
+m4_include([m4/ax_lib_sqlite3.m4])   # define AX_LIB_SQLITE3()
+AX_LIB_SQLITE3([])                   # call AX_LIB_SQLITE3()
+    #
+    # ./configure --with-sqlite3="no"   →    $withval: "no"
+    # ./configure --without-sqlite3     →    $withval: "no"
+    # ./configure                       →    $withval: "yes"
+    # ./configure --with-sqlite3        →    $withval: "yes"
+    # ./configure --with-sqlite3=yes    →    $withval: "yes"
+    # ./configure --with-sqlite3=path   →    $withval: "path"
+    #
+if apl_NNO($with_sqlite3); then   # the user allows sqlite3 (if available)
 
-       apl_SQLITE3=$found_sqlite            # import into apl_ namespace
+   apl_SQLITE3=$found_sqlite   # set to yes/no in m4/ax_lib_sqlite3.m4
+   if apl_YES($sqlite_given); then
+      AC_DEFINE_UNQUOTED(cfg_USER_WANTS_SQLITE3, 1,
+                         [./configure with --with-sqlite3])
+   fi
+fi
 
-    if apl_EQ($found_sqlite, yes) && apl_EQ($WANT_SQLITE3, yes); then
-       AC_DEFINE_UNQUOTED([REALLY_WANT_SQLITE3], [1],
-                          [SQLite available and wanted])
-    fi
+echo "apl_SQLITE3: $apl_SQLITE3"
+# export apl_SQLITE3 to config.h
+if apl_YES($apl_SQLITE3); then
+   AC_DEFINE_UNQUOTED([apl_SQLITE3], [1], [SQLite code compiles])
+fi
 
-    if apl_EQ($WANT_SQLITE3, yes); then
-       AC_DEFINE_UNQUOTED([apl_SQLITE3], [1], [SQLite available])
-        fi
-])
 
 # export apl_SQLITE3 to Makefile.am
-AM_CONDITIONAL([apl_SQLITE3], [apl_EQ($apl_SQLITE3, yes)])
+AM_CONDITIONAL(apl_SQLITE3, [apl_YES($apl_SQLITE3)])
+
+# }} end of SQLITE check.
 

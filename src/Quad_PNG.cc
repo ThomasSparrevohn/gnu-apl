@@ -22,7 +22,7 @@
 /** @file
 */
 
-#include "config.h"   // for HAVE_XXX
+#include "Common.hh"   // for HAVE_XXX
 #include "Quad_PNG.hh"
 
 Quad_PNG  Quad_PNG::_fun;
@@ -38,8 +38,6 @@ Quad_PNG * Quad_PNG::fun = &Quad_PNG::_fun;
 #include <stdio.h>
 #include <zlib.h>
 #include <png.h>
-
-#include "Common.hh"
 
 /// thread start-up semaphore
 sem_t __PNG_threads_sema;
