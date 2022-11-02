@@ -1,23 +1,31 @@
 ⍝ Quad_SQL_postgres.tc
 ⍝ ----------------------------------
 
-#      ]NEXTFILE
+      0 0⍴"""
+NOTE: unlike SQLite, PostgreSAL requires that a user is created before the
+      database can be accessed (from APL or otherwise). For example, for
+      APL user eedjsa one should do something along the lines of:
 
-⍝ prerequisites (as user postgres):
-⍝
-⍝ createuser --createdb --createrole --superuser --no-password   eedjsa
-⍝ createdb -O "eedjsa"                           --no-password   jsadb
-⍝
-⍝ connect with:
-⍝
-⍝ psql jsadb
-⍝
-⍝ undo with:
-⍝
-⍝ dropuser
-⍝ dropdb jsadb
+      createuser --createdb --createrole --superuser --no-password eedjsa
 
-      ⍝ erase old database (if any; usually fails (256), but may succeed (0))
+      Otherwise PostgreSQL will probably produce an error like:
+
+      )MORE
+Error connecting to Postgres database: FATAL:  role "eedjsa" does not exist
+
+      FATAL:  role "eedjsa" does not exist
+
+      For troubleshooting this testcase from the command line,
+      the following PostgreSQL commands may also be useful:
+
+$ createdb --owner=eedjsa --no-password apl_quadSQL   # create database
+$ psql jsadb                               i          # connect to database
+$ dropdb jsadb                                        # delete database
+$ dropuser eedjsa                                     # delete user eedjsa
+          """
+
+      ⍝ erase old database (if any). This fails with 256 (if the database
+      ⍝ was erased already), or succeed (if the database still exists).
       ⍝
       )HOST dropdb apl_quadSQL 2>/dev/null
 
@@ -41,6 +49,9 @@ CREATE TABLE COMPANY(
       ⍝
       DB←'postgresql' ⎕SQL[1] 'apl_quadSQL'
       ⊣create ⎕SQL[3, DB] ''
+
+      )MORE
+NO MORE ERROR INFO
 
       ⎕SQL[8] DB
  company 

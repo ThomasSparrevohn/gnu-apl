@@ -9,7 +9,7 @@
 ###############################################################################
 # check if the user compiles for ANDROID
 #
-AC_MSG_CHECKING([if we are compiling for Android])
+AC_MSG_CHECKING([if the build target is Android])
 AC_ARG_WITH( [android],
              [AS_HELP_STRING([--with-android],
                              [enable when compiling for Android])],
@@ -25,7 +25,7 @@ AC_MSG_RESULT([$apl_TARGET_ANDROID])
 ###############################################################################
 # check if the user wants the Erlang interface (and therefore also libapl)
 #
-AC_MSG_CHECKING([if we want to build an erlang interface (implies libapl.so)])
+AC_MSG_CHECKING([if the build target is the Erlang interface (implies libapl.so)])
 AC_ARG_WITH( [erlang],
              [AS_HELP_STRING([--with-erlang],
                              [enable to build the Erlang interface])],
@@ -44,7 +44,7 @@ AC_MSG_RESULT([$apl_TARGET_ERLANG])
 ###############################################################################
 # check if the user wants to build libapl.so
 #
-AC_MSG_CHECKING([if we want to build libapl.so])
+AC_MSG_CHECKING([if the build target is libapl.so])
 apl_TARGET_LIBAPL=$apl_TARGET_ERLANG   # Erlang needs libapl
 AC_ARG_WITH( [libapl],
              [AS_HELP_STRING([--with-libapl],
@@ -62,7 +62,7 @@ AC_MSG_RESULT([$apl_TARGET_LIBAPL])
 ###############################################################################
 # check if the user wants to build the python extension libpython_apl.so
 #
-AC_MSG_CHECKING([if we want to build libpython_apl.so])
+AC_MSG_CHECKING([if the build target is libpython_apl.so])
 apl_TARGET_PYTHON=no
 AC_SUBST(PYTHON_CFLAGS)
 PYTHON_CFLAGS=

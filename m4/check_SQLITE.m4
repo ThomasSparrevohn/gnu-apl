@@ -24,7 +24,6 @@ if apl_NNO($with_sqlite3); then   # the user allows sqlite3 (if available)
    fi
 fi
 
-echo "apl_SQLITE3: $apl_SQLITE3"
 # export apl_SQLITE3 to config.h
 if apl_YES($apl_SQLITE3); then
    AC_DEFINE_UNQUOTED([apl_SQLITE3], [1], [SQLite code compiles])
