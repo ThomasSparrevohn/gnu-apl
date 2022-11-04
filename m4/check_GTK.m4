@@ -1,47 +1,58 @@
 
-################################# GTK3 check #################################
+# wrap multiple tests into a single dash function from which we may
+# return prematurely (which m4 can't) if a sub-test fails...
 #
+dash_test_GTK()
+{ {
+apl_GTK3=no
+
 AC_ARG_WITH([gtk3],
     AS_HELP_STRING([--with-gtk3],
     [enable ⎕GTK (interface to GTK+ version 3; needs libgtk-3 and more)]))
+    #
+    # ./configure --with-gtk3="no"   →    $with_gtk3: "no"
+    # ./configure --without-gtk3     →    $with_gtk3: "no"
+    # ./configure                    →    $with_gtk3: "yes"
+    # ./configure --with-gtk3        →    $with_gtk3: "yes"
+    # ./configure --with-gtk3=yes    →    $with_gtk3: "yes"
+    # ./configure --with-gtk3=path   →    $with_gtk3: "path"
+    #
+if apl_NO($with_gtk3); then       # user has explicitly disabled GTK
+   AC_MSG_CHECKING([for GTK])
+   AC_MSG_RESULT([no - (explicitly disabled by user)])
+   return
+fi
 
-apl_GTK3=no
+   # user allows GTK, check for pkg-config
+AC_PATH_PROG(PKG_CONFIG, pkg-config, no)  # locate pkg-config
+if apl_NO($PKG_CONFIG); then             # pkg-config missing
+   AC_MSG_CHECKING([for GTK])
+   AC_MSG_RESULT([no (prerequisite for GTK)])
+   return
+fi
+
 AC_SUBST(GTK_LDFLAGS)
 AC_SUBST(GTK_CFLAGS)
 GTK_LDFLAGS=
 GTK_CFLAGS=
-AC_MSG_CHECKING([whether support for ⎕GTK (needs GTK version 3) is desired])
-if apl_EQ($with_gtk3, no)       # user has explicitly disabled GTK
-then
-    AC_MSG_RESULT([no - (user has explicitly disabled ⎕GTK)])
-else
-    # user wants ⎕GTK)
-    AC_MSG_RESULT([yes])
+AC_MSG_CHECKING([for GTK (≥ version 3)])
 
-    AC_PATH_PROG(PKG_CONFIG, pkg-config, no)  # locate pkg-config
-    if apl_NEQ($PKG_CONFIG, no); then        # pkg-config present
-        AC_MSG_CHECKING([if package gtk+-3.0 is installed])
-        if $PKG_CONFIG --exists gtk+-3.0         # package gtk+-3.0  exists
-        then
-            AC_MSG_RESULT([yes])
-            GTK_CFLAGS=`$PKG_CONFIG --cflags gtk+-3.0`
-            GTK_LDFLAGS=`$PKG_CONFIG --libs gtk+-3.0`
-            apl_GTK3=yes
-        else                                     # package gtk+-3.0 missing
-            AC_MSG_RESULT([no])
-            apl_GTK3=no
-        fi
-    else                                      # pkg-config missing
-        AC_MSG_RESULT([no (cannot use GTK without pkg-config)])
-        apl_GTK3=no
-    fi
+if $PKG_CONFIG --exists gtk+-3.0; then         # package gtk+-3.0  exists
+   AC_MSG_RESULT([yes])
+   GTK_CFLAGS=`$PKG_CONFIG --cflags gtk+-3.0`
+   GTK_LDFLAGS=`$PKG_CONFIG --libs gtk+-3.0`
+   apl_GTK3=yes
+else                                     # package gtk+-3.0 missing
+      AC_MSG_RESULT([no (says pkg-config)])
 fi
-
-# export apl_GTK3 to Makefile
-AM_CONDITIONAL(apl_GTK3, apl_EQ($apl_GTK3, yes))
 
 # export apl_GTK3 to config.h
-if apl_EQ($apl_GTK3, yes); then
+if apl_YES($apl_GTK3); then
    AC_DEFINE_UNQUOTED(apl_GTK3, [1], [GTK+ version 3 installed])
 fi
+} }
+dash_test_GTK   # perform the GTK tests
+
+# export apl_GTK3 to Makefile.am
+AM_CONDITIONAL(apl_GTK3, apl_YES($apl_GTK3))
 
