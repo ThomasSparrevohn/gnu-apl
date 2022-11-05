@@ -1,10 +1,13 @@
 
+# check if libgtk-3 and related libraries are installed and usable
+
 # wrap multiple tests into a single dash function from which we may
 # return prematurely (which m4 can't) if a sub-test fails...
 #
 dash_test_GTK()
 { {
-apl_GTK3=no
+local apl_have_opt_lib   # result of apl_OPT_LIB()
+apl_GTK3=no   # assume error
 
 AC_ARG_WITH([gtk3],
     AS_HELP_STRING([--with-gtk3],
@@ -23,13 +26,27 @@ if apl_NO($with_gtk3); then       # user has explicitly disabled GTK
    return
 fi
 
-   # user allows GTK, check for pkg-config
-AC_PATH_PROG(PKG_CONFIG, pkg-config, no)  # locate pkg-config
-if apl_NO($PKG_CONFIG); then             # pkg-config missing
-   AC_MSG_CHECKING([for GTK])
-   AC_MSG_RESULT([no (prerequisite for GTK)])
+   # user allows GTK...
+
+   # check for pkg-config
+AC_PATH_PROG(PKG_CONFIG, pkg-config, no)   # locate pkg-config
+if apl_NO($PKG_CONFIG); then               # pkg-config missing
+   AC_MSG_CHECKING([for pkg-config (GTK prerequisite)])
+   AC_MSG_RESULT([no])
    return
 fi
+
+   # GTK needs libgtk-3
+apl_OPT_LIB([gtk-3], [gtk_init], [])
+   apl_NO($apl_have_opt_lib) && return     # libgtk-3 missing
+
+   # GTK needs libgdk-3
+apl_OPT_LIB([gdk-3], [gdk_init], [])
+   apl_NYES($apl_have_opt_lib) && return   # libgdk-3 missing
+
+   # GTK needs libcairo
+apl_OPT_LIB([cairo], [cairo_fill], [])
+   apl_NO($apl_have_opt_lib) && return     # libcairo missing
 
 AC_SUBST(GTK_LDFLAGS)
 AC_SUBST(GTK_CFLAGS)
@@ -51,7 +68,7 @@ if apl_YES($apl_GTK3); then
    AC_DEFINE_UNQUOTED(apl_GTK3, [1], [GTK+ version 3 installed])
 fi
 } }
-dash_test_GTK   # perform the GTK tests
+dash_test_GTK   # set apl_GTK3 to yes or no.
 
 # export apl_GTK3 to Makefile.am
 AM_CONDITIONAL(apl_GTK3, apl_YES($apl_GTK3))

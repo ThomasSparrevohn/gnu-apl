@@ -4,9 +4,9 @@
 #
 dash_test_POSTGRES()
 { {
-apl_POSTGRES=no
-
 local found_postgresql   # 'yes' or 'no' by AX_LIB_POSTGRESQL()
+
+apl_POSTGRES=no
 
 m4_include([m4/ax_lib_postgresql.m4])   # define AX_LIB_POSTGRESQL()
 AX_LIB_POSTGRESQL([])                   # call AX_LIB_POSTGRESQL()
@@ -19,7 +19,6 @@ AX_LIB_POSTGRESQL([])                   # call AX_LIB_POSTGRESQL()
     # ./configure --with-postgresql=path   →    $with_postgresql: "path"
     #
 apl_NO($with_postgresql) && return   # the user rejects POSTSCRIPT
-
 
 if apl_YES($postgresql_given); then
    AC_DEFINE_UNQUOTED(cfg_USER_WANTS_POSTGRES, 1,
@@ -45,7 +44,7 @@ if apl_YES($apl_POSTGRES); then
    AC_DEFINE_UNQUOTED([apl_POSTGRES], [1], [PostgreSQL code compiles])
 fi
 } }
-dash_test_POSTGRES   # perform the POSTGRES tests
+dash_test_POSTGRES   # set apl_POSTGRES to yes or no.
 
 # export apl_POSTGRES to Makefile.am
 AM_CONDITIONAL([apl_POSTGRES], [apl_YES($apl_POSTGRES)])

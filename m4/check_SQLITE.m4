@@ -1,6 +1,11 @@
 
-# {{ check if SQLite3 is wanted and installed...
+# check if SQLite3 is wanted and installed...
 
+# wrap multiple tests into a single dash function from which we may
+# return prematurely (which m4 can't) if a sub-test fails...
+#
+dash_test_SQLITE3()
+{ {
 apl_SQLITE3=no   # assume neither wanted nor installed
 
 # no point to proceed without sqlite3.h
@@ -15,14 +20,16 @@ AX_LIB_SQLITE3([])                   # call AX_LIB_SQLITE3()
     # ./configure --with-sqlite3=yes    →    $withval: "yes"
     # ./configure --with-sqlite3=path   →    $withval: "path"
     #
-if apl_NNO($with_sqlite3); then   # the user allows sqlite3 (if available)
+apl_NO($with_sqlite3) && return   # the user rejects sqlite3
 
-   apl_SQLITE3=$found_sqlite   # set to yes/no in m4/ax_lib_sqlite3.m4
+apl_SQLITE3=$found_sqlite   # set to yes/no in m4/ax_lib_sqlite3.m4
    if apl_YES($sqlite_given); then
       AC_DEFINE_UNQUOTED(cfg_USER_WANTS_SQLITE3, 1,
                          [./configure with --with-sqlite3])
    fi
-fi
+} }
+dash_test_SQLITE3   # set apl_SQLITE3 to yes or no.
+
 
 # export apl_SQLITE3 to config.h
 if apl_YES($apl_SQLITE3); then
@@ -32,6 +39,4 @@ fi
 
 # export apl_SQLITE3 to Makefile.am
 AM_CONDITIONAL(apl_SQLITE3, [apl_YES($apl_SQLITE3)])
-
-# }} end of SQLITE check.
 
