@@ -1,0 +1,10 @@
+⍝ Quad_PLOT.tc
+⍝ ----------------------------------
+
+      ⍝ only checks that ⎕PLOT was compiled
+      ⍝
+      ⎕PLOT 0
+
+      )MORE
+NO MORE ERROR INFO
+
