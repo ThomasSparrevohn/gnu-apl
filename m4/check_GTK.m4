@@ -63,12 +63,16 @@ else                                     # package gtk+-3.0 missing
       AC_MSG_RESULT([no (says pkg-config)])
 fi
 
-# export apl_GTK3 to config.h
-if apl_YES($apl_GTK3); then
-   AC_DEFINE_UNQUOTED(apl_GTK3, [1], [GTK+ version 3 installed])
-fi
 } }
 dash_test_GTK   # set apl_GTK3 to yes or no.
+
+# export apl_GTK3 to config.h
+if apl_YES($apl_GTK3); then
+   AC_DEFINE_UNQUOTED(apl_GTK3, 1, [GTK+ version 3 installed])
+else
+   AC_DEFINE_UNQUOTED(apl_GTK3, 0, [GTK+ version 3 not installed])
+fi
+
 
 # export apl_GTK3 to Makefile.am
 AM_CONDITIONAL(apl_GTK3, apl_YES($apl_GTK3))

@@ -1,6 +1,8 @@
 ⍝ Quad_SQL_postgres.tc
 ⍝ ----------------------------------
 
+      ]NEXTFILE no-POSTGRES
+
       0 0⍴"""
 NOTE: unlike SQLite, PostgreSAL requires that a user is created before the
       database can be accessed (from APL or otherwise). For example, for

@@ -40,11 +40,16 @@ AC_MSG_CHECKING([for PostgreSQL usability])
    CPPFLAGS="$saved_CPPFLAGS"
 AC_MSG_RESULT($apl_POSTGRES)
 
-if apl_YES($apl_POSTGRES); then
-   AC_DEFINE_UNQUOTED([apl_POSTGRES], [1], [PostgreSQL code compiles])
-fi
 } }
 dash_test_POSTGRES   # set apl_POSTGRES to yes or no.
+
+# export apl_POSTGRES to config.h
+if apl_YES($apl_POSTGRES); then
+   AC_DEFINE_UNQUOTED(apl_POSTGRES, 1, [PostgreSQL code compiles])
+else
+   AC_DEFINE_UNQUOTED(apl_POSTGRES, 0, [PostgreSQL code did not compile])
+fi
+
 
 # export apl_POSTGRES to Makefile.am
 AM_CONDITIONAL([apl_POSTGRES], [apl_YES($apl_POSTGRES)])

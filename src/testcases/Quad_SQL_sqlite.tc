@@ -1,6 +1,8 @@
 ⍝ Quad_SQL.tc
 ⍝ ----------------------------------
 
+      ]NEXTFILE no-SQLITE3
+
       ⍝ erase old database
       ⍝
       )HOST rm -f testcases/test_Quad_SQL.db

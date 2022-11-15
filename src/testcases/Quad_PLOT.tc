@@ -1,6 +1,8 @@
 ⍝ Quad_PLOT.tc
 ⍝ ----------------------------------
 
+      ]NEXTFILE no-GUI
+
       ⍝ only checks that ⎕PLOT was compiled
       ⍝
       ⎕PLOT 0
