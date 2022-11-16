@@ -65,9 +65,6 @@ int verbosity = SHOW_NONE;   ///< (Debug-) verbosity of ⎕PNG
 /// the number of open plot windows (to see when the last one was closed).
 static int plot_window_count = 0;
 
-/// the main() program of the thread that handles one PNG display window.
-extern void * plot_PNG_main(void * vp_props);
-
 /// a context binding window properties and data for one ⎕PNG window
 struct PNG_context
 {
@@ -645,6 +642,7 @@ Quad_PNG::eval_AB(Value_P A, Value_P B) const
 static void *
 gtk_main_wrapper(void * w_props)
 {
+   setlocale(LC_ALL, "C");   // needed for portable snprintf()
    gtk_main();
 
    if (verbosity & SHOW_EVENTS)   CERR << "gtk_main() thread done" << endl;
@@ -683,13 +681,14 @@ PNG_plot_destroyed(GtkWidget * top_level)
    for (size_t th = 0; th < all_PNG_contexts.size(); ++th)
        {
          const PNG_context * pctx = all_PNG_contexts[th];
-         if (top_level == pctx->window)   // case 2 (closed by user click)
+         if (top_level == pctx->window)   // case 2: (closed by user click)
             {
               all_PNG_contexts[th] = all_PNG_contexts.back();
               all_PNG_contexts.pop_back();
               if (verbosity & SHOW_EVENTS)
                  CERR << "PNG window DESTROYED (by user/GUI)" << endl;
-              return true;
+              delete pctx;
+              return TRUE;
             }
        }
 
@@ -826,7 +825,7 @@ Quad_PNG::display_PNG_main(Value_P B)
    if (verbosity & SHOW_FUNS)   CERR << "display_PNG_main()" << endl;
 
    if (getenv("DISPLAY") == 0)   // DISPLAY not set
-      setenv("DISPLAY", ":0", true);
+      setenv("DISPLAY", ":0", /* overwrite */ 1);
 
    XInitThreads();
 
@@ -861,7 +860,7 @@ PNG_context * pctx = new PNG_context(B);
      else
         snprintf(cc, sizeof(cc), "⎕PNG %d×%d", height, width);
      gtk_window_set_title(GTK_WINDOW(pctx->window), cc);
-      }
+   }
    gtk_window_set_resizable(GTK_WINDOW(pctx->window), false);
    gtk_window_set_type_hint(GTK_WINDOW(pctx->window),
                             GDK_WINDOW_TYPE_HINT_DIALOG);

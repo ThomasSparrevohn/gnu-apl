@@ -1,7 +1,7 @@
 ⍝ Quad_SQL.tc
 ⍝ ----------------------------------
 
-      ]NEXTFILE no-SQLITE3
+      ]NEXTFILE no-SQLITE3   ⍝ done if SQLITE3 is not available
 
       ⍝ erase old database
       ⍝
