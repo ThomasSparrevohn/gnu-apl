@@ -28,12 +28,12 @@
 Quad_PNG  Quad_PNG::_fun;
 Quad_PNG * Quad_PNG::fun = &Quad_PNG::_fun;
 
-#if defined( apl_GTK3     ) && \
-    defined( HAVE_LIBGTK_3 ) && \
-    defined( HAVE_LIBZ     ) && \
-    defined( HAVE_ZLIB_H   ) && \
-    defined( HAVE_LIBPNG   ) && \
-    defined ( HAVE_PNG_H   )
+#if defined( apl_GTK3             ) && \
+    defined( HAVE_LIBGTK_3        ) && \
+    defined( HAVE_LIBZ            ) && \
+    defined( HAVE_ZLIB_H          ) && \
+    defined( HAVE_LIBPNG          ) && \
+    defined ( HAVE_LIBPNG16_PNG_H )
 
 #include <stdio.h>
 #include <zlib.h>
@@ -54,7 +54,8 @@ enum
    SHOW_EVENTS = 1,   ///< show X events
    SHOW_DATA   = 2,   ///< show APL data
    SHOW_DRAW   = 4,   ///< show draw details
-   SHOW_ALL    = SHOW_EVENTS | SHOW_DATA | SHOW_DRAW
+   SHOW_FUNS   = 8,   ///< show function calls
+   SHOW_ALL    = SHOW_EVENTS | SHOW_DATA | SHOW_DRAW | SHOW_FUNS
 };
 int verbosity = SHOW_NONE;   ///< (Debug-) verbosity of ⎕PNG
 
@@ -306,9 +307,7 @@ Quad_PNG::eval_B(Value_P B) const
       {
         const APL_Integer B0 = B->get_cscalar().get_int_value();
         Value_P Z = window_control(B0);
-        return Token(TOK_APL_VALUE1, Idx0_0(LOC));
-
-        DOMAIN_ERROR;
+        return Token(TOK_APL_VALUE1, Z);
       }
 
    if (B->is_apl_char_vector())   // read PNG file
@@ -368,6 +367,7 @@ Quad_PNG::window_control(APL_Integer B0) const
               Z->next_ravel_Int(pctx->handle);
 
               gtk_window_close(GTK_WINDOW(pctx->window));
+              delete pctx;
             }
          all_PNG_contexts.clear();
          Z->check_value(LOC);
@@ -381,8 +381,27 @@ Quad_PNG::window_control(APL_Integer B0) const
          return Idx0_0(LOC);
        }
 
-    // otherwise B0 is supposed to be a ⎕PNG window handle. Find it and
-    // close (only) that window.
+    if (B0 == -5)                // enable SHOW_FUNS
+       {
+         verbosity |= SHOW_FUNS;
+         CERR << "⎕PNG will show function calls " << endl;
+         return Idx0_0(LOC);
+       }
+
+    if (B0 == -6)                // return all open handles
+       {
+         Value_P Z(all_PNG_contexts.size(), LOC);
+         loop(p, all_PNG_contexts.size())
+            {
+              PNG_context * pctx = all_PNG_contexts[p];
+              Z->next_ravel_Int(pctx->handle);
+            }
+         Z->check_value(LOC);
+         return Z;
+       }
+
+    // otherwise B0 is supposed to be a ⎕PNG window handle.
+    // Find it and close (only) that window.
 
     loop(p, all_PNG_contexts.size())
         {
@@ -392,9 +411,9 @@ Quad_PNG::window_control(APL_Integer B0) const
                all_PNG_contexts[p] = all_PNG_contexts.back();
                all_PNG_contexts.pop_back();
                gtk_window_close(GTK_WINDOW(pctx->window));
+               delete pctx;
                return IntScalar(B0, LOC);
              }
-
         }
 
     return Idx0_0(LOC);   // not found: return empty list of handles
@@ -804,7 +823,7 @@ cairo_surface_t * source_surfrace = paint_data(*pctx);
 APL_Integer
 Quad_PNG::display_PNG_main(Value_P B)
 {
-   CERR << "display_PNG_main()" << endl;
+   if (verbosity & SHOW_FUNS)   CERR << "display_PNG_main()" << endl;
 
    if (getenv("DISPLAY") == 0)   // DISPLAY not set
       setenv("DISPLAY", ":0", true);
