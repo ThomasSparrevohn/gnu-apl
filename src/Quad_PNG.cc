@@ -23,6 +23,11 @@
 */
 
 #include "Common.hh"   // for HAVE_XXX
+#include "Common.hh"
+#if HAVE_LOCALE_H
+# include <locale.h>
+#endif
+
 #include "Quad_PNG.hh"
 
 Quad_PNG  Quad_PNG::_fun;
@@ -38,10 +43,6 @@ Quad_PNG * Quad_PNG::fun = &Quad_PNG::_fun;
 #include <stdio.h>
 #include <zlib.h>
 #include <png.h>
-
-/// thread start-up semaphore
-sem_t __PNG_threads_sema;
-sem_t * Quad_PNG::PNG_threads_sema = &__PNG_threads_sema;
 
 /// window exposed semaphore
 sem_t __PNG_window_sema;
@@ -61,9 +62,6 @@ int verbosity = SHOW_NONE;   ///< (Debug-) verbosity of ⎕PNG
 
 # include <X11/Xlib.h>
 # include <gtk/gtk.h>
-
-/// the number of open plot windows (to see when the last one was closed).
-static int plot_window_count = 0;
 
 /// a context binding window properties and data for one ⎕PNG window
 struct PNG_context
@@ -116,13 +114,11 @@ static vector<PNG_context *> all_PNG_contexts;
 Quad_PNG::Quad_PNG()
   : QuadFunction(TOK_Quad_PNG)
 {
-   __sem_init(PNG_threads_sema,  /* threads */ 0, /* initial */ 1);
    __sem_init(PNG_window_sema, /* processes */ 0, /* initial */ 0);
 }
 //----------------------------------------------------------------------------
 Quad_PNG::~Quad_PNG()
 {
-   __sem_destroy(PNG_threads_sema);
    __sem_destroy(PNG_window_sema);
 }
 //---------------------------------------------------------------------------
@@ -318,11 +314,9 @@ Quad_PNG::eval_B(Value_P B) const
    if (B->get_rank() == 3)   // display B (an RGB or RGBA matrix)
       {
         const APL_Integer handle = display_PNG_main(B);
-        sem_wait(PNG_threads_sema);
-        sem_post(PNG_threads_sema);
 
         sem_wait(PNG_window_sema);   // blocks until window shown
-        sem_post(PNG_window_sema);   // restore for next ⎕PNG
+        sem_post(PNG_window_sema);   // restore for next sem_wait()
 
         return Token(TOK_APL_VALUE1, IntScalar(handle, LOC));
       }
@@ -642,19 +636,9 @@ Quad_PNG::eval_AB(Value_P A, Value_P B) const
 static void *
 gtk_main_wrapper(void * w_props)
 {
-   setlocale(LC_ALL, "C");   // needed for portable snprintf()
    gtk_main();
 
    if (verbosity & SHOW_EVENTS)   CERR << "gtk_main() thread done" << endl;
-
-   if (--plot_window_count == 0)   // last window closed
-      {
-        while (all_PNG_contexts.size())
-           {
-             all_PNG_contexts.pop_back();
-           }
-      }
-
    return 0;
 }
 //-----------------------------------------------------------------------------
@@ -833,21 +817,22 @@ Quad_PNG::display_PNG_main(Value_P B)
    //
    if (!gtk_init_done)
       {
-        int argc = 0;              // no arguments for gtk_init()
-        gtk_init(&argc, 0);
+        int argc = 0;
+        char ** argv = { 0 };
+        gtk_init(&argc, &argv);   setlocale(LC_ALL, "C");
+        gtk_init_done = true;
+
         pthread_t thread = 0;
         pthread_create(&thread, 0, gtk_main_wrapper, 0);
 #if HAVE_PTHREAD_SETNAME_NP
          // show with e.g.   ps H -o 'pid tid cmd comm'
-         pthread_setname_np(thread, "apl/⎕PNG");
+         pthread_setname_np(thread, "apl/GTK");
 #endif
-        gtk_init_done = true;
       }
 
 PNG_context * pctx = new PNG_context(B);
    Assert(pctx);
    all_PNG_contexts.push_back(pctx);
-   ++plot_window_count;
 
    pctx->window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
    Assert(pctx->window);
@@ -856,7 +841,7 @@ PNG_context * pctx = new PNG_context(B);
      const int width  = B->get_shape_item(2);
      char cc[50];
      if (width < 500)   // small
-        snprintf(cc, sizeof(cc), "⎕PNG");
+        snprintf(cc, sizeof(cc), "⎕PNG %d", pctx->handle);
      else
         snprintf(cc, sizeof(cc), "⎕PNG %d×%d", height, width);
      gtk_window_set_title(GTK_WINDOW(pctx->window), cc);
@@ -875,8 +860,10 @@ PNG_context * pctx = new PNG_context(B);
                                           pctx->get_total_width(),
                                           pctx->get_total_height());
 
-   gtk_window_move(GTK_WINDOW(pctx->window), 100*(all_PNG_contexts.size()+1),
-                                             100*(all_PNG_contexts.size()+1));
+   // display the windows at different positions so that the user
+   // can see their captions (and their close buttons).
+   gtk_window_move(GTK_WINDOW(pctx->window), 50*(all_PNG_contexts.size()+1),
+                                             50*(all_PNG_contexts.size()+1));
 
 
    g_signal_connect_object(pctx->window, "destroy",
