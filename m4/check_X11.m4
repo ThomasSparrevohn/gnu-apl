@@ -31,9 +31,9 @@ dash_test_X11   # set apl_X11 to yes or no.
 
 # export apl_X11 to config.h
 if apl_YES($apl_X11); then
-   AC_DEFINE_UNQUOTED(apl_X11, 1, [X11 is available])
+   AC_DEFINE_UNQUOTED(apl_X11, 1, [X11 is available ?])
 else
-   AC_DEFINE_UNQUOTED(apl_X11, 0, [X11 not available])
+   AC_DEFINE_UNQUOTED(apl_X11, 0)
 fi
 
 # export apl_X11 to Makefile.am

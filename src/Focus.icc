@@ -1,0 +1,78 @@
+/*
+    This file is part of GNU APL, a free implementation of the
+    ISO/IEC Standard 13751, "Programming Language APL, Extended"
+
+    Copyright (C) 2018-2020  Dr. Jürgen Sauermann
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#include "Common.hh"
+
+#if HAVE_SEM_INIT && HAVE_X11_XLIB_H && HAVE_XCB_XCB_H
+
+#include <semaphore.h>
+#include <unistd.h>
+# include <X11/Xlib.h>
+# include <xcb/xcb.h>
+
+static void * focus_main(void *);
+static sem_t focus_sema;
+
+//-----------------------------------------------------------------------------
+inline void
+push_focus()
+{
+   sem_init(&focus_sema, 0, 0);
+pthread_t thread = 0;
+   pthread_create(&thread, 0, focus_main, 0);
+}
+//-----------------------------------------------------------------------------
+inline void
+pop_focus()
+{
+   sem_post(&focus_sema);
+}
+//-----------------------------------------------------------------------------
+
+void *
+focus_main(void *)
+{
+xcb_connection_t * conn = xcb_connect(0, 0);
+const xcb_get_input_focus_reply_t * focusReply =
+      xcb_get_input_focus_reply(conn, xcb_get_input_focus(conn), 0);
+
+   // wait at least until the GTK window was displayed
+   //
+   sem_wait(&focus_sema);
+
+   // wait a little longer (needed, but 20 ms seems to suffice)
+   usleep(100000);
+
+const xcb_void_cookie_t cookie =
+   xcb_set_input_focus(conn, XCB_INPUT_FOCUS_POINTER_ROOT,
+                       focusReply->focus, XCB_CURRENT_TIME);
+   xcb_request_check(conn, cookie);
+
+   return 0;
+}
+//-----------------------------------------------------------------------------
+
+#else   // no XCB and friends
+
+inline void push_focus() {}
+inline void pop_focus()  {}
+
+#endif
+

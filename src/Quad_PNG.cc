@@ -803,6 +803,9 @@ cairo_surface_t * source_surfrace = paint_data(*pctx);
    return TRUE;   // event handled by this handler
 }
 //-----------------------------------------------------------------------------
+
+#include "Focus.icc"
+
 APL_Integer
 Quad_PNG::display_PNG_main(Value_P B)
 {
@@ -810,6 +813,8 @@ Quad_PNG::display_PNG_main(Value_P B)
 
    if (getenv("DISPLAY") == 0)   // DISPLAY not set
       setenv("DISPLAY", ":0", /* overwrite */ 1);
+
+   push_focus();
 
    XInitThreads();
 
@@ -873,6 +878,8 @@ PNG_context * pctx = new PNG_context(B);
                            G_CALLBACK(PNG_draw_callback), 0, G_CONNECT_AFTER);
 
    gtk_widget_show_all(pctx->window);
+
+   pop_focus();
 
    sem_post(Quad_PNG::PNG_window_sema);   // unleash the APL interpreter
    return pctx->handle;
