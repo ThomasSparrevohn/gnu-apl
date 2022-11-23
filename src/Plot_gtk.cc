@@ -39,12 +39,6 @@ static int verbosity = 0;
 # include "Plot_line_properties.hh"
 # include "Plot_window_properties.hh"
 
-/// the main() program of the thread that handles one plot window.
-extern void * plot_main(void * vp_props);
-
-/// the window properties of one plot window.
-extern int plot_stop(int handle);
-
 # include "ComplexCell.hh"
 # include "FloatCell.hh"
 # include "Quad_PLOT.hh"
@@ -66,7 +60,7 @@ struct Plot_context
 {
    /// constructor
    Plot_context(Plot_window_properties & pwp)
-   : handle(++next_handle),
+   : handle(Quad_PLOT::next_handle),
      w_props(pwp),
      window(0),
      drawing_area(0)
@@ -101,18 +95,10 @@ struct Plot_context
 
    /// the drawing area in the window of this Plot_context
    GtkWidget * drawing_area;
-
-   /// number of the window next handle returned by display_PNG_main()
-   static int next_handle;
 };
-
-int Plot_context::next_handle = 0;
 
 /// all Plot_contexts (= all open windows) for ⎕PLOT
 static vector<Plot_context *> all_plot_contexts;
-
-/// the number of open plot windows (to see when the last one was closed).
-static int GTK_window_count = 0;
 
 //----------------------------------------------------------------------------
 /// same as standard cairo_set_RGB_source() but with Color instead of double
@@ -1295,6 +1281,7 @@ plot_destroyed(GtkWidget * top_level)
               all_plot_contexts[th] = all_plot_contexts.back();
               all_plot_contexts.pop_back();
               delete &pctx->w_props;
+              Quad_PLOT::plot_stop_GUI(pctx->handle);
               return TRUE;
             }
        }
@@ -1508,25 +1495,17 @@ gtk_main_wrapper(void *)
 {
    gtk_main();
 
-   if (verbosity & SHOW_EVENTS)   CERR << "gtk_main() thread done" << endl;
+   // not reached
 
-   if (--GTK_window_count == 0)   // last window closed
-      {
-        while (all_plot_contexts.size())
-           {
-             const Plot_context * pctx = all_plot_contexts.back();
-             delete &pctx->w_props;
-             all_plot_contexts.pop_back();
-           }
-      }
+   if (verbosity & SHOW_EVENTS)   CERR << "gtk_main() thread done" << endl;
 
    return 0;
 }
 //----------------------------------------------------------------------------
-int
-plot_stop(int handle)
+Quad_PLOT::Handle
+Quad_PLOT::plot_stop_APL(Handle handle)
 {
-// CERR << "plot_stop(" << handle << ")" << endl;
+// CERR << "plot_stop_APL(" << handle << ")" << endl;
 
    // find the Plot_context for this event...
    //
@@ -1552,12 +1531,30 @@ plot_stop(int handle)
         << " in plot_stop() ***" << endl;
    return 0;
 }
+//-------------------------------------------------------------------------------
+Quad_PLOT::Handle
+Quad_PLOT::plot_stop_GUI(Handle handle)
+{
+// CERR << "plot_stop_GUI(" << handle << ")" << endl;
+
+   loop(h, window_handles.size())
+      {
+        if (window_handles[h] == handle)
+           {
+             window_handles[h] = window_handles.back();
+             window_handles.pop_back();
+             return handle;
+           }
+      }
+
+   return 0;
+}
+//----------------------------------------------------------------------------
 
 #include "Focus.icc"
 
-//----------------------------------------------------------------------------
-void *
-plot_main(void * vp_props)
+void
+Quad_PLOT::plot_main_GTK(void * vp_props)
 {
 // CERR << "plot_main(" << vp_props << ")" << endl;
 
@@ -1581,6 +1578,7 @@ Plot_window_properties & w_props =
 
         pthread_t thread = 0;
         pthread_create(&thread, 0, gtk_main_wrapper, 0);
+
 #if HAVE_PTHREAD_SETNAME_NP
          // show with e.g.   ps H -o 'pid tid cmd comm'
          pthread_setname_np(thread, "apl/GTK");
@@ -1590,7 +1588,6 @@ Plot_window_properties & w_props =
 Plot_context * pctx = new Plot_context(w_props);
    Assert(pctx);
    all_plot_contexts.push_back(pctx);
-   ++GTK_window_count;
 
    pctx->window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
    Assert(pctx->window);
@@ -1645,7 +1642,6 @@ Plot_context * pctx = new Plot_context(w_props);
    pop_focus();
 
    sem_post(Quad_PLOT::plot_window_sema);   // unleash the APL interpreter
-   return reinterpret_cast<void *>(pctx->handle);
 }
 //----------------------------------------------------------------------------
 #endif // apl_GTK3

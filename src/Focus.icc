@@ -27,45 +27,67 @@
 # include <X11/Xlib.h>
 # include <xcb/xcb.h>
 
-static void * focus_main(void *);
 static sem_t focus_sema;
 
+//-----------------------------------------------------------------------------
+static void *
+focus_main(void *)
+{
+xcb_connection_t * conn = xcb_connect(0, 0);
+   if (xcb_connection_has_error(conn))   return 0;   // bad luck
+
+xcb_generic_error_t * error = 0;
+const xcb_get_input_focus_reply_t * focusReply =
+      xcb_get_input_focus_reply(conn, xcb_get_input_focus(conn), &error);
+   if (error)   // unlikely
+      {
+        CERR << "error getting input focus of current window" << endl;
+
+        // no need to clean-up focus_sema; the next push_focus() will
+        // re-init it. But we need to free the error and close conn.
+        //
+        free(error);
+        xcb_disconnect(conn);   // frees all memory associated with conn
+        return 0;
+      }
+
+   // only reached if no error
+
+   // wait at least until the GTK window was displayed. That will call
+   // pop_focus() below and post focus_sema.
+   //
+   sem_wait(&focus_sema);
+
+   // wait a little longer (needed for obscure reasons). 20 ms seem to suffice,
+   // but we use 100 ms to be on the safe side.
+   //
+   usleep(100000);   // 100 ms
+
+const xcb_void_cookie_t cookie =
+   xcb_set_input_focus_checked(conn, XCB_INPUT_FOCUS_POINTER_ROOT,
+                       focusReply->focus, XCB_CURRENT_TIME);
+   if ((error = xcb_request_check(conn, cookie)))
+      {
+        CERR << "error setting input focus of previous window" << endl;
+        free(error);
+      }
+
+   xcb_disconnect(conn);   // frees all memory associated with conn
+   return 0;
+}
 //-----------------------------------------------------------------------------
 inline void
 push_focus()
 {
    sem_init(&focus_sema, 0, 0);
 pthread_t thread = 0;
-   pthread_create(&thread, 0, focus_main, 0);
+   pthread_create(&thread, 0, focus_main, 0);   // blocked
 }
 //-----------------------------------------------------------------------------
 inline void
 pop_focus()
 {
    sem_post(&focus_sema);
-}
-//-----------------------------------------------------------------------------
-
-void *
-focus_main(void *)
-{
-xcb_connection_t * conn = xcb_connect(0, 0);
-const xcb_get_input_focus_reply_t * focusReply =
-      xcb_get_input_focus_reply(conn, xcb_get_input_focus(conn), 0);
-
-   // wait at least until the GTK window was displayed
-   //
-   sem_wait(&focus_sema);
-
-   // wait a little longer (needed, but 20 ms seems to suffice)
-   usleep(100000);
-
-const xcb_void_cookie_t cookie =
-   xcb_set_input_focus(conn, XCB_INPUT_FOCUS_POINTER_ROOT,
-                       focusReply->focus, XCB_CURRENT_TIME);
-   xcb_request_check(conn, cookie);
-
-   return 0;
 }
 //-----------------------------------------------------------------------------
 

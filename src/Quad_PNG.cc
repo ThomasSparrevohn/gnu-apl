@@ -296,8 +296,10 @@ Value_P Z(shape_Z, LOC);
 Token
 Quad_PNG::eval_B(Value_P B) const
 {
-   if (B->get_rank() == 0)   // scalar (integer) argument: plot window control
+   if (B->get_rank() == 0 && !B->get_cfirst().is_pointer_cell())
       {
+        // scalar (integer) argument: window control and logging
+        //
         const APL_Integer B0 = B->get_cscalar().get_int_value();
         Value_P Z = window_control(B0);
         return Token(TOK_APL_VALUE1, Z);
@@ -349,19 +351,17 @@ Quad_PNG::window_control(APL_Integer B0) const
          return Idx0_0(LOC);
        }
 
-    if (B0 == -3)   // close all ⎕PNG windows
+    if (B0 == -3)   // close all ⎕PNG windows, return their handles
        {
-         Value_P Z(all_PNG_contexts.size(), LOC);
+         Value_P Z = window_control(-6);   // get all open handles, see below
          loop(p, all_PNG_contexts.size())
             {
               PNG_context * pctx = all_PNG_contexts[p];
-              Z->next_ravel_Int(pctx->handle);
-
               gtk_window_close(GTK_WINDOW(pctx->window));
               delete pctx;
             }
          all_PNG_contexts.clear();
-         Z->check_value(LOC);
+         PNG_context::next_handle = 0;
          return Z;
        }
 
@@ -382,11 +382,22 @@ Quad_PNG::window_control(APL_Integer B0) const
     if (B0 == -6)                // return all open handles
        {
          Value_P Z(all_PNG_contexts.size(), LOC);
-         loop(p, all_PNG_contexts.size())
-            {
-              PNG_context * pctx = all_PNG_contexts[p];
-              Z->next_ravel_Int(pctx->handle);
-            }
+         for (int offset = 0; Z->more(); offset += 64)
+             {
+               uint64_t bits = 0;
+               loop(p, all_PNG_contexts.size())
+                  {
+                    const int handle = all_PNG_contexts[p]->handle;
+                    const int bit = handle - offset;
+                    if (bit >= 0 && bit < 64)   bits |= 1ULL << bit;
+                  }
+
+               loop(bit, 64)
+                  {
+                    if (bits & 1ULL << bit)   Z->next_ravel_Int(offset + bit);
+                  }
+             }
+
          Z->check_value(LOC);
          return Z;
        }
@@ -403,11 +414,13 @@ Quad_PNG::window_control(APL_Integer B0) const
                all_PNG_contexts.pop_back();
                gtk_window_close(GTK_WINDOW(pctx->window));
                delete pctx;
+
+               if (all_PNG_contexts.size() == 0)   PNG_context::next_handle = 0;
                return IntScalar(B0, LOC);
              }
         }
 
-    return Idx0_0(LOC);   // not found: return empty list of handles
+   return IntScalar(0, LOC);
 }
 //---------------------------------------------------------------------------
 bool
