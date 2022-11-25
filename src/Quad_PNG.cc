@@ -657,28 +657,16 @@ gtk_main_wrapper(void * w_props)
 //-----------------------------------------------------------------------------
 /// callback when the plot window is destroyed
 extern "C" gboolean
-PNG_plot_destroyed(GtkWidget * top_level);
+PNG_plot_destroyed(GtkWidget * top_level, gpointer user_data);
 
 gboolean
-PNG_plot_destroyed(GtkWidget * top_level)
+PNG_plot_destroyed(GtkWidget * top_level, gpointer user_data)
 {
-   /* top_level is the window that was destroyed. Remove it from
-      all_PNG_contexts to avoid 'invalid unclassed pointer in cast to
-      'GtkWindow' assertions.
-
-      Case 1: the window was closed from APL. Then PNG_stop() has already
-              removed the window from all_PNG_contexts and we will not find it
-              below.
-
-      Case 2: the user has closed the window via the GUI. Then PNG_stop() was
-              not yet called. We will then find top_level in all_PNG_contexts
-              and remove it.
-    */
+const PNG_context * pctx = reinterpret_cast<PNG_context *>(user_data);
 
    for (size_t th = 0; th < all_PNG_contexts.size(); ++th)
        {
-         const PNG_context * pctx = all_PNG_contexts[th];
-         if (top_level == pctx->window)   // case 2: (closed by user click)
+         if (pctx == all_PNG_contexts[th])
             {
               all_PNG_contexts[th] = all_PNG_contexts.back();
               all_PNG_contexts.pop_back();
@@ -784,24 +772,7 @@ const int new_height = gtk_widget_get_allocated_height(drawing_area);
       CERR << "PNG_draw_callback(drawing_area = " << drawing_area << ")  "
            << "width: " << new_width << ", height: " << new_height << endl;
 
-   // find the PNG_context for this event...
-   //
-PNG_context * pctx = 0;
-   for (size_t th = 0; th < all_PNG_contexts.size(); ++th)
-       {
-           if (all_PNG_contexts[th]->drawing_area == drawing_area)
-              {
-                pctx = all_PNG_contexts[th];
-                break;
-              }
-       }
-
-   if (pctx == 0)
-      {
-        CERR << "*** Could not find thread handling drawing_area "
-             << reinterpret_cast<void *>(drawing_area) << endl;
-        return false;
-      }
+const PNG_context * pctx = reinterpret_cast<const PNG_context *>(user_data);
 
 cairo_surface_t * source_surfrace = paint_data(*pctx);
 
@@ -884,11 +855,11 @@ PNG_context * pctx = new PNG_context(B);
                                              50*(all_PNG_contexts.size()+1));
 
 
-   g_signal_connect_object(pctx->window, "destroy",
-                           G_CALLBACK(PNG_plot_destroyed),0, G_CONNECT_AFTER);
+   g_signal_connect(pctx->window, "destroy",
+                    G_CALLBACK(PNG_plot_destroyed), pctx);
 
-   g_signal_connect_object(pctx->drawing_area, "draw",
-                           G_CALLBACK(PNG_draw_callback), 0, G_CONNECT_AFTER);
+   g_signal_connect(pctx->drawing_area, "draw",
+                    G_CALLBACK(PNG_draw_callback), pctx);
 
    gtk_widget_show_all(pctx->window);
 
