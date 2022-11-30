@@ -20,10 +20,20 @@
 
 #include "Common.hh"
 
-#if HAVE_SEM_INIT && HAVE_X11_XLIB_H && HAVE_XCB_XCB_H
+#if apl_GTK3
+
+// no-op since Plot_gtk.cc calls gdk_window_set_focus_on_map(gdk_win, false)
+
+inline void push_focus() { }
+inline void pop_focus()  { }
+
+#elif HAVE_SEM_INIT       && HAVE_UNISTD_H  && \
+      HAVE_X11_XLIB_XCB_H && HAVE_XCB_XCB_H && \
+      HAVE_LIBX11         && HAVE_LIBX11_XCB
 
 #include <semaphore.h>
 #include <unistd.h>
+
 # include <X11/Xlib.h>
 # include <xcb/xcb.h>
 
@@ -91,7 +101,9 @@ pop_focus()
 }
 //-----------------------------------------------------------------------------
 
-#else   // no XCB and friends
+#else   // neither GTK nor XCB and friends
+
+// no-op since XCB is not available (hence no window can steal the focus)
 
 inline void push_focus() {}
 inline void pop_focus()  {}
