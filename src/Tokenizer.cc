@@ -122,7 +122,6 @@ Unicode_source src(input);
                      MORE_ERROR() << "Tokenizer: No token for Unicode "
                                   <<  cc << uni << ")\nInput: " << input;
                      Error error(E_NO_TOKEN, LOC);
-BACKTRACE
                      throw error;
                    }
                    break;
@@ -536,9 +535,11 @@ bool got_end = false;
       }
 }
 //----------------------------------------------------------------------------
-/** tokenize a double quoted string.
+/** tokenize a double quoted string, i.e.  "..." or «...».
  ** If the string is a single character, then we
- **  return a TOK_CHARACTER. Otherwise we return TOK_APL_VALUE1.
+ **  return a TOK_CHARACTER, otherwise TOK_APL_VALUE1.
+ **
+ ** for special cases ««« and »»» do nothing.
  **/
 void
 Tokenizer::tokenize_string2(Unicode_source & src, Token_string & tos,
@@ -546,13 +547,39 @@ Tokenizer::tokenize_string2(Unicode_source & src, Token_string & tos,
 {
    Log(LOG_tokenize)   CERR << "tokenize_string2(" << src << ")" << endl;
 
-   // skip the leading "
-   {
-     const Unicode uni = src.get();
-     if (uni)   { /* do nothing, needed for -Wall */ }
+   // remember the leading ", «. or »
 
-     Assert1(uni == UNI_DOUBLE_QUOTE);
-   }
+const Unicode first = src.get();
+Unicode last = Invalid_Unicode;   // no last
+   if (first == UNI_DOUBLE_QUOTE)
+      {
+        last = UNI_DOUBLE_QUOTE;
+      }
+   else if (first == UNI_LEFT_DAQ)
+      {
+        if (src.rest() >= 2        &&
+            src[0] == UNI_LEFT_DAQ &&
+            src[1] == UNI_LEFT_DAQ)
+           {
+             ++src;   ++src;   // discard second and third «
+             return;
+           }
+        last = UNI_RIGHT_DAQ;
+      }
+   else if (first == UNI_RIGHT_DAQ)
+      {
+        if (src.rest() >= 2        &&
+            src[0] == UNI_RIGHT_DAQ &&
+            src[1] == UNI_RIGHT_DAQ)   // special case: «««
+           {
+             ++src;   ++src;   // discard second and third »
+             return;
+           }
+      }
+   else    // internal error
+      {
+        FIXME;
+      }
 
 UCS_string string_value;
 bool got_end = false;
@@ -561,12 +588,13 @@ bool got_end = false;
        {
          const Unicode uni = src.get();
 
-         if (uni == UNI_DOUBLE_QUOTE)     // terminating "
+         if (uni == last)
             {
               got_end = true;
               break;
             }
-         else if (uni == UNI_CR)          // ignore CR
+
+         if (uni == UNI_CR)          // ignore CR
             {
               continue;
             }
