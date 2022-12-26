@@ -53,7 +53,7 @@ CREATE TABLE COMPANY(
       ⊣create ⎕SQL[3, DB] ''
 
       )MORE
-NO MORE ERROR INFO
+NO )MORE ERROR INFO
 
       ⎕SQL[8] DB
  company 
