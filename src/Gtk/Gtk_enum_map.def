@@ -50,6 +50,7 @@
 #define arg_GtkPanDirection(X) , GtkPanDirection(S2I(X))
 #define arg_GtkPopoverConstraint(X) , GtkPopoverConstraint(S2I(X))
 #define arg_GtkLicense(X) , GtkLicense(S2I(X))
+#define arg_GtkResizeMode(X) , GtkResizeMode(S2I(X))
 #define arg_GtkEntryIconPosition(X) , GtkEntryIconPosition(S2I(X))
 #define arg_GtkButtonsType(X) , GtkButtonsType(S2I(X))
 #define arg_GtkCornerType(X) , GtkCornerType(S2I(X))
