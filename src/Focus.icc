@@ -20,14 +20,7 @@
 
 #include "Common.hh"
 
-#if apl_GTK3
-
-// no-op since Plot_gtk.cc calls gdk_window_set_focus_on_map(gdk_win, false)
-
-inline void push_focus() { }
-inline void pop_focus()  { }
-
-#elif HAVE_SEM_INIT       && HAVE_UNISTD_H  && \
+#if HAVE_SEM_INIT       && HAVE_UNISTD_H  && \
       HAVE_X11_XLIB_XCB_H && HAVE_XCB_XCB_H && \
       HAVE_LIBX11         && HAVE_LIBX11_XCB
 
