@@ -830,9 +830,9 @@ PNG_context * pctx = new PNG_context(B);
      const int width  = B->get_shape_item(2);
      char cc[50];
      if (width < 500)   // small
-        snprintf(cc, sizeof(cc), "⎕PNG %d", pctx->handle);
+        SPRINTF(cc, "⎕PNG %d", pctx->handle)
      else
-        snprintf(cc, sizeof(cc), "⎕PNG %d×%d", height, width);
+        SPRINTF(cc, "⎕PNG %d×%d", height, width)
      gtk_window_set_title(GTK_WINDOW(pctx->window), cc);
    }
    gtk_window_set_resizable(GTK_WINDOW(pctx->window), false);
