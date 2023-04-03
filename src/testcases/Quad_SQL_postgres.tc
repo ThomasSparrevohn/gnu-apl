@@ -6,7 +6,12 @@
       0 0⍴"""
 NOTE: unlike SQLite, PostgreSAL requires that a user is created before the
       database can be accessed (from APL or otherwise). For example, for
-      APL user eedjsa one should do something along the lines of:
+      APL user eedjsa one should (as root) do something along the lines of:
+
+      apt install postgresql
+      psql
+        ├─── create database apl_quadSQL
+        └─── \q
 
       createuser --createdb --createrole --superuser --no-password eedjsa
 
@@ -62,11 +67,10 @@ NO )MORE ERROR INFO
       ⍝
       DB ⎕SQL[9] 'company'
  id      integer   
- name    text      
  age     integer   
- address character 
  salary  real      
-
+ name    text      
+ address character 
 
       ⍝ Add records
       ⍝
