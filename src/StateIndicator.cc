@@ -72,6 +72,8 @@ StateIndicator::~StateIndicator()
 void
 StateIndicator::goon(Function_Line new_line, const char * loc)
 {
+   // jump back into a function, i.e. →N from immediate execution
+
 const Function_PC pc = get_executable()->get_exec_ufun()->pc_for_line(new_line);
 
    Log(LOG_StateIndicator__push_pop)
@@ -81,11 +83,12 @@ const Function_PC pc = get_executable()->get_exec_ufun()->pc_for_line(new_line);
    if (get_executable()->get_body()[pc].get_tag() == TOK_STOP_LINE)   // S∆
       {
         // pc points to a S∆ token. We are jumping back from immediate
-        // execution, so we don't want to stop again.
+        // execution, that was entered with ⎕STOP or S∆. We then don't
+        // want to stop (again) but continue after the stop token.
         //
         set_PC(pc + 2);
       }
-   else
+   else  // the "normal" case
       {
         set_PC(pc);
       }
@@ -346,7 +349,7 @@ StateIndicator::jump_to_line(Function_Line line)
         // →N in ∇ context
         //
         set_PC(ufun->pc_for_line(line));   // →N to valid line in user function
-        return Token(TOK_VOID);         // stay in context
+        return Token(TOK_VOID);            // stay in context
       }
 
    // →N in ⍎ or ◊ context (i.e. to start of line 0)
