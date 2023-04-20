@@ -374,34 +374,23 @@ Token eval_AB( Value_P A, Value_P B )
 
 Token eval_XB(Value_P X, Value_P B)
 {
-    const int function_number = X->get_cravel( 0 ).get_near_int( );
+const int function_number = X->get_cfirst().get_near_int( );
 
-    switch( function_number ) {
-    case 0:
-        return list_functions( CERR );
-
-    case 2:
-        return close_database( B );
-
-    case 5:
-        return run_transaction_begin( B );
-
-    case 6:
-        return run_transaction_commit( B );
-
-    case 7:
-        return run_transaction_rollback( B );
-
-    case 8:
-        return show_tables( B );
-
-    default:
-        Workspace::more_error() = "Illegal function number";
-        DOMAIN_ERROR;
-    }
+    switch(function_number)
+       {
+         case 0:  return list_functions(CERR);
+         case 2:  return close_database(B);
+         case 5:  return run_transaction_begin(B);
+         case 6:  return run_transaction_commit(B);
+         case 7:  return run_transaction_rollback(B);
+         case 8:  return show_tables(B);
+         default: Workspace::more_error() = "Illegal function number";
+                  DOMAIN_ERROR;
+       }
 }
 
-static Connection *param_to_db( Value_P X )
+static Connection *
+param_to_db( Value_P X)
 {
     const Shape &shape = X->get_shape();
     if( shape.get_volume() != 2 ) {
