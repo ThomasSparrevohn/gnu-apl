@@ -45,7 +45,7 @@ dash_test_POSTGRES   # set apl_POSTGRES to yes or no.
 
 # export apl_POSTGRES to config.h
 if apl_YES($apl_POSTGRES); then
-   AC_DEFINE_UNQUOTED(apl_POSTGRES, 1, [PostgreSQL code compiles])
+   AC_DEFINE_UNQUOTED(apl_POSTGRES, 1, [PostgreSQL code did compile])
 else
    AC_DEFINE_UNQUOTED(apl_POSTGRES, 0, [PostgreSQL code did not compile])
 fi

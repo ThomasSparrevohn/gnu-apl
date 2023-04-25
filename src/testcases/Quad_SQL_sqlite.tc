@@ -64,6 +64,12 @@ CREATE TABLE COMPANY(
       ⎕SQL[2] DB   ⍝ close DB
 
 
+      ⍝ remove the database
+      ⍝
+      )HOST rm -f testcases/test_Quad_SQL.db
+
+0 
+
       )ERASE DB create insert select
 
       )CHECK

@@ -33,7 +33,7 @@ dash_test_SQLITE3   # set apl_SQLITE3 to yes or no.
 
 # export apl_SQLITE3 to config.h
 if apl_YES($apl_SQLITE3); then
-   AC_DEFINE_UNQUOTED(apl_SQLITE3, 1, [SQLite code compiles])
+   AC_DEFINE_UNQUOTED(apl_SQLITE3, 1, [SQLite code did compile])
 else
    AC_DEFINE_UNQUOTED(apl_SQLITE3, 0, [SQLite code did not compile])
 fi

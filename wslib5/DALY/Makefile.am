@@ -8,6 +8,7 @@ dist_wslib5_DALY_DATA = README.md               \
                         export.apl              \
                         fin.apl                 \
                         find_test_data.apl      \
+                        from-ods.apl            \
                         import.apl              \
                         lpr.apl                 \
                         pref.apl                \
