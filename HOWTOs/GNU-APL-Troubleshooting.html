@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
 <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
-<meta name="generator" content="AsciiDoc 8.6.10" />
+<meta name="generator" content="AsciiDoc 10.1.2" />
 <title>Trouble-Shooting GNU APL</title>
 <style type="text/css">
 /* Shared CSS for AsciiDoc xhtml11 and html5 backends */
@@ -436,7 +436,7 @@ thead, p.table.header {
 p.table {
   margin-top: 0;
 }
-/* Because the table frame attribute is overriden by CSS in most browsers. */
+/* Because the table frame attribute is overridden by CSS in most browsers. */
 div.tableblock > table[frame="void"] {
   border-style: none;
 }
@@ -991,7 +991,7 @@ different assertion levels as follows (see also <strong>README-2-configure</stro
 this enabling both Assert macros and possibly making it easier to find the
 root cause of a fault.</p></div>
 <div class="paragraph"><p>As confidence with the source code increases over time, Assert() macros will
-evenntually be converted to Assert1() macros while new code will initially
+eventually be converted to Assert1() macros while new code will initially
 be protected with Assert() macros.</p></div>
 <div class="sect2">
 <h3 id="_emulating_failed_assertions">Emulating Failed Assertions</h3>
@@ -1273,7 +1273,7 @@ not create a core file. A core file is an important file if no other
 information is printed as to what kind of fault has occurred.</p></div>
 <div class="paragraph"><p>In the good old times core files were always produced when a binary executable
 crashed. These days the creation of core files may need to be enabled before
-the crashing binary is started. In GNU/Linux resp. <strong>bas</strong> that means:</p></div>
+the crashing binary is started. In GNU/Linux with its <strong>bash</strong> dhell that means:</p></div>
 <div class="listingblock">
 <div class="content">
 <pre>
@@ -1295,8 +1295,8 @@ debugger <strong>gdb</strong> in the src directory with the core file as second 
 </pre>
 </div></div>
 <div class="paragraph"><p>After that, you can use the gdb command <strong>bt</strong> (for <em>backtrace</em>) to show a
-stack dump similar to the one discussed eralier. The <strong>GNU APL</strong> maintainer(s) will
-appreciate a copy of that stack dump for problems that are difficult to
+stack dump similar to the one discussed eralier. The <strong>GNU APL</strong> maintainer(s)
+will appreciate a copy of that stack dump for problems that are difficult to
 reproduce.</p></div>
 <div class="paragraph"><p>Normally the file is named <em><strong>core</strong></em> and found in the same directory as the
 binary, but some GNU/Linux distributions use a different directory for storing
@@ -1318,9 +1318,9 @@ into errors so you will see at the end if the build was successful.</p></div>
 <div class="sect2">
 <h3 id="_optimization">Optimization</h3>
 <div class="paragraph"><p>As of recently we have seen faults that may have been caused by an overly
-agressive optimization of the C<code> code of the interpreter. These faults
+agressive optimization of the C++ code of the interpreter. These faults
 were observed for the same source code but only when compiled with newer
-versions of the same g</code> compiler.</p></div>
+versions of the same g+\+ compiler.</p></div>
 <div class="paragraph"><p>By default <strong>GNU APL</strong> compiles with optimization level -O2. If a fault is
 suspect to being caused by optimization, then it could make sense to also test
 the same source code of <strong>GNU APL</strong> without any optimization.</p></div>
@@ -1830,7 +1830,7 @@ reduced to a small number of APL lines.</p></div>
 <div id="footer">
 <div id="footer-text">
 Last updated
- 2022-06-14 18:02:00 CEST
+ 2023-04-28 19:51:16 CEST
 </div>
 </div>
 </body>

@@ -1,5 +1,5 @@
 = Trouble-Shooting GNU APL
-// vim: et:ts=4:sw=4
+// vim: et:ts=4:sw=4:tw=78
 
 :Author: Dr. Jürgen Sauermann, GNU APL
 
@@ -157,7 +157,7 @@ this enabling both Assert macros and possibly making it easier to find the
 root cause of a fault.
 
 As confidence with the source code increases over time, Assert() macros will
-evenntually be converted to Assert1() macros while new code will initially
+eventually be converted to Assert1() macros while new code will initially
 be protected with Assert() macros.
 
 === Emulating Failed Assertions
@@ -412,7 +412,7 @@ information is printed as to what kind of fault has occurred.
 
 In the good old times core files were always produced when a binary executable
 crashed. These days the creation of core files may need to be enabled before
-the crashing binary is started. In GNU/Linux resp. *bas* that means:
+the crashing binary is started. In GNU/Linux with its *bash* dhell that means:
 
 ----
 ulimit -c unlimited   # enable core files
@@ -429,8 +429,8 @@ gdb ./apl core
 ----
 
 After that, you can use the gdb command *bt* (for 'backtrace') to show a
-stack dump similar to the one discussed eralier. The *GNU APL* maintainer(s) will
-appreciate a copy of that stack dump for problems that are difficult to
+stack dump similar to the one discussed eralier. The *GNU APL* maintainer(s)
+will appreciate a copy of that stack dump for problems that are difficult to
 reproduce.
 
 Normally the file is named '*core*' and found in the same directory as the
@@ -457,7 +457,7 @@ into errors so you will see at the end if the build was successful.
 As of recently we have seen faults that may have been caused by an overly
 agressive optimization of the C++ code of the interpreter. These faults
 were observed for the same source code but only when compiled with newer
-versions of the same g++ compiler.
+versions of the same g\+\+ compiler.
 
 By default *GNU APL* compiles with optimization level -O2. If a fault is
 suspect to being caused by optimization, then it could make sense to also test
