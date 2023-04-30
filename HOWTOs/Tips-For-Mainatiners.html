@@ -747,7 +747,7 @@ In addition to the hints there are also a number of rules. These rules
 should be observed by those who contribute C/C++ source code to the
 GNU APL project (as opposed to those that contribute APL code).</p></div>
 <div class="paragraph"><p>This document is <strong>NOT</strong> aimed at the normal GNU APL user, i.e. at the APL
-programmer. Those users are refereed to the various <strong>README</strong> files in the
+programmer. Those users are refered to the various <strong>README</strong> files in the
 top-level GNU APL directory.</p></div>
 </div>
 </div>
@@ -1093,9 +1093,9 @@ corresponding .hh file.
 </ul></div>
 <div class="sect2">
 <h3 id="_def_files">.def Files</h3>
-<div class="paragraph"><p>C/C<code> source file primarily contain C/C</code> code and occasionally declarations.
-C/C<code> header files primarily contain C/C</code> declarations and often (inline)
-C/C<code> code. In contrast, .def files contain neither C/C</code> code nor
+<div class="paragraph"><p>C/C++ source file primarily contain C/Cpp code and occasionally declarations.
+C/C++ header files primarily contain C/Cpp declarations and often (inline)
+C/C++ code. In contrast, .def files contain neither C/Cpp code nor
 C/C++ declarations, They only contain macro calls whereby the definition of
 the macro is defined outside the .def file. Currently there are about 20 .def
 files in the GNU APAL source code so that they deserve an explanation.</p></div>
@@ -1175,8 +1175,8 @@ because <strong>ErrorCode</strong> is usually declared in a <strong>.hh</strong>
 <strong>get_error_string()</strong> is defined in the corresponding <strong>.cc</strong> file. In that case
 Method 1 will most likely produce a sagmentation fault at runtime, which is
 about the worst case that may happen. &lt;ethod 2 is a little better because a
-smart compiler like g<code> will issue a warning in this case. Both methods are,
-however, quite inconvenient for the C/C</code> programmer, in particular if many
+smart compiler like g++ will issue a warning in this case. Both methods are,
+however, quite inconvenient for the C/C++ programmer, in particular if many
 such mappings are needed in a larger program.</p></div>
 <div class="paragraph"><p>In GNU APL this problem is solved in the following way:</p></div>
 <div class="ulist"><ul>
@@ -1244,21 +1244,413 @@ get_error_string(ErrorCode ec)
 
 </pre>
 </div></div>
+<div class="paragraph"><p>Note the following:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+the macro invocations of <strong>error_def()</strong> (in the <strong>.def</strong> file) have more
+  arguments than are used in their macro definitions (in the <strong>.hh</strong> or <strong>.cc</strong>
+  files). GNU APL has a naming convention that unused macro arguments of
+  macros (which are typical for the <strong>.cc</strong> and <strong>.hh</strong>  files) start with
+  underscore (_). For this reason the argument lists of the #defines above
+  differ slightly.
+</p>
+</li>
+<li>
+<p>
+<strong>error_string</strong> is not quoted in <strong>errors.def</strong> even though <strong>get_error_string()</strong>
+  returns a const char *. The quoting is performed by \# in #error_string
+ (a preprocessor feature).
+</p>
+</li>
+<li>
+<p>
+the example above uses a simple 1:1 relation between two types. Some <strong>.def</strong>
+  files use more than two sides, e.g. numeric IDs, string names, and help
+  texts.
+</p>
+</li>
+</ul></div>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_rules_for_def_files">Rules for .def Files</h3>
-<div class="paragraph"><p>TODO</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+The <strong>.def</strong> file should <strong>#undef</strong> all macros that it uses. This is a safeguard
+  against forgetting to <strong>#define</strong> a macro before #including the <strong>.def</strong> file
+  (this may or may not be detectable by the compiler).
+</p>
+</li>
+<li>
+<p>
+A <strong>.def</strong> file should normally not use more than one macro. An exception
+  occurs when  macros are very similar (e.g. SystemVariable.def with macro
+</p>
+</li>
+<li>
+<p>
+ro_sv_def* (for read-only system variables), <strong>rw_sv_def</strong> (for read/write
+  system variables), and <strong>sf_def</strong> for system functions).
+</p>
+</li>
+<li>
+<p>
+item separators such as , in enums or ; in case statements are contained in
+  the macro definitions (i.e. in the <strong>.hh</strong> or <strong>.cc</strong> file) and not in the macro
+  call (i.e. not in the <strong>.def</strong> file). This is because the separators may differ
+  for different macros.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>The most important take-away here are:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<strong>.def</strong> files contain only macro invocations,
+</p>
+</li>
+<li>
+<p>
+<strong>.def</strong> files are #included in several files and almost certainly the macro
+   definitions (before #including a <strong>.def</strong> file) differ between the files,
+</p>
+</li>
+<li>
+<p>
+the macros are #defined outside the <strong>.def</strong> file but #undef&#8217;ed inside the
+  <strong>.def</strong> file. (This is normally a bad programming practice, but on purpose
+  here).
+</p>
+</li>
+</ul></div>
 </div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="_coding_style">Coding Style</h2>
 <div class="sectionbody">
-<div class="paragraph"><p>TODO</p></div>
+<div class="paragraph"><p>GNU APL is a GNU project. For the most part it therefore follows the GNU
+coding standard, see: <a href="https://www.gnu.org/prep/standards/standards.html">https://www.gnu.org/prep/standards/standards.html</a>
+With some minor deviations as to further improve the readability of the C/C++
+code.</p></div>
 <div class="sect2">
-<h3 id="_indentatation">Indentatation</h3>
-<div class="paragraph"><p>TODO</p></div>
+<h3 id="_general">General</h3>
+<div class="ulist"><ul>
+<li>
+<p>
+keep lines short (≤ 78 characters) where possible
+</p>
+</li>
+<li>
+<p>
+NEVER use tabs (ASCII 0x09) in the source code
+</p>
+</li>
+</ul></div>
+</div>
+<div class="sect2">
+<h3 id="_indentatation_and_blanks">Indentatation and Blanks</h3>
+<div class="sect3">
+<h4 id="_function_bodies_cc_files">Function bodies (.cc files)</h4>
+<div class="ulist"><ul>
+<li>
+<p>
+Variable declarations at top-level scope are not indented:
+</p>
+</li>
+<li>
+<p>
+C++ code at the top-level scope are indented with 3 blanks:
+</p>
+</li>
+</ul></div>
+<div class="listingblock">
+<div class="content">
+<pre>
+
+<code>void
+foo()
+{
+int x = 0;            // declaration: not indented!
+
+   printf("%d:, x);   // code: indented by 3 spaces
+
+int y = 1;            // another declaration.
+   ...
+}</code>
+
+</pre>
+</div></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Variable declarations below top-level scope are indented with 2 (from the {
+  starting the scope
+</p>
+</li>
+<li>
+<p>
+C++ code below the top-level scope are also indented with 2 blanks:
+</p>
+</li>
+</ul></div>
+<div class="listingblock">
+<div class="content">
+<pre>
+
+<code>void
+foo()
+{
+int x = 0;         // declaration: not indented!
+int y = 1;         // another declaration.
+
+   if (x)
+      {                               // start of sub-scope
+        printf("positive x=%d", x);   // code: indented by 2 spaces
+      }
+   else
+      {                               // start of another sub-scope
+        printf("zero x");             // code: indented by 2 spaces
+      }
+}</code>
+
+</pre>
+</div></div>
+</div>
+<div class="sect3">
+<h4 id="_conditionals">Conditionals</h4>
+<div class="ulist"><ul>
+<li>
+<p>
+conditionals are not functions! put 1 blank between the keyword and the
+  condition
+</p>
+</li>
+<li>
+<p>
+the body of the conditional is indented according to the opening ( of the
+  condition (for short ones like if, else, or for), but no more than 2 blanks:
+</p>
+</li>
+</ul></div>
+<div class="listingblock">
+<div class="content">
+<pre>
+
+<code>void
+foo()
+{
+int x = 0;
+
+   // DO NOT:
+   if(i == 0)
+
+   // DO:
+   if (i == 0)
+      {
+        ...
+      }
+
+   for (int i = 0; i &lt; N; ++i)
+       {
+         ...
+       }
+
+   while (i == 0)
+      {
+        ...
+      }
+}</code>
+
+</pre>
+</div></div>
+<div class="ulist"><ul>
+<li>
+<p>
+you MAY put single statements or very short bodies onto the condition line,
+</p>
+</li>
+<li>
+<p>
+but NOT mix single- and multi-line styles for <strong>if</strong> and <strong>else</strong> clauses, and
+</p>
+</li>
+<li>
+<p>
+place the { and } of multi-line bodies on the same column, that is:
+</p>
+</li>
+<li>
+<p>
+you MUST NEVER NEVER NEVER use K&amp;R style:
+</p>
+</li>
+</ul></div>
+<div class="listingblock">
+<div class="content">
+<pre>
+
+<code>   // DO:
+
+   if (x &gt;= 0)   return "positive";
+   else          return "negative";
+
+   // DO NOT:
+
+   if (x &gt;= 0)   { return "positive"; }   // redundant { }
+   else          { return "negative"; }   // redundant { }
+
+   if (x &gt;= 0)   return "positive";   // single-line style
+   else                               // multi-line style
+      {
+        error = true;
+        returr "negative";
+      }
+
+   // HEAVEN FORBID (aka. K&amp;R style)
+   if (x &gt;= 0) {
+      return "positive";
+   } else {
+      return "negative";
+   }</code>
+
+</pre>
+</div></div>
+</div>
+<div class="sect3">
+<h4 id="_function_arguments">Function arguments</h4>
+<div class="ulist"><ul>
+<li>
+<p>
+one blank after every comma and between token:
+</p>
+</li>
+</ul></div>
+<div class="listingblock">
+<div class="content">
+<pre>
+
+<code>   // DO:
+
+int
+main(int argc, char * argv[])
+{
+   ...
+}
+
+   // DO NOT ANY OF THE FOLLOWING...
+
+int
+main (int argc, char * argv[])   // extra space before arguments
+{
+   ...
+}
+
+int
+main( int argc, char * argv[] )   // extra spaces around arguments
+{
+   ...
+}
+
+int
+main(int argc, char *argv[])   // no space after *
+{
+   ...
+}
+
+int
+main(int argc, char* argv[])   // no space before *
+{
+   ...
+}</code>
+
+</pre>
+</div></div>
+</div>
+<div class="sect3">
+<h4 id="_class_declarations_hh_files">Class declarations (.hh files)</h4>
+<div class="paragraph"><p>To the extent possible:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+declare public members (= the external interface) before protected
+  members (= the class implementation),
+</p>
+</li>
+<li>
+<p>
+declare members before static members,
+</p>
+</li>
+<li>
+<p>
+declare member funtions before fsts mrmbers,
+</p>
+</li>
+<li>
+<p>
+keep the following declaration order:
+</p>
+<div class="ulist"><ul>
+<li>
+<p>
+constructors,
+</p>
+</li>
+<li>
+<p>
+destructor,
+</p>
+</li>
+<li>
+<p>
+inline functions,
+</p>
+</li>
+<li>
+<p>
+non-inline functions
+</p>
+</li>
+</ul></div>
+</li>
+<li>
+<p>
+always use <strong>protected:</strong> rather than <strong>private:</strong> for the members of a class.
+  GNU APL uses the convention that <strong>private:</strong> members are used to prevent the
+  accidental function calls that are sometimes generated by the C++ compiler
+  (implicit conversion). In GNU APL, such members are declared, but not
+  defined (so that the linker will complain if the compiler should generate
+  them).
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Indentation:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+indent all members with 2 spaces,
+</p>
+</li>
+<li>
+<p>
+indent inline function bodies by 3 more spaces
+</p>
+</li>
+<li>
+<p>
+do this recursively (nested classes)
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>And finally: have a look at the existing <strong>.cc</strong> and <strong>.hh</strong> files. Even though
+this will cause some extra work on your part, it simplifies the reading of
+your code for many others. A project with different styles in different files
+looks rather unprofessional, so please respect the style rules above even if
+you do not like them.</p></div>
+</div>
 </div>
 </div>
 </div>
@@ -1267,7 +1659,7 @@ get_error_string(ErrorCode ec)
 <div id="footer">
 <div id="footer-text">
 Last updated
- 2023-04-29 16:38:15 CEST
+ 2023-04-30 14:06:45 CEST
 </div>
 </div>
 </body>

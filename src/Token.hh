@@ -372,7 +372,7 @@ Token::copy_N(const Token & src)
    switch(src.get_ValueType())
       {
         case TV_NONE:  value.int_vals[0]   = 0;
-                       value.int_vals[1]   = src.value.int_vals[1];     break;
+                       value.int_vals[1]   = 0;                         break;
         case TV_CHAR:  value.char_val      = src.value.char_val;        break;
         case TV_INT:   value.int_vals[0]   = src.value.int_vals[0];
                        value.int_vals[1]   = src.value.int_vals[1];     break;

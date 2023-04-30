@@ -15,11 +15,11 @@ This document contains a number of unrelated hints that may be useful to
 understanding the GNU APL source code. Its primary purpose is to support
 the fading memory of the author, but it may be interesting for others as well.
 In addition to the hints there are also a number of rules. These rules
-should be observed by those who contribute C/C++ source code to the
+should be observed by those who contribute C/Cpp source code to the
 GNU APL project (as opposed to those that contribute APL code).
 
 This document is *NOT* aimed at the normal GNU APL user, i.e. at the APL
-programmer. Those users are refereed to the various *README* files in the
+programmer. Those users are refered to the various *README* files in the
 top-level GNU APL directory.
 
 == The GNU APL Build System
@@ -31,7 +31,7 @@ APL sourced with SVN or with git - the file named *configure.ac*.
 
 GNU APL uses *automake* and *autoconf* to build the interpreter. The build
 system performs a number of major steps in typically different places and
-by different persons (C/C++ designer/maintainer vs. user):
+by different persons (C/Cpp designer/maintainer vs. user):
 
 === Step 1: Generate ./configure and a Makefile.in for every Makefile.am
 
@@ -210,12 +210,12 @@ What remains are:
 * C source files (file extension *.c*) are almost never used,
 * C header files (file extension *.h*) almost never used, a noteworthy
   exception is *config.h* which is produced by the *./configure* script.
-* C++ source files for inline functions (file extension *.icc*),
-* C++ source files (file extension *.cc*),
-* C++ header files (file extension *.hh*), and
+* Cpp source files for inline functions (file extension *.icc*),
+* Cpp source files (file extension *.cc*),
+* Cpp header files (file extension *.hh*), and
 * pure macro files (file extension *.def*).
 
-By and largen, the rules for C and C++ source and header files are:
+By and largen, the rules for C and Cpp source and header files are:
 
 * Small and many rather than large and few (aka. modularity). Early versions
   of GNU APL did not follow this rule and some left-overs  still do not (and
@@ -225,16 +225,16 @@ By and largen, the rules for C and C++ source and header files are:
 * The .cc and .hh files names are the same, except for the file name extension
   and classes with a small (say, < 100 lines) source footprint (e.g. those in 
   PrimitiveFunction.hh and PrimitiveFunction.cc).
-* C++ declarations can be made in the .cc file if their scope is local to the
+* Cpp declarations can be made in the .cc file if their scope is local to the
   .cc file (like static declarations in C), otherwise they go into the
 corresponding .hh file.
 
 === .def Files
 
-C/C++ source file primarily contain C/C++ code and occasionally declarations.
-C/C++ header files primarily contain C/C++ declarations and often (inline)
-C/C++ code. In contrast, .def files contain neither C/C++ code nor
-C/C++ declarations, They only contain macro calls whereby the definition of
+C/Cpp source file primarily contain C/Cpp code and occasionally declarations.
+C/Cpp header files primarily contain C/Cpp declarations and often (inline)
+C/Cpp code. In contrast, .def files contain neither C/Cpp code nor
+C/Cpp declarations, They only contain macro calls whereby the definition of
 the macro is defined outside the .def file. Currently there are about 20 .def
 files in the GNU APAL source code so that they deserve an explanation.
 
@@ -303,13 +303,13 @@ because *ErrorCode* is usually declared in a *.hh* file and
 Method 1 will most likely produce a sagmentation fault at runtime, which is
 about the worst case that may happen. <ethod 2 is a little better because a
 smart compiler like g++ will issue a warning in this case. Both methods are,
-however, quite inconvenient for the C/C++ programmer, in particular if many
+however, quite inconvenient for the C/Cpp programmer, in particular if many
 such mappings are needed in a larger program.
 
 In GNU APL this problem is solved in the following way:
 
 * #define a macro that expresses the relationship (between integer error codes
-  and pass:[C/C++] literals for the corresponding error text in our example),
+  and pass:[C/Cpp] literals for the corresponding error text in our example),
   and
 * call that macro, typically in sevseral different files with the macro
   defined differently. Calling the macro is performed by \#including the .def
@@ -354,18 +354,231 @@ get_error_string(ErrorCode ec)
 }
 ----
 
+Note the following:
+
+* the macro invocations of *error_def()* (in the *.def* file) have more
+  arguments than are used in their macro definitions (in the *.hh* or *.cc*
+  files). GNU APL has a naming convention that unused macro arguments of
+  macros (which are typical for the *.cc* and *.hh*  files) start with
+  underscore (_). For this reason the argument lists of the #defines above
+  differ slightly.
+* *error_string* is not quoted in *errors.def* even though *get_error_string()*
+  returns a const char *. The quoting is performed by \# in #error_string
+ (a preprocessor feature).
+* the example above uses a simple 1:1 relation between two types. Some *.def*
+  files use more than two sides, e.g. numeric IDs, string names, and help
+  texts.
 
 === Rules for .def Files
 
-TODO
+* The *.def* file should *#undef* all macros that it uses. This is a safeguard
+  against forgetting to *#define* a macro before #including the *.def* file
+  (this may or may not be detectable by the compiler).
+* A *.def* file should normally not use more than one macro. An exception
+  occurs when  macros are very similar (e.g. SystemVariable.def with macro
+* ro_sv_def* (for read-only system variables), *rw_sv_def* (for read/write
+  system variables), and *sf_def* for system functions).
+* item separators such as , in enums or ; in case statements are contained in
+  the macro definitions (i.e. in the *.hh* or *.cc* file) and not in the macro
+  call (i.e. not in the *.def* file). This is because the separators may differ
+  for different macros.
+
+The most important take-away here are:
+
+* *.def* files contain only macro invocations,
+* *.def* files are #included in several files and almost certainly the macro
+   definitions (before #including a *.def* file) differ between the files,
+* the macros are #defined outside the *.def* file but #undef'ed inside the
+  *.def* file. (This is normally a bad programming practice, but on purpose
+  here).
 
 == Coding Style
 
-TODO
+GNU APL is a GNU project. For the most part it therefore follows the GNU
+coding standard, see: https://www.gnu.org/prep/standards/standards.html
+With some minor deviations as to further improve the readability of the C/Cpp
+code.
 
-=== Indentatation
+=== General
 
-TODO
+* keep lines short (≤ 78 characters) where possible
+* NEVER use tabs (ASCII 0x09) in the source code
 
+=== Indentatation and Blanks
 
+==== Function bodies (.cc files)
+
+* Variable declarations at top-level scope are not indented:
+* Cpp code at the top-level scope are indented with 3 blanks:
+
+----
+void
+foo()
+{
+int x = 0;            // declaration: not indented!
+
+   printf("%d:, x);   // code: indented by 3 spaces
+
+int y = 1;            // another declaration.
+   ...
+}
+----
+
+* Variable declarations below top-level scope are indented with 2 (from the {
+  starting the scope
+* Cpp code below the top-level scope are also indented with 2 blanks:
+
+----
+void
+foo()
+{
+int x = 0;         // declaration: not indented!
+int y = 1;         // another declaration.
+
+   if (x)
+      {                               // start of sub-scope
+        printf("positive x=%d", x);   // code: indented by 2 spaces
+      }
+   else
+      {                               // start of another sub-scope
+        printf("zero x");             // code: indented by 2 spaces
+      }
+}
+----
+
+==== Conditionals
+
+* conditionals are not functions! put 1 blank between the keyword and the
+  condition
+* the body of the conditional is indented according to the opening ( of the
+  condition (for short ones like if, else, or for), but no more than 2 blanks:
+
+----
+void
+foo()
+{
+int x = 0;
+
+   // DO NOT:
+   if(i == 0)
+
+   // DO:
+   if (i == 0)
+      {
+        ...
+      }
+
+   for (int i = 0; i < N; ++i)
+       {
+         ...
+       }
+
+   while (i == 0)
+      {
+        ...
+      }
+}
+----
+
+* you MAY put single statements or very short bodies onto the condition line,
+* but NOT mix single- and multi-line styles for *if* and *else* clauses, and
+* place the { and } of multi-line bodies on the same column, that is:
+* you MUST NEVER NEVER NEVER use K&R style:
+
+----
+   // DO:
+
+   if (x >= 0)   return "positive";
+   else          return "negative";
+
+   // DO NOT:
+
+   if (x >= 0)   { return "positive"; }   // redundant { }
+   else          { return "negative"; }   // redundant { }
+
+   if (x >= 0)   return "positive";   // single-line style
+   else                               // multi-line style
+      {
+        error = true;
+        returr "negative";
+      }
+
+   // HEAVEN FORBID (aka. K&R style)
+   if (x >= 0) {
+      return "positive";
+   } else {
+      return "negative";
+   }
+----
+==== Function arguments
+
+* one blank after every comma and between token:
+
+----
+   // DO:
+
+int
+main(int argc, char * argv[])
+{
+   ...
+}
+
+   // DO NOT ANY OF THE FOLLOWING...
+
+int
+main (int argc, char * argv[])   // extra space before arguments
+{
+   ...
+}
+
+int
+main( int argc, char * argv[] )   // extra spaces around arguments
+{
+   ...
+}
+
+int
+main(int argc, char *argv[])   // no space after *
+{
+   ...
+}
+
+int
+main(int argc, char* argv[])   // no space before *
+{
+   ...
+}
+----
+
+==== Class declarations (.hh files)
+
+To the extent possible:
+
+* declare public members (= the external interface) before protected
+  members (= the class implementation),
+* declare members before static members,
+* declare member funtions before fsts mrmbers,
+* keep the following declaration order:
+** constructors,
+** destructor,
+** inline functions,
+** non-inline functions
+* always use *protected:* rather than *private:* for the members of a class.
+  GNU APL uses the convention that *private:* members are used to prevent the
+  accidental function calls that are sometimes generated by the Cpp compiler
+  (implicit conversion). In GNU APL, such members are declared, but not
+  defined (so that the linker will complain if the compiler should generate
+  them).
+
+Indentation:
+
+* indent all members with 2 spaces,
+* indent inline function bodies by 3 more spaces
+* do this recursively (nested classes)
+
+And finally: have a look at the existing *.cc* and *.hh* files. Even though
+this will cause some extra work on your part, it simplifies the reading of
+your code for many others. A project with different styles in different files
+looks rather unprofessional, so please respect the style rules above even if
+you do not like them.
 
