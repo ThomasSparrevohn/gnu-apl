@@ -1,0 +1,68 @@
+⍝ Trace.tc
+⍝ ----------------------------------
+
+      )ERASE foo
+
+∇foo;T
+ 'Vector Line 1'              ⍝ print value "Vector Line 1"
+ T←'Assigned Vector Line 2'   ⍝ print nothing (comitted value)
+ 2 6⍴'MatrixLine 3'           ⍝ print 2 lines "Matrix" and "Line 3"
+ T←2 6⍴'MatrixLine 4'         ⍝ print nothing (comitted value)
+∇
+
+      ⎕CR 'foo'
+foo;T                                                             
+'Vector Line 1'              ⍝ print value "Vector Line 1"        
+T←'Assigned Vector Line 2'   ⍝ print nothing (comitted value)     
+2 6⍴'MatrixLine 3'           ⍝ print 2 lines "Matrix" and "Line 3"
+T←2 6⍴'MatrixLine 4'         ⍝ print nothing (comitted value)     
+
+
+      T∆foo←1 5 6
+      foo
+foo[1] Vector Line 1
+Vector Line 1
+Matrix
+Line 3
+
+      ⍝ T∆ sorts items and discards invalid lines
+      ⍝
+      T∆foo←6 5 4 3 2 1 0 ¯1 ¯2
+      T∆foo
+1 2 3 4
+
+
+      ⍝ examples in Lrm
+      ⍝
+      )ERASE XEACH
+
+∇Z←(F XEACH)STACK;X
+ Z←''
+ ⍝ Process first item, return if error
+L1: '→0' ⎕EA 'X←F↑STACK'
+ Z←Z,⊂X
+ →(0≠⍴STACK←1↓STACK)/L1
+∇
+
+      ⍳XEACH 2 4 6
+ 1 2  1 2 3 4  1 2 3 4 5 6 
+
+
+      ιXEACH 2 4 ¯2 6
+ 1 2  1 2 3 4 
+
+      →
+
+
+      T∆XEACH←1 3 4 5
+      ÷XEACH 1 0 7
+XEACH[1] 
+XEACH[3] 1
+XEACH[4] 1
+XEACH[5] →3
+1
+
+      T∆XEACH←⍬
+
+⍝ ==================================
+

@@ -2,10 +2,10 @@
 /* config.h.in.  Generated from configure.ac by autoheader.  */
 
 /* the SVN version of Archive.cc */
-#define ARCHIVE_SVN " 1682"
+#define ARCHIVE_SVN " 211"
 
 /* How and when GNU APL was configured */
-#define BUILDTAG PACKAGE_NAME, PACKAGE_VERSION " / SVN: 1683M", "2023-04-30 13:42:08 UTC", "Linux 5.15.0-70-generic x86_64", "default ./configure options"
+#define BUILDTAG PACKAGE_NAME, PACKAGE_VERSION " / SVN: 232", "2023-05-05 16:12:21 UTC", "Linux 5.15.0-70-generic x86_64", "default ./configure options"
 
 /* Define to 1 iff pthread_setaffinity_np() is available */
 #define HAVE_AFFINITY_NP 1
@@ -493,7 +493,7 @@
 #define apl_DIR__prefix "/usr/local"
 
 /* top-level GNU APL source directory */
-#define apl_DIR__src "/home/eedjsa/savannah-repo-apl/trunk"
+#define apl_DIR__src "/home/eedjsa/apl-1.8"
 
 /* --sysconfdir */
 #define apl_DIR__sysconf "/usr/local/etc"
@@ -547,7 +547,7 @@
 #define cfg_ASSERT_LEVEL_WANTED 1
 
 /* how ./configure was called */
-#define cfg_CONFIGURE_ARGS "./configure "
+#define cfg_CONFIGURE_ARGS "./configure  '--disable-maintainer-mode'"
 
 /* core count */
 #define cfg_CORE_COUNT_WANTED 0

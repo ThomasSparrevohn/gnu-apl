@@ -1,0 +1,156 @@
+⍝ AP210.tc
+⍝ ----------------------------------
+
+      )CLEAR
+CLEAR WS
+
+⍝      ⎕DL 1
+⍝²
+
+      VARS←2 4⍴'C210D210'
+
+      ⍝ Offer C210 and D210 to AP210
+      (210 ⎕SVO VARS)ϵ¨1 (1 2) ◊ 0⍴⎕DL 1
+1 1
+
+      ⍝ check status after coupling
+      ⎕SVS VARS
+0 0 1 1
+0 0 1 1
+
+      ⍝ check control after coupling (seems not to change)
+      ⎕SVC VARS
+0 0 0 1
+0 0 0 0
+
+      ⍝
+      ⍝ 1. create FILE
+      ⍝
+      C210←'IW,FILE'
+
+      ⎕SVS VARS
+0 1 0 1
+0 1 0 1
+
+      ⎕SVC VARS
+0 0 0 1
+0 0 0 0
+
+      ⍝
+      ⍝ 2. check result of 'create FILE'
+      ⍝
+      C210
+0
+
+      ⎕SVS VARS
+0 0 1 1
+0 1 0 1
+
+      ⍝ set write data ⍳10
+      D210←⍳10
+
+      ⎕SVS VARS
+0 0 1 1
+1 0 1 0
+
+      ⍝
+      ⍝ 3. write data command (this sets C210 and reads D210)
+      ⍝
+      C210←5
+
+      ⎕SVS VARS
+0 1 0 1
+0 0 1 1
+
+      ⍝
+      ⍝ 4. write 2 3⍴⍳6 to FILE
+      ⍝
+      D210←2 3⍴⍳6 ◊ C210←5
+      C210
+0
+
+      ⍝
+      ⍝ 5. close FILE
+      ⍝
+      C210←''
+      C210
+0
+
+      ⍝
+      ⍝ 6. open FILE for reading and check result and length
+      ⍝
+      C210←'IR,FILE'
+      ⎕SVS VARS
+0 1 0 1
+0 1 0 1
+
+      C210
+0
+      ⎕SVS VARS
+0 0 1 1
+0 1 0 1
+
+      D210
+112
+
+      ⎕SVS VARS
+0 0 1 1
+0 0 1 1
+
+      ⍝
+      ⍝ 7. write 'read data' command
+      ⍝
+      C210←4 1
+
+      ⎕SVS VARS
+0 1 0 1
+0 1 0 1
+
+      ⍝
+      ⍝ 8. read 'read data' result
+      ⍝
+      C210
+0
+
+      ⎕SVS VARS
+0 0 1 1
+0 1 0 1
+
+      ⍝
+      ⍝ 9. read FILE data
+      ⍝
+      D210
+1 2 3
+4 5 6
+
+      ⎕SVS VARS
+0 0 1 1
+0 0 1 1
+
+      ⍝
+      ⍝ 10. check Control vectors
+      ⍝
+      ⎕SVC VARS
+0 0 0 1
+0 0 0 0
+
+      ⍝
+      ⍝ 11. retract variables. ⎕SVR may validly return 1 or 2, depending
+      ⍝ on whether the peer has retracted already (a race condition).
+      ⍝
+      (⎕SVR VARS[1;]) ϵ 1 2
+1
+
+      (⎕SVR VARS[2;]) ϵ 1 2
+1
+
+      ⍝ Allow ⎕SVR debug output to finish
+      0⍴⎕DL 0.2
+
+      )ERASE VARS
+
+      ]SVARS
+
+⍝ ==================================
+
+

@@ -7,7 +7,7 @@ ASCIIDOC = \
     Quad-GTK.asciidoc                   \
     GNU-APL-Memory-Management.asciidoc  \
     GNU-APL-Troubleshooting.asciidoc    \
-    Tips-For-Mainatiners.asciidoc
+    GNU-APL-Designers-Guide.asciidoc
 
 HTML = \
     APL-Communication-Cookbook.html \
@@ -15,7 +15,7 @@ HTML = \
     Quad-GTK.html                   \
     GNU-APL-Memory-Management.html  \
     GNU-APL-Troubleshooting.html    \
-    Tips-For-Mainatiners.html
+    GNU-APL-Designers-Guide.html
 
 dist_doc_DATA = \
     $(HTML)              \
@@ -44,7 +44,7 @@ dist_doc_DATA = \
 .asciidoc.html:
 	if [ -z `which asciidoc` ] ; then touch $@ ;        \
 	else asciidoc -a icons -o $@ $< ;                   \
-        sed -i 's|Cpp|C++|'                         $@ ; \
+        sed -i 's|Cpp|C++|g'                        $@ ; \
         sed -i 's|<pre><code>|<pre>\n\n<code>|'     $@ ; \
         sed -i 's|</code></pre>|</code>\n\n</pre>|' $@ ; \
     fi

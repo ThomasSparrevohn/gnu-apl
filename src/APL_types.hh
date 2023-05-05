@@ -265,10 +265,11 @@ enum Function_Line
    Function_Line_10 = 10,
 };
 //----------------------------------------------------------------------------
-///  What is being parsed (function, immediate execution statements, or ⍎expr)
+///  What is being parsed (defined function, immediate execution statements,
+/// or ⍎expr)
 enum ParseMode
 {
-   PM_FUNCTION       = 0,   ///< function execution
+   PM_FUNCTION       = 0,   ///< defined function
    PM_STATEMENT_LIST = 1,   ///< immediate execution
    PM_EXECUTE        = 2,   ///< execute (⍎)
 };

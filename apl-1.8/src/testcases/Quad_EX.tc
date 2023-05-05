@@ -1,0 +1,105 @@
+⍝ Quad_EX.tc
+
+⍝ ----------------------------------
+
+      RUNS←3
+      ⎕EX 'RUNS'
+1
+
+      RUNS
+VALUE ERROR+
+      RUNS
+      ^
+
+      →
+
+      SCORE←43
+      ⎕NC 'SCORE'
+2
+
+      ⎕EX '⎕NC'
+0
+
+      ⎕NC 'SCORE'
+2
+
+      RUNS←1
+      ⎕FX 'Z←HITS X' 'Z←+/X'
+HITS
+
+      ERRS←2
+      ⎕EX 3 4ρ'HITSRUNSERRS'
+1 1 1
+
+⍝ system variable ----------------------------------
+
+       ⎕IO
+1
+
+      ⎕EX '⎕IO'
+0
+
+       ⎕IO
+1
+
+⍝ suspended function ----------------------------------
+
+      )SIS
+
+      )ERASE SQUARE
+∇Z←SQUARE R
+ Z←R⋆2
+∇
+
+      T←'TEE'
+      SQUARE T
+DOMAIN ERROR
+SQUARE[1]  Z←R⋆2
+             ^^
+
+      )SIS
+SQUARE[1]  Z←R⋆2
+             ^^
+⋆  SQUARE T
+   ^
+
+      ⎕EX 'SQUARE'
+1
+
+
+      )SIS
+SQUARE[1]  Z←R⋆2
+             ^^
+⋆  SQUARE T
+   ^
+
+      SQUARE 5
+VALUE ERROR+
+      SQUARE 5
+      ^
+
+      R←5
+      →⎕LC
+25
+
+      SQUARE 5
+VALUE ERROR+
+      SQUARE 5
+      ^
+
+      →
+
+      ⍝ regression
+      ⍝
+      ⎕ex 5 5 ⍴ '3 3   '
+0 0 0 0 0
+
+      ⍝ SQUARE is expected to be stale
+            )CHECK
+WARNING - 1 stale functions (erased)
+OK      - no stale values
+OK      - no stale indices
+OK      - no duplicate parents
+
+⍝ ==================================
+

@@ -1,0 +1,45 @@
+Format: 1.8
+Date: Tue, 04 Jan 2014 14:14:00 +0200
+Source: apl
+Binary: apl
+Built-For-Profiles: noudeb
+Architecture: source amd64
+Version: 1.8-1
+Distribution: UNRELEASED
+Urgency: low
+Maintainer: Juergen Sauermann<bug-apl@gnu.org>
+Changed-By: Jürgen Sauermann <bug-apl@gnu.org>
+Description:
+ apl        - GNU APL
+Changes:
+ apl (1.8-1) UNRELEASED; urgency=low
+ .
+   * Portability improved
+     GNU APL 1.1 now runs under GNU/Linux, CYGWIN, FreeBSD, and OS-X
+ .
+   * New memory management using smart pointers
+     GNU APL 1.2 uses a new memory management for APL values
+ .
+   * Native Functions
+     GNU APL 1.2 now supports user defined APL functions written in C++
+Checksums-Sha1:
+ 8d6696ac85062adc2b33720efb8a1c80a5713cd0 795 apl_1.8-1.dsc
+ b3ed4315869ac768634e608151ec5f44f9e3081c 4529066 apl_1.8.orig.tar.gz
+ 0a2fa94144f7dc7deb4b39584a8b9313d664d617 10424 apl_1.8-1.debian.tar.xz
+ f74572e7dcafd3e71da6285346993970ff7a8554 20148724 apl-dbgsym_1.8-1_amd64.ddeb
+ 5f3e5312eb90e29bb713230baa03a62f3fc4a86f 15366 apl_1.8-1_amd64.buildinfo
+ e4761d86ffed3be6746b759292f0b7266f18549f 2914072 apl_1.8-1_amd64.deb
+Checksums-Sha256:
+ dbcdd663ec45254dd3eae217acd84e306625a7da007bf81d8e317ab43963ff87 795 apl_1.8-1.dsc
+ 30e5b3e3ce8a5f2719cb6b1e3447ab176068953b6eeb92cde94c3ebb1171e166 4529066 apl_1.8.orig.tar.gz
+ c776f60dd8f74478bcb1a6c81ed92fe6154ac23b8a1086384e3e3e690e7b5d92 10424 apl_1.8-1.debian.tar.xz
+ 9f7f5efa5fd3cdd59cf938405fdba19efed203f62e790a8b4990e66dc67c00b6 20148724 apl-dbgsym_1.8-1_amd64.ddeb
+ 0fde134ae3f23a71456694f87955b1279c0d1104c16bc6aad09d742b36ff1375 15366 apl_1.8-1_amd64.buildinfo
+ cfd53f807fa64bc0cb89258b6f84ec4a68b9ee386cb5655ad1014cddfbeb5049 2914072 apl_1.8-1_amd64.deb
+Files:
+ 082448841b38ed5db75c0e7e13deb85c 795 devel optional apl_1.8-1.dsc
+ 74903d62fcdd2ce1fd603c0e2eed5b28 4529066 devel optional apl_1.8.orig.tar.gz
+ 2e205a5fb790a625206106ce2de5d6ed 10424 devel optional apl_1.8-1.debian.tar.xz
+ a0593e36185fcee585567eacafce6864 20148724 debug optional apl-dbgsym_1.8-1_amd64.ddeb
+ 7bc26046897f981bff7e10e2befb0abc 15366 devel optional apl_1.8-1_amd64.buildinfo
+ 8157c1de76009bb0cd97dff8a8104bce 2914072 devel optional apl_1.8-1_amd64.deb

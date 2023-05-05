@@ -1,0 +1,79 @@
+⍝ APnnn.tc
+⍝ ----------------------------------
+
+      )CLEAR
+CLEAR WS
+
+      ⎕AI
+1010 ⁰ ⁰ ⁰ ⁰
+
+      ⍝ check that we have the correct --id
+      ⍝
+      ⍎(1010≠↑⎕AI)/']NEXTFILE  ⋆⋆⋆ This testcase requires --id 1010 ⋆⋆⋆'
+
+      )ERASE SYNC
+∇SYNC B;C;Q
+    Q←B ⎕SVO 'VAR444' ◊ I←0
+L:  C←⎕SVO 'VAR444' ◊ →(2=C)/OK ◊ 0 0⍴⎕DL 0.4 ◊ →(10≠I←I+1)/L          
+    'SYNC FAILED:' ◊ C ◊ ⍎']NEXTFILE'
+OK: ⎕SVE←0 ◊ 0 0⍴⎕SVE ◊ 0 0⍴⎕DL 0.1 ◊ 'SYNC OK'
+∇
+
+      ⍝ 0. start another interpreter with ID 1011
+      ⍝
+      100 ⎕SVO 'OS' ◊ 0 0⍴⎕DL 1
+⁰
+
+      OS←'testcases/APnnn_1011.sh'
+      OS
+0
+      ⎕SVR 'OS'
+2
+
+      ⍝ offer VAR444 and wait for sharing to complete
+      ⍝
+      SYNC 1011
+SYNC OK
+
+      ⎕SVO 'VAR444'
+2
+
+
+      ⍝ 1. wait for AP 1011 to set control vector
+      ⍝
+      ⎕SVE←1.9 ◊ ⎕SVE
+1.⁰
+
+      ⍝ 2. set control vector
+      ⍝
+      1 0 1 0 ⎕SVC 'VAR444'
+1 ⁰ 1 ⁰
+
+  ]svars
+
+      VAR444←1 2 3 4
+      VAR444
+4 3 2 1
+
+      ⍝ Regression
+      ⍝
+      )ERASE X
+
+      0⎕SVO'X'
+1
+
+      ⍝ large value
+      X←500⍴2
+      X≡500⍴2
+1
+
+      ⍝ value > 2⋆31
+      X←2147483999
+      X
+2147483999
+
+      ⎕SVR 'X'
+1
+
+      )ERASE X
+

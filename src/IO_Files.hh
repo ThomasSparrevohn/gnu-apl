@@ -89,6 +89,10 @@ public:
    static int error_count()
       { return apl_errors + assert_errors + diff_errors + parse_errors; }
 
+   /// return \b true iff the interpreter shall exit after a file I/O error
+   static bool exit_on_error()
+      { return test_mode == TM_EXIT_AFTER_FILE_ERROR; }
+
    /// count and report a parse error
    static void syntax_error();
 

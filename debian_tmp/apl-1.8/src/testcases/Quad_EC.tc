@@ -1,0 +1,87 @@
+⍝ Quad_EC.tc
+⍝ ----------------------------------
+
+      ⎕EC 'ι4.5'
+ 0  5 4  DOMAIN ERROR 
+               ⍳4.5   
+               ^      
+
+      ⎕EC '2+3'
+ 1  0 0  5 
+
+      ⎕EC 'Z←2+3'
+ 2  0 0  5 
+
+      ⎕EC '→10'
+ 4  0 0  10 
+
+      ⎕EC '→'
+ 5  0 0    
+
+
+      ]EXPECT 2
+
+      ⍝ )SI unchanged after failure of user-defined function
+      ⍝
+      )ERASE foo_fails
+
+∇foo_fails B
+ →(B>0)⍴⎕LC+1 ◊ ÷0
+ foo_fails B-1
+∇
+
+      )SIC
+      ⎕SI 2
+0
+
+      foo_fails 2
+DOMAIN ERROR
+foo_fails[1]  ÷0
+              ^
+      ⎕SI 2
+0 2 2 1 0
+
+      ⎕EC 'foo_fails 2'
+ 0  5 4  DOMAIN ERROR 
+                      
+                      
+      
+      
+      ⎕SI 2
+0 2 2 1 0
+
+      )SIC
+      )ERASE foo_fails
+
+      ⍝ regression
+      ⍝
+      ⎕EC ¨ '1234'
+  1  0 0  1    1  0 0  2    1  0 0  3    1  0 0  4  
+
+
+      ⎕EC¨'1¯' 
+  1  0 0  1    0  2 2  SYNTAX ERROR  
+
+      ⎕EC¨'¯1'
+  0  2 2  SYNTAX ERROR    1  0 0  1  
+
+      )ERASE f
+
+      ⎕FX'f x' '⊣ ⎕EC¨x'
+f
+
+      f'1¯' ⍝ no output expected
+
+      )ERASE f
+
+      ⍝ IBM displays a character prototype but that seems wrong
+      4 ⎕CR ⎕EC ¨''
+┏⊖━━┓
+┃┏⊖┓┃
+┃┃0┃┃
+┃┗━┛┃
+┗ϵ━━┛
+
+
+⍝ ==================================
+
