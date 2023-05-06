@@ -345,10 +345,10 @@ enum Function_PC
    Function_PC_invalid = -1    ///< dito
 };
 //----------------------------------------------------------------------------
-/// signature of a user defined function
+/// signature of a defined function
 enum Fun_signature
 {
-   // atoms
+   // signature atoms
    //
    SIG_NONE            = 0,      ///< 
    SIG_Z               = 0x01,   ///< function has a result

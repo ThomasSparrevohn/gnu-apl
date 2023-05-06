@@ -2931,6 +2931,7 @@ On the DATIS-P architecture with P processors:
   is *O(P÷log²P)* i.e. like the sorting functions ⍋ and ⍒. These days one
   can use P-RAM machines that do not suffer from this problem, but at that
   time P-RAMs were not available.
+
 ───────────────────────────────────────────────────────────────────────────────
 
 The benchmarks perfomed on the DATIS-P essentially confirmed the predictions
