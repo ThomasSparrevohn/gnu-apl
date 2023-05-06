@@ -944,10 +944,10 @@ writable by normal users.</td>
 <td class="icon">
 <img src="/usr/share/asciidoc/icons/caution.png" alt="Caution" />
 </td>
-<td class="content">A common mistake is to try to install the interpreter after the
-previous step has failed. The build system will then try to recompile missing
-files, but the resulting files will now be owned by root and will no longer be
-writable by the user. To fix this:</td>
+<td class="content">A common mistake (of the author) is to try to install the interpreter
+after the previous step has failed. The build system will then try to
+recompile missing files, but the resulting files will now be owned by root
+and will no longer be writable by the user. To fix this:</td>
 </tr></table>
 </div>
 <div class="listingblock">
@@ -989,6 +989,44 @@ a man page in <strong>/usr/local/share/man/man1/apl.1</strong>
 </ul></div>
 <div class="paragraph"><p>The default installation prefix <strong>/usr/local</strong> can be changed with <strong>./configure</strong>
 options.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_summary">Summary</h3>
+<div class="paragraph"><p>The following picture illustrates the different steps of building the GNU APL
+interpreter and the files involved:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre>
+
+<code>     ┌─────────────┐
+    ┌┴────────────┐│     ┌──────────────┐
+   ┌┴────────────┐├┘     │ configure,ac │     autoreconf (GNU APL designer)
+   │ Makefile.am ├┘      └──────────────┘
+   └─────────────┘              ↓
+          ↓                     ↓              ──────────────────────────
+     ┌─────────────┐            ↓
+    ┌┴────────────┐│      ┌───────────┐
+   ┌┴────────────┐├┘      │ configure │
+   │ Makefile.in ├┘       └───────────┘
+   └─────────────┘
+          ↓                                    ./configure (User)
+      ┌──────────┐         ┌──────────┐
+     ┌┴─────────┐│        ┌┴─────────┐│
+    ┌┴─────────┐├┘       ┌┴─────────┐├┘
+    │ Makefile ├┘        │ src/*.cc ├┘
+    └──────────┘         └──────────┘
+                               ↓               ──────────────────────────
+                          ┌─────────┐
+                          │ src/apl │          make (User)
+                          └─────────┘
+                               ↓               ──────────────────────────
+                     ╔════════════════════╗
+                     ║ /usr/local/bin/apl ║    make install (root)
+                     ╚════════════════════╝
+                               ↓               ──────────────────────────</code>
+
+</pre>
+</div></div>
 </div>
 <div class="sect2">
 <h3 id="_special_make_targets">Special make targets</h3>
@@ -4669,20 +4707,480 @@ class Bif_F12_PLUS : public ScalarFunction
 </div>
 <div class="sect2">
 <h3 id="_apl_functions">APL Functions</h3>
-<div class="paragraph"><p>TODO.</p></div>
+<div class="paragraph"><p>APL knows two types of functions:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+APL primitives (functions and operator) and system functions. They are
+  defined by the interpreter itself and are implemented in C++, and
+</p>
+</li>
+<li>
+<p>
+defined functions, They are defined by the APL programmer.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Every function has a <strong>signature</strong> that defines the combination of arguments
+that the function can be called with.  The total number of possible
+signatures is somewhat large, but a single functions only implement a
+rather small subset of them and returns a <strong>VALENCE ERROR</strong> when
+the <strong>Prefix</strong> parser calls a function with a signature that the called
+function does hot support. In GNU APL the signature is a bitmap
+of <strong>signature atoms</strong> where every atom corresponds to a possible
+position of an argument in a <strong>Prefix</strong> pattern. However, not all
+possible bitmaps are valid signatures (e.g. a function with a left
+argument but no right argument):</p></div>
+<div class="listingblock">
+<div class="content">
+<pre>
+
+<code>   APL_types.hh:
+   ...
+/// signature of a defined function
+enum Fun_signature
+{
+   // signature atoms
+   //
+   SIG_NONE            = 0,      ///&lt;
+   SIG_Z               = 0x01,   ///&lt; function has a result
+   SIG_A               = 0x02,   ///&lt; function has a left argument
+   SIG_LO              = 0x04,   ///&lt; operator left operand
+   SIG_FUN             = 0x08,   ///&lt; function (always set)
+   SIG_RO              = 0x10,   ///&lt; operator right operand
+   SIG_X               = 0x20,   ///&lt; RO has an axis
+   SIG_B               = 0x40,   ///&lt; function has a right argument
+
+  // operator variants
+   //
+   SIG_FUN_X           = SIG_FUN | SIG_X,     ///&lt; function with axis
+   SIG_OP1             = SIG_LO  | SIG_FUN,   ///&lt; monadic operator
+   SIG_OP1_X           = SIG_OP1 | SIG_X,     ///&lt; monadic operator with axis
+   SIG_OP2             = SIG_OP1 | SIG_RO,    ///&lt; dyadic operator
+   SIG_LORO            = SIG_LO  | SIG_RO,    ///&lt; monadic or dyadic operator
+
+   // argument variants
+   //
+   SIG_NIL             = SIG_NONE,            ///&lt; niladic function
+   SIG_MON             = SIG_B,               ///&lt; monadic function or operator
+   SIG_DYA             = SIG_A | SIG_B,       ///&lt; dyadic function or operator
+
+   // allowed combinations of operator variants and argument variants...
+
+   // niladic
+   //
+   SIG_F0              = SIG_FUN | SIG_NIL,             ///&lt; dito
+
+   SIG_Z_F0            = SIG_Z   | SIG_F0,              ///&lt; dito
+
+   // monadic
+   //
+   SIG_F1_B            = SIG_MON | SIG_FUN,             ///&lt; dito
+   SIG_F1_X_B          = SIG_MON | SIG_FUN_X,           ///&lt; dito
+   SIG_LO_OP1_B        = SIG_MON | SIG_OP1,             ///&lt; dito
+   SIG_LO_OP1_X_B      = SIG_MON | SIG_OP1_X,           ///&lt; dito
+   SIG_LO_OP2_RO_B     = SIG_MON | SIG_OP2,             ///&lt; dito
+
+   SIG_Z_F1_B          = SIG_Z   | SIG_F1_B,            ///&lt; dito
+   SIG_Z_F1_X_B        = SIG_Z   | SIG_F1_X_B,          ///&lt; dito
+   SIG_Z_LO_OP1_B      = SIG_Z   | SIG_LO_OP1_B,        ///&lt; dito
+   SIG_Z_LO_OP1_X_B    = SIG_Z   | SIG_LO_OP1_X_B,      ///&lt; dito
+   SIG_Z_LO_OP2_RO_B   = SIG_Z   | SIG_LO_OP2_RO_B,     ///&lt; dito
+
+   // dyadic
+   //
+   SIG_A_F2_B          = SIG_DYA | SIG_FUN,             ///&lt; dito
+   SIG_A_F2_X_B        = SIG_DYA | SIG_FUN_X,           ///&lt; dito
+   SIG_A_LO_OP1_B      = SIG_DYA | SIG_OP1,             ///&lt; dito
+   SIG_A_LO_OP1_X_B    = SIG_DYA | SIG_OP1_X,           ///&lt; dito
+   SIG_A_LO_OP2_RO_B   = SIG_DYA | SIG_OP2,             ///&lt; dito
+
+   SIG_Z_A_F2_B        = SIG_Z   | SIG_A_F2_B,          ///&lt; dito
+   SIG_Z_A_F2_X_B      = SIG_Z   | SIG_A_F2_X_B,        ///&lt; dito
+   SIG_Z_A_LO_OP1_B    = SIG_Z   | SIG_A_LO_OP1_B,      ///&lt; dito
+   SIG_Z_A_LO_OP1_X_B  = SIG_Z   | SIG_A_LO_OP1_X_B,    ///&lt; dito
+   SIG_Z_A_LO_OP2_RO_B = SIG_Z   | SIG_A_LO_OP2_RO_B,   ///&lt; dito
+};
+   ...</code>
+
+</pre>
+</div></div>
+<div class="paragraph"><p>There are 0x80 = 128 possible signature bitmaps of which 22 are valid.</p></div>
+<div class="paragraph"><p>The base class <strong>Function</strong> of all functions has a non-virtual function
+<strong>get_signature()</strong> which is computed from some virtual functions related to
+signature atoms:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre>
+
+<code>   Function.cc:
+   ,,,
+un_signature
+Function::get_signature() const
+{
+int sig = SIG_FUN;
+   if (has_result())   sig |= SIG_Z;
+   if (has_axis())     sig |= SIG_X;
+
+   if (get_oper_valence() == 2)   sig |= SIG_RO;
+   if (get_oper_valence() &gt;= 1)   sig |= SIG_LO;
+
+   if (get_fun_valence() == 2)    sig |= SIG_A;
+   if (get_fun_valence() &gt;= 1)    sig |= SIG_B;
+
+   return Fun_signature(sig);
+}</code>
+
+</pre>
+</div></div>
+<div class="paragraph"><p>System functions do not use signatures because their classes know the
+signatures that they support already at compile time. Defined functions
+are different because all are handled by the same class UserFunction
+even though the signatures of the different are defined by the user in
+the function header and the signatures differ. The only class that cares
+for the signature (of its left function argument) is <strong>Bif_OPER1_EACH</strong>.</p></div>
+<div class="paragraph"><p>For every signature <strong>XXX</strong> that a function class supports it must overload
+the corresponding <strong>eval_XXX()</strong> function. In our example, primitive <em><strong>+</strong></em>
+supports monadic <strong>+B</strong> and dyadic <strong>A+B</strong>. It therefore  overloads
+<strong>eval_B()</strong> and <strong>eval_AB()</strong>. Likewise is the axis variant A[X] overloaded
+with <strong>eval_AB()</strong> and then delegated to their companions in class
+<strong>ScalarFunction</strong>.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre>
+
+<code>   ScalarFunction.hh:
+   ...
+   class Bif_F12_PLUS : public ScalarFunction
+   {
+   ...
+  virtual Token eval_B(Value_P B) const
+      { return eval_scalar_B(B, &amp;Cell::bif_conjugate); }
+
+   /// overloaded Function::eval_AB().
+   virtual Token eval_AB(Value_P A, Value_P B) const
+      { return eval_scalar_AB(A, B,
+               inverse ? &amp;Cell::bif_add_inverse : &amp;Cell::bif_add); }
+   ...
+   }</code>
+
+</pre>
+</div></div>
+<div class="paragraph"><p>NOTE You may wonder what the matter with <strong>bif_add_inverse()</strong> is. Some
+primitives have an inverse function which, if present, can be used by the
+dyadic operator <strong>⍣</strong> (power operator, not to be confused with the power
+function <strong>⋆</strong>) for negative power arguments. The inverse of <strong>A+B</strong> is
+<strong>A-B</strong> because A = (A+B)-B. Most of the circular functions "A○B" have
+inverse functions while most others do not. The power operatir is, for good
+reasons, neither defined in the ISO APL standard, nor in the IBM APL2 language
+reference, but implemented in GNU APL. Avoid it where possible.</p></div>
+<div class="paragraph"><p>To summary the execution of APL functions:</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+The Prefix parser matches a pattern, for example <strong>A F B</strong>.
+</p>
+</li>
+<li>
+<p>
+The reduce function for the pattern A F B is <strong>reduce_A_F_B()</strong>.
+</p>
+</li>
+<li>
+<p>
+The <strong>Function *</strong> in token <strong>F</strong> is e.g. <strong>Bif_F12_PLUS::fun</strong>.
+</p>
+</li>
+<li>
+<p>
+The pattern also implies that the eval_AB() function of <strong>F</strong>, i.e.
+  Bif_F12_PLUS::fun&#8594;eval_AB(A, B) shall be called in order to prduce the
+  reduction result.
+</p>
+</li>
+<li>
+<p>
+<strong>Bif_F12_PLUS::fun&#8594;eval_AB()</strong> is inlined and calls
+  <strong>ScalarFunction::eval_AB()</strong>  with argument <strong>Cell::bif_add</strong>. It returns
+  some result Z.
+</p>
+</li>
+<li>
+<p>
+The Prefix parser replaces <strong>A F B</strong> with <strong>Z</strong> which finalizes the execution of
+  Z.
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p>All other derivates of class <strong>Function</strong> are executed in the same fashion.</p></div>
 </div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="_parallel_multi_core_execution">Parallel (Multi-Core) Execution</h2>
 <div class="sectionbody">
-<div class="paragraph"><p>TODO.</p></div>
+<div class="paragraph"><p>Parallel execution of APL has a longer history:</p></div>
+<div class="paragraph"><p>In the early 1980s the author learned APL (after ALGOL, Assembler, and BASIC,
+and before C. C++ was in its early days and not (yet) commercially available.
+The platform was an IBM 5110 desktop, a precursor of the IBM PC which came
+later. C compilers and APL interpreters were expensive and the IBM 5110 was
+slow, in particular in comparison with Assembler or compiled languages like C
+on comparable platforms.</p></div>
+<div class="paragraph"><p>Shortly after the owner of the IBM 5110 replaced it with a faster 16-bit
+machine (a Motorola 68000 CPU with an APL 68000 interpreter (today named APL-X)
+and multi-user capabilities). APL performance was still an issue.</p></div>
+<div class="paragraph"><p>To address the performance issue, the author undertook the construction of a
+parallel APL computer. The first draft architectur was based on
+<strong>Transputer</strong>*, a brand new CPU technology at that time (which died out
+shortly after). The advantage of Transputers was that every CPU had 4 fast
+communication channels which could be connected to neighboring Transputers.
+The resulting topology is then a torus (a mesh with the leftmost Transputers
+connected to the corresponding rightmost Transputers and the top Transputers
+connected to the bottom Transputers):</p></div>
+<div class="listingblock">
+<div class="content">
+<pre>
+
+<code>    4×4 Transputer Torus
+
+    ┌─────┐
+    │ ┌──────────────────────────────┐
+    │ │ ╔═╧═╗  ╔═╧═╗   ╔═╧═╗   ╔═╧═╗ │
+    │ └─╢ T ╟──╢ T ╟───╢ T ╟───╢ T ╟─┘
+    │   ╚═╤═╝  ╚═╤═╝   ╚═╤═╝   ╚═╤═╝
+    │     │      │       │       │
+    │ │ ╔═╧═╗  ╔═╧═╗   ╔═╧═╗   ╔═╧═╗
+    │ └─╢ T ╟──╢ T ╟───╢ T ╟───╢ T ╟──
+    │   ╚═╤═╝  ╚═╤═╝   ╚═╤═╝   ╚═╤═╝
+    │     │      │       │       │
+    │ │ ╔═╧═╗  ╔═╧═╗   ╔═╧═╗   ╔═╧═╗
+    │ └─╢ T ╟──╢ T ╟───╢ T ╟───╢ T ╟──
+    │   ╚═╤═╝  ╚═╤═╝   ╚═╤═╝   ╚═╤═╝
+    │     │      │       │       │
+    │ │ ╔═╧═╗  ╔═╧═╗   ╔═╧═╗   ╔═╧═╗
+    │ └─╢ T ╟──╢ T ╟───╢ T ╟───╢ T ╟──
+    │   ╚═╤═╝  ╚═╤═╝   ╚═╤═╝   ╚═╤═╝
+    └─────┘      │       │       │</code>
+
+</pre>
+</div></div>
+<div class="paragraph"><p>Another architecture that was initially considered was the Intel Hypercube.
+However, neither the Transputer torus nor the Intel Hypercube seemed to fit
+very well. We therefore decided to develop our own architecture named DATIS-P
+(derived from the first names of the students that developed the hardware and
+software development of the DATIS-P and the last name of the author. The
+developers were <strong>D</strong>ieter Scheerer [4], <strong>A</strong>ndreas Gergen [5], <strong>T</strong>homas
+Mörsdorf [6], and <strong>Ina</strong>.Gläs [7]. The DATIS-P was prepared for 256 CPUs,
+but for budget reasons our prototype had only 32 CPUS. The power consumption
+was about 50 Ampere at 5 Volts (which blew the fuses of our lab when we
+turned in on for the first time). The size was 3 19-inch cabinets (roughly
+the size of a mainframe at that time).</p></div>
+<div class="paragraph"><p>The most challenging part of the DATIS-P was its communication network. Its
+structure was a 3-stage permutation network as invented by <strong>Waksman</strong>. Since
+no suitable technology existed at that time we developed an ASIC (a 1-bit wide
+8×8 crossbar; the network for 32 CPUs was 8-bit wide and was comprized of
+8-bit × 3 stages × 4 width = 96 such ASICs. The 3 stages were pipelined,
+a reconfiguration of the network to an arbitrary permutation of the inputs
+was done in parallel by all CPUs and took only 3 CPU instriuctions. The
+communication bandwith was 2 CPU instructions per byte (one MOVE.B instruction
+to write into the network and one MOVE.B to read the byte (written by some
+other CPU) back. The total bandwidth of the network of our 32-CPU machine was
+therefore (16 MHz clock) ÷ (3 clocks per MOVE.B) ÷ (2 MOVE.B per transfer) =
+2.6 MByte/s or 21 MBit/s per CPU = 670 MBit/s for the entire network (a lot
+at that time). The bandwidth of the DATIS-P scales linearly with the number
+of CPUs, therefore a 256 CPU machine would have had a total communication
+bandwidth of 5.3 Gigabit/s.</p></div>
+<div class="paragraph"><p>The architecture of the DATIS-P is:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre>
+
+<code>           Entire DATIS-P                      One CPU
+           ──────────────                      ───────
+
+    ┌──────────────────────────┐               network       ┌───┐
+    │   Permutation Network    │                  │        ┌─┤CP1│
+    └──┬────────┬───────────┬──┘           ╔══════╧══════╗ │ └───┘
+       │        │           │              ║ MC68020 CPU ╟─┤ ┌───┐
+    ╔══╧══╗  ╔══╧══╗     ╔══╧══╗           ║    16 MHz   ║ ├─┤CP2│
+    ║ CPU ║  ║ CPU ║ ... ║ CPU ║           ╚══════╤══════╝ │ └───┘
+    ╚══╤══╝  ╚══╤══╝     ╚══╤══╝                  │        │  ...
+       │        │           │              ┌──────┴──────┐ │ ┌───┐
+       └────────┴─┬─────────┘              │ static RAM  │ └─┤CP8│
+                  │                        │   1 MByte   │   └───┘
+               ╔══╧══╗                     └──────┬──────┘
+               ║ CPU ║                            │
+               ╚═════╝                          Master</code>
+
+</pre>
+</div></div>
+<div class="paragraph"><p>An entire DATIS-P consists of:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+The permutation network,
+</p>
+</li>
+<li>
+<p>
+32 worker CPUs, and
+</p>
+</li>
+<li>
+<p>
+one master CPU. This master CPU does the APL interpretation and delegates
+  all ravel computations to the worker CPUs. To support scalar extensions
+  like <strong>1 + 2 3 4 5</strong> &#8230; the master was avle to broadcast the scalar 1 into
+  the dual port memories of the worker in a single instruction.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Every CPU of the DATIS-P:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+was a Mototola 68020 processor (the leading etge when the development
+  started),
+</p>
+</li>
+<li>
+<p>
+had up to 8 numerical co-prozessors MC 68881 to boost the floating point
+  performance
+</p>
+</li>
+<li>
+<p>
+A dual-port 1 MByte static memory; one port connected to the local CPU the
+  other to the Master CPU.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>The development of the hardware (PCB designs, ASIC design) and the sortware
+took from 1985 to 1989; the author was managing the hardware development
+and finished a Ph.D thesis about the parallel algorithms for the DATIS-P in
+1990 [3].</p></div>
+<div class="paragraph"><p>The main result of the thesis was:</p></div>
+<div class="paragraph"><p>───────────────────────────────────────────────────────────────────────────────</p></div>
+<div class="paragraph"><p>On the DATIS-P architecture with P processors:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+All scalar APL functions can be computed in parallel with a speedup
+  of <strong>O(P)</strong>. That is, the performance of every scalar function scales linearly.
+</p>
+</li>
+<li>
+<p>
+Most of the non-scalar  APL function can be computed in parallel with
+  speedup <strong>O(P÷log P)</strong>. That is, the other functions scale almost linearly.
+</p>
+</li>
+<li>
+<p>
+The remaining non-scalar functions are those that require sorting.
+  Their speedup is <strong>O(P÷log²P)</strong> (using Batcher&#8217;s Bitonic Sort).
+</p>
+</li>
+<li>
+<p>
+There is one exception which may happen for particular index vectors <strong>X</strong> in
+  the indexed assignment <strong>A[X]←B</strong>, in the indexed reference <strong>A←B[X]</strong>, and
+  functions derived from them, e.g. <strong>X/B</strong>. If the index vector <strong>X</strong> is such
+  that all ravel items of A are concentrated on the same worker CPU, then
+  the speedup can degrade down to <strong>O(1)</strong> beause that worker CPU has to do
+  all of the work while the others are idle. Usually, though, the speedup
+  is <strong>O(P÷log²P)</strong> i.e. like the sorting functions ⍋ and ⍒. These days one
+  can use P-RAM machines that do not suffer from this problem, but at that
+  time P-RAMs were not available.
+───────────────────────────────────────────────────────────────────────────────
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>The benchmarks perfomed on the DATIS-P essentially confirmed the predictions
+of the Ph.D. thesis. Since we had no APL interpreter at that time, we only
+implemented the most important parallel algorithms performed by the workers.
+The implementation languages were C on the master and Assembler on the workers.</p></div>
+<div class="paragraph"><p>These result were also submitted to the 1990 APL conference in Copenhagen,
+Denmark. Without any feedback. The author therefore pursued a career in
+tetecommunications.</p></div>
+<div class="paragraph"><p>Around 2000, the author came across a PC demo version of IBM APL2 and
+played a little with it. However, the license cost for a full version
+was entirely out of range for a private user. At about the same time
+he worked with Unicode, UTF8-encodings and the like and discovered that
+all APL characters were available in Unicode. Probably at that time the
+idea of writing an own APL interpreter began to mature.</p></div>
+<div class="paragraph"><p>Around 2008, the first version of the interpreter was ready. It was not
+yet a GNU project and not very stable either.</p></div>
+<div class="paragraph"><p>In 2013 the interpreter was accepted by the GNU project and became GNU APL.
+Version 1.0 was sort of stable (i.e. crashed not immediately), but still
+buggy (primarily suffering from memory leaks).</p></div>
+<div class="paragraph"><p>In 2014, multi-core support (parallel APL) was added. However, only the
+APL workhorses (i.e. scalar functions and their outer products) were
+parallelized and benchmarked. The results were somewhat disappointing
+and suggested that non-scalar functions will not gain much by parallization.
+They are memory bound (as opposed to the more compute bound scalar functions)
+The main reason seems to be that the interface between the CPU cores and
+the memory does not scale with the number of cores so that the cores are
+competing for memory access. In contrast, the DATIS-P had only local
+memories whose total bandwidth grows linearly with the number of CPUs.</p></div>
+<div class="paragraph"><p>Since then the development of GNU APL had focused on bug fixing and new
+functionalities and interfaces. The main idea is to provide low-level
+computations, for which APL is not well suited, as system functions:
+* <strong>⎕DLX</strong>: D. Knuth&#8217;s Dancing Links algorithm (aka. exact cober problem)
+* <strong>⎕FFT</strong>: Fast Fourier Transformation
+* <strong>⎕FIO</strong>: File I/O (interface to ivarious libc function)
+* <strong>⎕JSON</strong>:  JSON (JavaScript Object Notation) encoding and decoding
+* <strong>⎕PLOT</strong>: PLOTting of APL arrays
+* <strong>⎕PNG</strong>: PNG (Portable Network Graphics) encoding and decoding
+* <strong>⎕RE</strong>:  Regular Expressions
+* <strong>⎕SQL</strong>: interfgace to SQL databases
+* <strong>⎕XML</strong>: XML encoding and decoding</p></div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="_references">References</h2>
 <div class="sectionbody">
-<div class="paragraph"><p>TODO.</p></div>
+<div class="sect2">
+<h3 id="_1_iso_iec_standard_13751_em_programming_language_apl_extended_em">[1] ISO/IEC Standard 13751: <em>Programming Language APL, Extended</em></h3>
+<div class="paragraph"><p><strong>www.math.uwaterloo.ca/~ljdickey/apl-rep/docs/is13751.pdf</strong></p></div>
+<div class="paragraph"><p>This file is, despite of its <strong>.pdf</strong> extension, a <strong>gzip</strong> compressed file which
+will expand into a proper <strong>.pdf</strong> file after uncompressed it (with <strong>gunzip</strong>).</p></div>
+</div>
+<div class="sect2">
+<h3 id="_2_ibm_apl2_em_language_reference_em">[2] IBM APL2: <em>Language Reference</em></h3>
+<div class="paragraph"><p><strong>www.ibm.com/downloads/cas/ZOKMYKOY</strong>.</p></div>
+<div class="paragraph"><p>The exact download location seem to change from time to time.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_3_dr_jürgen_sauermann">[3] Dr. Jürgen Sauermann</h3>
+<div class="paragraph"><p><em>Ein Paralleler APL Rechner (A Parallel APL Computer)</em>.</p></div>
+<div class="paragraph"><p>Ph.D Thesis 1990, Universität des Saarlandes.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_4_dipl_inf_dieter_scheerer">[4] Dipl.-inf. Dieter Scheerer</h3>
+<div class="paragraph"><p><em>Entwurf und Realisierung eines Verbindungsnetzwerks als Teil des
+ Multiprozerssorsystems DATIS-P-256.</em></p></div>
+<div class="paragraph"><p>Masters Thesis 1989, Universität des Saarlandes.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_5_dipl_inf_andreas_gergen">[5] Dipl.-inf. Andreas Gergen</h3>
+<div class="paragraph"><p><em>Entwurf und Realisierung einer Master-Slave Kommunikation im
+Multiprozerssorsystem DATIS-P-256</em></p></div>
+<div class="paragraph"><p>Masters Thesis 1989, Universität des Saarlandes.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_6_dipl_inf_thomas_mörsdorf">[6] Dipl.-inf. Thomas Mörsdorf</h3>
+<div class="paragraph"><p><em>Entwurf, Bau, und Test einer 32-bit CPU als Teil des
+Multiprozerssorsystems DATIS-P-256.</em></p></div>
+<div class="paragraph"><p>Masters Thesis 1989, Universität des Saarlandes.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_7_dipl_inf_ina_gläs">[7] Dipl.-inf. Ina Gläs</h3>
+<div class="paragraph"><p><em>Die Lösung spezieller Probleme bei der Realisierung eines
+Permutationsnetzwerkes als Teil des Multiprozerssorsystems DATIS-P-256.</em></p></div>
+<div class="paragraph"><p>Masters Thesis 1989, Universität des Saarlandes.</p></div>
+</div>
 </div>
 </div>
 </div>
@@ -4690,7 +5188,7 @@ class Bif_F12_PLUS : public ScalarFunction
 <div id="footer">
 <div id="footer-text">
 Last updated
- 2023-05-05 18:12:02 CEST
+ 2023-05-06 19:30:53 CEST
 </div>
 </div>
 </body>
