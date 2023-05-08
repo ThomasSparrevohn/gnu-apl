@@ -2794,7 +2794,9 @@ All other derivates of class *Function* are executed in the same fashion.
 
 == Parallel (Multi-Core) Execution
 
-Parallel execution of APL has a longer history:
+Parallel execution of APL has a longer history.
+
+=== Background
 
 In the early 1980s the author learned APL (after ALGOL, Assembler, and BASIC,
 and before C. Cpp was in its early days and not (yet) commercially available.
@@ -2819,37 +2821,41 @@ connected to the bottom Transputers):
 ----
     4×4 Transputer Torus
 
-    ┌─────┐
-    │ ┌──────────────────────────────┐
-    │ │ ╔═╧═╗  ╔═╧═╗   ╔═╧═╗   ╔═╧═╗ │
-    │ └─╢ T ╟──╢ T ╟───╢ T ╟───╢ T ╟─┘
-    │   ╚═╤═╝  ╚═╤═╝   ╚═╤═╝   ╚═╤═╝  
-    │     │      │       │       │    
-    │ │ ╔═╧═╗  ╔═╧═╗   ╔═╧═╗   ╔═╧═╗  
-    │ └─╢ T ╟──╢ T ╟───╢ T ╟───╢ T ╟──
-    │   ╚═╤═╝  ╚═╤═╝   ╚═╤═╝   ╚═╤═╝  
-    │     │      │       │       │    
-    │ │ ╔═╧═╗  ╔═╧═╗   ╔═╧═╗   ╔═╧═╗  
-    │ └─╢ T ╟──╢ T ╟───╢ T ╟───╢ T ╟──
-    │   ╚═╤═╝  ╚═╤═╝   ╚═╤═╝   ╚═╤═╝  
-    │     │      │       │       │    
-    │ │ ╔═╧═╗  ╔═╧═╗   ╔═╧═╗   ╔═╧═╗  
-    │ └─╢ T ╟──╢ T ╟───╢ T ╟───╢ T ╟──
-    │   ╚═╤═╝  ╚═╤═╝   ╚═╤═╝   ╚═╤═╝  
-    └─────┘      │       │       │    
+    ┌─────┐   ┌───┐   ┌───┐   ┌───┐ 
+    │ ┌───────────────────────────────┐
+    │ │ ╔═╧═╗   ╔═╧═╗   ╔═╧═╗   ╔═╧═╗ │
+    │ └─╢ T ╟───╢ T ╟───╢ T ╟───╢ T ╟─┘
+    │   ╚═╤═╝   ╚═╤═╝   ╚═╤═╝   ╚═╤═╝  
+    │ ┌─  │       │       │       │  ─┐
+    │ │ ╔═╧═╗   ╔═╧═╗   ╔═╧═╗   ╔═╧═╗ │
+    │ └─╢ T ╟───╢ T ╟───╢ T ╟───╢ T ╟─┘
+    │   ╚═╤═╝   ╚═╤═╝   ╚═╤═╝   ╚═╤═╝  
+    │ ┌─  │       │       │       │  ─┐
+    │ │ ╔═╧═╗   ╔═╧═╗   ╔═╧═╗   ╔═╧═╗ │
+    │ └─╢ T ╟───╢ T ╟───╢ T ╟───╢ T ╟─┘
+    │   ╚═╤═╝   ╚═╤═╝   ╚═╤═╝   ╚═╤═╝  
+    │ ┌─  │       │       │       │  ─┐
+    │ │ ╔═╧═╗   ╔═╧═╗   ╔═╧═╗   ╔═╧═╗ │
+    │ └─╢ T ╟───╢ T ╟───╢ T ╟───╢ T ╟─┘
+    │   ╚═╤═╝ │ ╚═╤═╝ │ ╚═╤═╝ │ ╚═╤═╝  
+    └─────┘   └───┘   └───┘   └───┘    
 ----
 
 Another architecture that was initially considered was the Intel Hypercube.
 However, neither the Transputer torus nor the Intel Hypercube seemed to fit
-very well. We therefore decided to develop our own architecture named DATIS-P
-(derived from the first names of the students that developed the hardware and
-software development of the DATIS-P and the last name of the author. The
-developers were **D**ieter Scheerer [4], **A**ndreas Gergen [5], **T**homas
-Mörsdorf [6], and **Ina**.Gläs [7]. The DATIS-P was prepared for 256 CPUs,
-but for budget reasons our prototype had only 32 CPUS. The power consumption
-was about 50 Ampere at 5 Volts (which blew the fuses of our lab when we
-turned in on for the first time). The size was 3 19-inch cabinets (roughly
-the size of a mainframe at that time).
+APL very well. We therefore decided to develop our own architecture named
+DATIS-P (derived from the first names of the students that developed the
+hardware and software development of the DATIS-P and probably the last name
+of the author. The developers were (in DATIS-P order):
+**D**ieter Scheerer <<Sch>>,
+**A**ndreas Gergen <<Ger>>,
+**T**homas Mörsdorf <<Mör>>, and last but not least
+**I**na Gläs <<Glä>>.
+The DATIS-P was prepared for 256 CPUs, but for budget reasons our
+prototype had only 32 CPUS. The power consumption was about 50 Ampere
+at 5 Volts (which blew the fuses of our lab when we turned it on for
+the first time). The size was 3 19 inch cabinets (roughly the size of
+a mainframe at that time).
 
 The most challenging part of the DATIS-P was its communication network. Its
 structure was a 3-stage permutation network as invented by *Waksman*. Since
@@ -2898,8 +2904,8 @@ An entire DATIS-P consists of:
 
 Every CPU of the DATIS-P:
 
-* was a Mototola 68020 processor (the leading etge when the development
-  started),
+* was a Mototola 68020 processor (the cutting edge when the development
+  of DATIS-P started),
 * had up to 8 numerical co-prozessors MC 68881 to boost the floating point
   performance
 * A dual-port 1 MByte static memory; one port connected to the local CPU the
@@ -2908,7 +2914,7 @@ Every CPU of the DATIS-P:
 The development of the hardware (PCB designs, ASIC design) and the sortware
 took from 1985 to 1989; the author was managing the hardware development
 and finished a Ph.D thesis about the parallel algorithms for the DATIS-P in
-1990 [3].
+1990 <<Sau>>.
 
 The main result of the thesis was:
 
@@ -2967,65 +2973,371 @@ the memory does not scale with the number of cores so that the cores are
 competing for memory access. In contrast, the DATIS-P had only local
 memories whose total bandwidth grows linearly with the number of CPUs.
 
-Since then the development of GNU APL had focused on bug fixing and new
-functionalities and interfaces. The main idea is to provide low-level
-computations, for which APL is not well suited, as system functions:
-* *⎕DLX*: D. Knuth's Dancing Links algorithm (aka. exact cober problem)
-* *⎕FFT*: Fast Fourier Transformation
-* *⎕FIO*: File I/O (interface to ivarious libc function)
-* *⎕JSON*:  JSON (JavaScript Object Notation) encoding and decoding
-* *⎕PLOT*: PLOTting of APL arrays
-* *⎕PNG*: PNG (Portable Network Graphics) encoding and decoding
-* *⎕RE*:  Regular Expressions
-* *⎕SQL*: interfgace to SQL databases
-* *⎕XML*: XML encoding and decoding
+=== Programming
 
+NOTE: Parallel APL is a purely experimental feature that should not be used
+for production code; expect crashes from time o time.
+
+The details are described in a separate document *Parallel-APL.html*, which
+is shipped with GNU APL in the same directory as this document.
+
+== Exercise 1
+
+We conclude our journey throgh the GNU APL source code with a little exercise
+for the alert reader:
+
+_Add a new monadic system function named *⎕FOO* to GNU APL. *⎕FOO* takes a
+ 1-item integer argument *B* and returns the APL value (string) "FOO-B"._
+
+You may look backwards in this document and consult the GNU APL source code,
+but not peek into the solution scetch below, If you stuble over something that
+is not properly described above then please report that on
+mailto:bug-apl@gnu.org.
+
+=== Solution (sketch with comments)
+
+. Add a symbol *FOO* to *src/Id.def:*
++
+----
+qf( FOO                , "⎕FOO"    ,          )
+----
++
+The proper position of *FOO* in *Id.def* is important (after the last
+⎕-symbol group that starts with *F*, i.e. after the *⎕FFT* line.
+
+. Add a header file *src/Quad_FOO.hh* like this:
++
+----
+#ifndef __Quad_FOO_HH_DEFINED__
+#define __Quad_FOO_HH_DEFINED__
+
+#include "QuadFunction.hh"
+...
+
+class Quad_FOO : public QuadFunction
+{
+public:
+   /// Constructor.
+   Quad_FOO()
+      : QuadFunction(TOK_Quad_FOO),
+        system_wisdom_loaded(false)
+   {}
+
+   static Quad_FOO * fun;          ///< Built-in function.
+   static Quad_FOO  _fun;          ///< Built-in function.
+
+protected:
+   /// overloaded Function::eval_B()
+   Token eval_B(Value_P B) const;
+
+   ...
+};
+
+#endif // __Quad_FOO_HH_DEFINED__
+----
++
+Since *⎕FOO* is monadic, we have one handler eval_B(Value_P B), which
+overloads *virtual Function::eval_B()* iin *Function.hh* and causes our
+*Quad_FOO::eval_B* to be called instead of *eval_B()* of the base class. If
+*⎕FOO* should support more signatures then it is better to add them at a later
+point in time.
+
+. Add a Cpp source file *src/Quad_FOO.cc* like this:
++
+----
+#include "Quad_FOO.hh"
+
+Quad_FOO  Quad_FOO::_fun;
+Quad_FOO * Quad_FOO::fun = &Quad_FOO::_fun;
+
+//-----------------------------------------------------------------------------
+Token
+Quad_FOO::eval_B(Value_P B) const
+{
+Value_P Z(LOC);                       // makes Z an APL scalar,
+   Z->next_ravel_int(42);             // which is the integer 42
+   Z->check_value(LOC);               // check Z and set its Z->VF_complete flag
+   return Token(TOK_APL_VALUE1, Z);   // return the result.
+}
+//-----------------------------------------------------------------------------
+----
++
+We have not (yet) implemented the requested functionality in
+*Quad_FOO::eval_B()*. It makes life easier to first integrate *⎕FOO* into the
+GNU APL frameworki (and test the intergarion), and to add the funvtionality
+later on.
+
+. When using SVN then add the new files to the repository:
++
+----
+$ svn add Quad_FOO.cc Quad_FOO.hh
+$ svn commit -m "new file"
+----
+
+. Add the following line to several source files:
++
+----
+#include "Quad_FOO.hh"
+----
++
+This makes the new declarations available in the *.cc* files that need it.
+The files concerned are:
++
+.. src/Archive.cc
+.. src/Id.cc
+.. src/QuadFunction.cc
+.. src/Workspace.cc
+
+. update *Makefile.am*.
+.. add the new files *Quad_FOO.cc* and *Quad_FOO.hh* to the make variable
+   *common_SOURCES* in *src/Makefile.am*:
++
+----
+   Quad_FOO.cc Quad_FOO.hh
+----
++
+keep *src/Makefile.am* sorted alphabetically and indented in the same way as
+the other files.
+
+.. (re-)run *autoreconf* (in the GNU APL top-level directory)
++
+----
+ $ autoreconf
+----
++
+This creates a new *src/Makefile.in* from *src/Makefile.am*, and
+
+.. (re-)run *./configure* (also in the GNU APL top-level directory).
++
+----
+ $ ./configure
+----
++
+This includes the new files in *src/Makefile* so that they are being
+properly compiled and linked.
+
+. Add a *TD()* macro for *⎕FOO* in *src/Token.def*:
++
+----
+TD(TOK_Quad_FOO      , TC_FUN1      , TV_FUN  , ID::Quad_FOO     )
+----
++
+This defines a new Token with token class *TC_FUN1*, value type *TV_FUN* i.e.
+ *Function* (-pointer), and ID *ID::Quad_FOO*. Note that:
++
+.. *TC_FUN1* is an alias for *TC_FUN12* (and so is *TC_FUN2*. These aliases
+ are used to make explicit that ⎕FOO is monadic. If you should add a dyadic
+ signatore later on then change the token class to *TC_FUN12*.
++
+.. Since *src/Token.def* is a *.def* file, it will be *#inluded* by several
+  *.cc* files and magically insert the new token in several source files.
+
+. Add a *sf_def()* macro to *src/SystemVariable.def*:
++
+----
+  sf_def(Quad_FOO,   "FOO",   "Definitely not ⎕BAR"          )
+----
++
+This takes care of a number of things:
++
+.. )SAVE of functions in *.xml* workspace snapshots,
+.. Tab expansion of ⎕-function names,
+.. update of the *)HELP* command (short help text), and
+.. Instatiation in workspaces.
++
+. and finally: increment *ASX_MINOR* minor in *enum ArchiveSyntax* in file
+  *src/Archive.hh*. Adding ⎕-functions to GNU is a backward compatible change
+  of the *.xml* file format. The new interpreter can *)LOAD* files that were
+  **)SAVE**d with older versions, but not vice versa. Incrementing *ASX_MINOR*
+  will then issue a warning in older (and not too old) interpreters.
+
+. After these changes you can build and test if the new intepreter compiles
+  and works (if not then the author has missed something above).
++
+----
+$ make
+$ src/apl
+
+      ⎕FOO 5
+42
+----
+
+. If so, then we can add some more beef into *Quad_FOO::eval_B()*:
++
+----
+#include "Quad_FOO.hh"
+
+Quad_FOO  Quad_FOO::_fun;
+Quad_FOO * Quad_FOO::fun = &Quad_FOO::_fun;
+
+//-----------------------------------------------------------------------------
+Token
+Quad_FOO::eval_B(Value_P B) const
+{
+   // check that B is a 1-item integer 
+   //
+   if (B->element_count() != 1)   // rank or length error
+      {
+        if (B->get_ranke() != 1)   RANK_ERROR;
+        else                       LENGTH_ERROR;
+      }
+
+const Cell & B0 = B->get_cfirst();          // first item in B
+const APL_Integer b = B0.get_int_value();   // DOMAIN_ERROR for non integers
+UCS_string z("FOO-");                       // z is string "FOO-"
+   z.append_number(b);                      // now z is e.g. "FOO-42"
+
+Value_P Z(z);                         // constructor: APL value from string
+   return Token(TOK_APL_VALUE1, Z);   // return the result.
+}
+//-----------------------------------------------------------------------------
+----
+
+== Exercise 2
+
+This exercise is similar to <<Exercise 1>> above, but this time we want to
+create a system variable instead of a system function:
+
+_Add a new system variable named *⎕FOO* to GNU APL so that:_
+
+* _*⎕FOO←B* with 1-item integer B shall remember B, while_
+* _*Z←⎕FOO* shall be the APL value (string) "FOO-B"._
+
+System variables are inherently more complex than system variables because 
+most system functions are stateless, while system variables typically have
+state that needs to be )SAVEd in workspaces.
+
+=== Solution (sketch with comments)
+
+The solution is for the most part, similar to the previoius example. We
+therefore only discuss the differences.
+
+*  System variables are (directly or indirectly) derived from class
+   *SystemVariable*, while system functions are derived from class *Function*.
+   System functions overload one or more (virtual) *eval_XXX()*, while system
+   variables overload the virtual;
+** *Value_P get_apl_value() const*, used when the variable is referenced,
+** *assign(Value_P B, ...)*, used when the variable is assigned,
+** possibly **assign_indexed()* for indexed assignment (if the variable
+   supportes it), and
+** possibly *push()* and *pop()* functions if the variable can be localized.
+** Therefore *Quad_FOO.hh* reads:
+----
+//----------------------------------------------------------------------------
+#ifndef __Quad_FOO_HH_DEFINED__
+#define __Quad_FOO_HH_DEFINED__
+
+/**
+   System variable Quad-FOO.
+ */
+/// The class implementing ⎕FOO
+class Quad_FOO : public SystemVariable
+{
+public:
+   /// Constructor.
+   Quad_IO()
+   : SystemVariable(ID_Quad_IO)
+      {
+         Symbol::assign(IntScalar(0, LOC), false, LOC);
+      }
+
+
+protected:
+  /// overloaded Symbol::assign().
+   virtual void assign(Value_P B, bool clone, const char * loc);
+
+   // overloaded Symbol::push()
+   virtual void push()
+      {
+        Symbol::push();
+        Symbol::assign(IntScalar(0, LOC), false, LOC);
+      }
+};
+
+#endif // __Quad_FOO_HH_DEFINED__
+----
+* and the *TD()* macro now becomes:
++
+----
+TD(TOK_Quad_FOO      , TC_SYMBOL    , TV_SYM  , ID_Quad_FOO     )
+----
++
+* The *sf_def()* macro (*sf* stands for **s**ystem **f**unction) above in
+  *SystemVariable.def*  now becomes:
++
+----
+  rw_sv_def(Quad_FOO,  "FOO",    "not BAR "                 )
+----
++
+where *rw_sv_def* stands for **r**ead/**w**rite **s**ystem **v**ariable. If
+⎕FOO* were read-only (which implies that localizing it has no effect), then
+macro *ro_sv_def* would have been used instead.
+
+The name *SystemVariable.def* is a little misleading because it contains the
+macros for both variables and functions.
+
+
+
+[bibliography]
 == References
 
-=== [1] ISO/IEC Standard 13751: _Programming Language APL, Extended_
-
+* [[[ISO]]] ISO/IEC Standard 13751.
+_Programming Language APL, Extended_
++
 *www.math.uwaterloo.ca/~ljdickey/apl-rep/docs/is13751.pdf*
++
+NOTE: This file is, despite of its *.pdf* extension, a *gzip* compressed
+file which will ionly expand into a proper *.pdf* file after uncompressed
+it (with *gunzip*).
+{nbsp} +
+{nbsp} +
 
-This file is, despite of its *.pdf* extension, a *gzip* compressed file which
-will expand into a proper *.pdf* file after uncompressed it (with *gunzip*).
-
-=== [2] IBM APL2: _Language Reference_
-
+* [[[IBM]]] IBM Corp.
+_APL2: Language Reference_
++
 *www.ibm.com/downloads/cas/ZOKMYKOY*.
++
+NOTE: The exact download location seems to change every now and then.
+{nbsp} +
+{nbsp} +
 
-The exact download location seem to change from time to time.
-
-=== [3] Dr. Jürgen Sauermann
-
+* [[[Sau]]] Dr. Jürgen Sauermann
 _Ein Paralleler APL Rechner (A Parallel APL Computer)_.
-
++
 Ph.D Thesis 1990, Universität des Saarlandes.
+{nbsp} +
+{nbsp} +
 
-=== [4] Dipl.-inf. Dieter Scheerer
-
+* [[[Sch]]] Dipl. inf. Dieter Scheerer
 _Entwurf und Realisierung eines Verbindungsnetzwerks als Teil des
  Multiprozerssorsystems DATIS-P-256._
-
++
 Masters Thesis 1989, Universität des Saarlandes.
+{nbsp} +
+{nbsp} +
 
-=== [5] Dipl.-inf. Andreas Gergen 
-
+* [[[Ger]]] Dipl. inf. Andreas Gergen 
 _Entwurf und Realisierung einer Master-Slave Kommunikation im
 Multiprozerssorsystem DATIS-P-256_
-
++
 Masters Thesis 1989, Universität des Saarlandes.
+{nbsp} +
+{nbsp} +
 
-=== [6] Dipl.-inf. Thomas Mörsdorf
-
+* [[[Mör]]] Dipl. inf. Thomas Mörsdorf
 _Entwurf, Bau, und Test einer 32-bit CPU als Teil des
 Multiprozerssorsystems DATIS-P-256._
-
++
 Masters Thesis 1989, Universität des Saarlandes.
+{nbsp} +
+{nbsp} +
 
-=== [7] Dipl.-inf. Ina Gläs
-
+* [[[Glä]]]] Dipl. inf. Ina Gläs
 _Die Lösung spezieller Probleme bei der Realisierung eines
 Permutationsnetzwerkes als Teil des Multiprozerssorsystems DATIS-P-256._
-
++
 Masters Thesis 1989, Universität des Saarlandes.
+{nbsp} +
+{nbsp} +
+
 

@@ -4919,7 +4919,9 @@ The Prefix parser replaces <strong>A F B</strong> with <strong>Z</strong> which 
 <div class="sect1">
 <h2 id="_parallel_multi_core_execution">Parallel (Multi-Core) Execution</h2>
 <div class="sectionbody">
-<div class="paragraph"><p>Parallel execution of APL has a longer history:</p></div>
+<div class="paragraph"><p>Parallel execution of APL has a longer history.</p></div>
+<div class="sect2">
+<h3 id="_background">Background</h3>
 <div class="paragraph"><p>In the early 1980s the author learned APL (after ALGOL, Assembler, and BASIC,
 and before C. C++ was in its early days and not (yet) commercially available.
 The platform was an IBM 5110 desktop, a precursor of the IBM PC which came
@@ -4943,38 +4945,42 @@ connected to the bottom Transputers):</p></div>
 
 <code>    4×4 Transputer Torus
 
-    ┌─────┐
-    │ ┌──────────────────────────────┐
-    │ │ ╔═╧═╗  ╔═╧═╗   ╔═╧═╗   ╔═╧═╗ │
-    │ └─╢ T ╟──╢ T ╟───╢ T ╟───╢ T ╟─┘
-    │   ╚═╤═╝  ╚═╤═╝   ╚═╤═╝   ╚═╤═╝
-    │     │      │       │       │
-    │ │ ╔═╧═╗  ╔═╧═╗   ╔═╧═╗   ╔═╧═╗
-    │ └─╢ T ╟──╢ T ╟───╢ T ╟───╢ T ╟──
-    │   ╚═╤═╝  ╚═╤═╝   ╚═╤═╝   ╚═╤═╝
-    │     │      │       │       │
-    │ │ ╔═╧═╗  ╔═╧═╗   ╔═╧═╗   ╔═╧═╗
-    │ └─╢ T ╟──╢ T ╟───╢ T ╟───╢ T ╟──
-    │   ╚═╤═╝  ╚═╤═╝   ╚═╤═╝   ╚═╤═╝
-    │     │      │       │       │
-    │ │ ╔═╧═╗  ╔═╧═╗   ╔═╧═╗   ╔═╧═╗
-    │ └─╢ T ╟──╢ T ╟───╢ T ╟───╢ T ╟──
-    │   ╚═╤═╝  ╚═╤═╝   ╚═╤═╝   ╚═╤═╝
-    └─────┘      │       │       │</code>
+    ┌─────┐   ┌───┐   ┌───┐   ┌───┐
+    │ ┌───────────────────────────────┐
+    │ │ ╔═╧═╗   ╔═╧═╗   ╔═╧═╗   ╔═╧═╗ │
+    │ └─╢ T ╟───╢ T ╟───╢ T ╟───╢ T ╟─┘
+    │   ╚═╤═╝   ╚═╤═╝   ╚═╤═╝   ╚═╤═╝
+    │ ┌─  │       │       │       │  ─┐
+    │ │ ╔═╧═╗   ╔═╧═╗   ╔═╧═╗   ╔═╧═╗ │
+    │ └─╢ T ╟───╢ T ╟───╢ T ╟───╢ T ╟─┘
+    │   ╚═╤═╝   ╚═╤═╝   ╚═╤═╝   ╚═╤═╝
+    │ ┌─  │       │       │       │  ─┐
+    │ │ ╔═╧═╗   ╔═╧═╗   ╔═╧═╗   ╔═╧═╗ │
+    │ └─╢ T ╟───╢ T ╟───╢ T ╟───╢ T ╟─┘
+    │   ╚═╤═╝   ╚═╤═╝   ╚═╤═╝   ╚═╤═╝
+    │ ┌─  │       │       │       │  ─┐
+    │ │ ╔═╧═╗   ╔═╧═╗   ╔═╧═╗   ╔═╧═╗ │
+    │ └─╢ T ╟───╢ T ╟───╢ T ╟───╢ T ╟─┘
+    │   ╚═╤═╝ │ ╚═╤═╝ │ ╚═╤═╝ │ ╚═╤═╝
+    └─────┘   └───┘   └───┘   └───┘</code>
 
 </pre>
 </div></div>
 <div class="paragraph"><p>Another architecture that was initially considered was the Intel Hypercube.
 However, neither the Transputer torus nor the Intel Hypercube seemed to fit
-very well. We therefore decided to develop our own architecture named DATIS-P
-(derived from the first names of the students that developed the hardware and
-software development of the DATIS-P and the last name of the author. The
-developers were <strong>D</strong>ieter Scheerer [4], <strong>A</strong>ndreas Gergen [5], <strong>T</strong>homas
-Mörsdorf [6], and <strong>Ina</strong>.Gläs [7]. The DATIS-P was prepared for 256 CPUs,
-but for budget reasons our prototype had only 32 CPUS. The power consumption
-was about 50 Ampere at 5 Volts (which blew the fuses of our lab when we
-turned in on for the first time). The size was 3 19-inch cabinets (roughly
-the size of a mainframe at that time).</p></div>
+APL very well. We therefore decided to develop our own architecture named
+DATIS-P (derived from the first names of the students that developed the
+hardware and software development of the DATIS-P and probably the last name
+of the author. The developers were (in DATIS-P order):
+<strong>D</strong>ieter Scheerer <a href="#Sch">[Sch]</a>,
+<strong>A</strong>ndreas Gergen <a href="#Ger">[Ger]</a>,
+<strong>T</strong>homas Mörsdorf <a href="#Mör">[Mör]</a>, and last but not least
+<strong>I</strong>na Gläs <a href="#Glä">[Glä]</a>.
+The DATIS-P was prepared for 256 CPUs, but for budget reasons our
+prototype had only 32 CPUS. The power consumption was about 50 Ampere
+at 5 Volts (which blew the fuses of our lab when we turned it on for
+the first time). The size was 3 19 inch cabinets (roughly the size of
+a mainframe at that time).</p></div>
 <div class="paragraph"><p>The most challenging part of the DATIS-P was its communication network. Its
 structure was a 3-stage permutation network as invented by <strong>Waksman</strong>. Since
 no suitable technology existed at that time we developed an ASIC (a 1-bit wide
@@ -5039,8 +5045,8 @@ one master CPU. This master CPU does the APL interpretation and delegates
 <div class="ulist"><ul>
 <li>
 <p>
-was a Mototola 68020 processor (the leading etge when the development
-  started),
+was a Mototola 68020 processor (the cutting edge when the development
+  of DATIS-P started),
 </p>
 </li>
 <li>
@@ -5059,7 +5065,7 @@ A dual-port 1 MByte static memory; one port connected to the local CPU the
 <div class="paragraph"><p>The development of the hardware (PCB designs, ASIC design) and the sortware
 took from 1985 to 1989; the author was managing the hardware development
 and finished a Ph.D thesis about the parallel algorithms for the DATIS-P in
-1990 [3].</p></div>
+1990 <a href="#Sau">[Sau]</a>.</p></div>
 <div class="paragraph"><p>The main result of the thesis was:</p></div>
 <div class="paragraph"><p>───────────────────────────────────────────────────────────────────────────────</p></div>
 <div class="paragraph"><p>On the DATIS-P architecture with P processors:</p></div>
@@ -5124,63 +5130,593 @@ The main reason seems to be that the interface between the CPU cores and
 the memory does not scale with the number of cores so that the cores are
 competing for memory access. In contrast, the DATIS-P had only local
 memories whose total bandwidth grows linearly with the number of CPUs.</p></div>
-<div class="paragraph"><p>Since then the development of GNU APL had focused on bug fixing and new
-functionalities and interfaces. The main idea is to provide low-level
-computations, for which APL is not well suited, as system functions:
-* <strong>⎕DLX</strong>: D. Knuth&#8217;s Dancing Links algorithm (aka. exact cober problem)
-* <strong>⎕FFT</strong>: Fast Fourier Transformation
-* <strong>⎕FIO</strong>: File I/O (interface to ivarious libc function)
-* <strong>⎕JSON</strong>:  JSON (JavaScript Object Notation) encoding and decoding
-* <strong>⎕PLOT</strong>: PLOTting of APL arrays
-* <strong>⎕PNG</strong>: PNG (Portable Network Graphics) encoding and decoding
-* <strong>⎕RE</strong>:  Regular Expressions
-* <strong>⎕SQL</strong>: interfgace to SQL databases
-* <strong>⎕XML</strong>: XML encoding and decoding</p></div>
+</div>
+<div class="sect2">
+<h3 id="_programming">Programming</h3>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<img src="/usr/share/asciidoc/icons/note.png" alt="Note" />
+</td>
+<td class="content">Parallel APL is a purely experimental feature that should not be used
+for production code; expect crashes from time o time.</td>
+</tr></table>
+</div>
+<div class="paragraph"><p>The details are described in a separate document <strong>Parallel-APL.html</strong>, which
+is shipped with GNU APL in the same directory as this document.</p></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_exercise_1">Exercise 1</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>We conclude our journey throgh the GNU APL source code with a little exercise
+for the alert reader:</p></div>
+<div class="paragraph"><p><em>Add a new monadic system function named <strong>⎕FOO</strong> to GNU APL. <strong>⎕FOO</strong> takes a
+ 1-item integer argument <strong>B</strong> and returns the APL value (string) "FOO-B".</em></p></div>
+<div class="paragraph"><p>You may look backwards in this document and consult the GNU APL source code,
+but not peek into the solution scetch below, If you stuble over something that
+is not properly described above then please report that on
+mailto:bug-apl@gnu.org.</p></div>
+<div class="sect2">
+<h3 id="_solution_sketch_with_comments">Solution (sketch with comments)</h3>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+Add a symbol <strong>FOO</strong> to <strong>src/Id.def:</strong>
+</p>
+<div class="listingblock">
+<div class="content">
+<pre>
+
+<code>qf( FOO                , "⎕FOO"    ,          )</code>
+
+</pre>
+</div></div>
+<div class="paragraph"><p>The proper position of <strong>FOO</strong> in <strong>Id.def</strong> is important (after the last
+⎕-symbol group that starts with <strong>F</strong>, i.e. after the <strong>⎕FFT</strong> line.</p></div>
+</li>
+<li>
+<p>
+Add a header file <strong>src/Quad_FOO.hh</strong> like this:
+</p>
+<div class="listingblock">
+<div class="content">
+<pre>
+
+<code>#ifndef __Quad_FOO_HH_DEFINED__
+#define __Quad_FOO_HH_DEFINED__
+
+#include "QuadFunction.hh"
+...
+
+class Quad_FOO : public QuadFunction
+{
+public:
+   /// Constructor.
+   Quad_FOO()
+      : QuadFunction(TOK_Quad_FOO),
+        system_wisdom_loaded(false)
+   {}
+
+   static Quad_FOO * fun;          ///&lt; Built-in function.
+   static Quad_FOO  _fun;          ///&lt; Built-in function.
+
+protected:
+   /// overloaded Function::eval_B()
+   Token eval_B(Value_P B) const;
+
+   ...
+};
+
+#endif // __Quad_FOO_HH_DEFINED__</code>
+
+</pre>
+</div></div>
+<div class="paragraph"><p>Since <strong>⎕FOO</strong> is monadic, we have one handler eval_B(Value_P B), which
+overloads <strong>virtual Function::eval_B()</strong> iin <strong>Function.hh</strong> and causes our
+<strong>Quad_FOO::eval_B</strong> to be called instead of <strong>eval_B()</strong> of the base class. If
+<strong>⎕FOO</strong> should support more signatures then it is better to add them at a later
+point in time.</p></div>
+</li>
+<li>
+<p>
+Add a C++ source file <strong>src/Quad_FOO.cc</strong> like this:
+</p>
+<div class="listingblock">
+<div class="content">
+<pre>
+
+<code>#include "Quad_FOO.hh"
+
+Quad_FOO  Quad_FOO::_fun;
+Quad_FOO * Quad_FOO::fun = &amp;Quad_FOO::_fun;
+
+//-----------------------------------------------------------------------------
+Token
+Quad_FOO::eval_B(Value_P B) const
+{
+Value_P Z(LOC);                       // makes Z an APL scalar,
+   Z-&gt;next_ravel_int(42);             // which is the integer 42
+   Z-&gt;check_value(LOC);               // check Z and set its Z-&gt;VF_complete flag
+   return Token(TOK_APL_VALUE1, Z);   // return the result.
+}
+//-----------------------------------------------------------------------------</code>
+
+</pre>
+</div></div>
+<div class="paragraph"><p>We have not (yet) implemented the requested functionality in
+<strong>Quad_FOO::eval_B()</strong>. It makes life easier to first integrate <strong>⎕FOO</strong> into the
+GNU APL frameworki (and test the intergarion), and to add the funvtionality
+later on.</p></div>
+</li>
+<li>
+<p>
+When using SVN then add the new files to the repository:
+</p>
+<div class="listingblock">
+<div class="content">
+<pre>
+
+<code>$ svn add Quad_FOO.cc Quad_FOO.hh
+$ svn commit -m "new file"</code>
+
+</pre>
+</div></div>
+</li>
+<li>
+<p>
+Add the following line to several source files:
+</p>
+<div class="listingblock">
+<div class="content">
+<pre>
+
+<code>#include "Quad_FOO.hh"</code>
+
+</pre>
+</div></div>
+<div class="paragraph"><p>This makes the new declarations available in the <strong>.cc</strong> files that need it.
+The files concerned are:</p></div>
+<div class="olist loweralpha"><ol class="loweralpha">
+<li>
+<p>
+src/Archive.cc
+</p>
+</li>
+<li>
+<p>
+src/Id.cc
+</p>
+</li>
+<li>
+<p>
+src/QuadFunction.cc
+</p>
+</li>
+<li>
+<p>
+src/Workspace.cc
+</p>
+</li>
+</ol></div>
+</li>
+<li>
+<p>
+update <strong>Makefile.am</strong>.
+</p>
+<div class="olist loweralpha"><ol class="loweralpha">
+<li>
+<p>
+add the new files <strong>Quad_FOO.cc</strong> and <strong>Quad_FOO.hh</strong> to the make variable
+   <strong>common_SOURCES</strong> in <strong>src/Makefile.am</strong>:
+</p>
+<div class="listingblock">
+<div class="content">
+<pre>
+
+<code>   Quad_FOO.cc Quad_FOO.hh</code>
+
+</pre>
+</div></div>
+<div class="paragraph"><p>keep <strong>src/Makefile.am</strong> sorted alphabetically and indented in the same way as
+the other files.</p></div>
+</li>
+<li>
+<p>
+(re-)run <strong>autoreconf</strong> (in the GNU APL top-level directory)
+</p>
+<div class="listingblock">
+<div class="content">
+<pre>
+
+<code> $ autoreconf</code>
+
+</pre>
+</div></div>
+<div class="paragraph"><p>This creates a new <strong>src/Makefile.in</strong> from <strong>src/Makefile.am</strong>, and</p></div>
+</li>
+<li>
+<p>
+(re-)run <strong>./configure</strong> (also in the GNU APL top-level directory).
+</p>
+<div class="listingblock">
+<div class="content">
+<pre>
+
+<code> $ ./configure</code>
+
+</pre>
+</div></div>
+<div class="paragraph"><p>This includes the new files in <strong>src/Makefile</strong> so that they are being
+properly compiled and linked.</p></div>
+</li>
+</ol></div>
+</li>
+<li>
+<p>
+Add a <strong>TD()</strong> macro for <strong>⎕FOO</strong> in <strong>src/Token.def</strong>:
+</p>
+<div class="listingblock">
+<div class="content">
+<pre>
+
+<code>TD(TOK_Quad_FOO      , TC_FUN1      , TV_FUN  , ID::Quad_FOO     )</code>
+
+</pre>
+</div></div>
+<div class="paragraph"><p>This defines a new Token with token class <strong>TC_FUN1</strong>, value type <strong>TV_FUN</strong> i.e.
+ <strong>Function</strong> (-pointer), and ID <strong>ID::Quad_FOO</strong>. Note that:</p></div>
+<div class="olist loweralpha"><ol class="loweralpha">
+<li>
+<p>
+<strong>TC_FUN1</strong> is an alias for <strong>TC_FUN12</strong> (and so is <strong>TC_FUN2</strong>. These aliases
+ are used to make explicit that ⎕FOO is monadic. If you should add a dyadic
+ signatore later on then change the token class to <strong>TC_FUN12</strong>.
+</p>
+</li>
+<li>
+<p>
+Since <strong>src/Token.def</strong> is a <strong>.def</strong> file, it will be <strong>#inluded</strong> by several
+  <strong>.cc</strong> files and magically insert the new token in several source files.
+</p>
+</li>
+</ol></div>
+</li>
+<li>
+<p>
+Add a <strong>sf_def()</strong> macro to <strong>src/SystemVariable.def</strong>:
+</p>
+<div class="listingblock">
+<div class="content">
+<pre>
+
+<code>  sf_def(Quad_FOO,   "FOO",   "Definitely not ⎕BAR"          )</code>
+
+</pre>
+</div></div>
+<div class="paragraph"><p>This takes care of a number of things:</p></div>
+<div class="olist loweralpha"><ol class="loweralpha">
+<li>
+<p>
+)SAVE of functions in <strong>.xml</strong> workspace snapshots,
+</p>
+</li>
+<li>
+<p>
+Tab expansion of ⎕-function names,
+</p>
+</li>
+<li>
+<p>
+update of the <strong>)HELP</strong> command (short help text), and
+</p>
+</li>
+<li>
+<p>
+Instatiation in workspaces.
+</p>
+</li>
+</ol></div>
+</li>
+<li>
+<p>
+and finally: increment <strong>ASX_MINOR</strong> minor in <strong>enum ArchiveSyntax</strong> in file
+  <strong>src/Archive.hh</strong>. Adding ⎕-functions to GNU is a backward compatible change
+  of the <strong>.xml</strong> file format. The new interpreter can <strong>)LOAD</strong> files that were
+  <strong>)SAVE</strong>d with older versions, but not vice versa. Incrementing <strong>ASX_MINOR</strong>
+  will then issue a warning in older (and not too old) interpreters.
+</p>
+</li>
+<li>
+<p>
+After these changes you can build and test if the new intepreter compiles
+  and works (if not then the author has missed something above).
+</p>
+<div class="listingblock">
+<div class="content">
+<pre>
+
+<code>$ make
+$ src/apl
+
+      ⎕FOO 5
+42</code>
+
+</pre>
+</div></div>
+</li>
+<li>
+<p>
+If so, then we can add some more beef into <strong>Quad_FOO::eval_B()</strong>:
+</p>
+<div class="listingblock">
+<div class="content">
+<pre>
+
+<code>#include "Quad_FOO.hh"
+
+Quad_FOO  Quad_FOO::_fun;
+Quad_FOO * Quad_FOO::fun = &amp;Quad_FOO::_fun;
+
+//-----------------------------------------------------------------------------
+Token
+Quad_FOO::eval_B(Value_P B) const
+{
+   // check that B is a 1-item integer
+   //
+   if (B-&gt;element_count() != 1)   // rank or length error
+      {
+        if (B-&gt;get_ranke() != 1)   RANK_ERROR;
+        else                       LENGTH_ERROR;
+      }
+
+const Cell &amp; B0 = B-&gt;get_cfirst();          // first item in B
+const APL_Integer b = B0.get_int_value();   // DOMAIN_ERROR for non integers
+UCS_string z("FOO-");                       // z is string "FOO-"
+   z.append_number(b);                      // now z is e.g. "FOO-42"
+
+Value_P Z(z);                         // constructor: APL value from string
+   return Token(TOK_APL_VALUE1, Z);   // return the result.
+}
+//-----------------------------------------------------------------------------</code>
+
+</pre>
+</div></div>
+</li>
+</ol></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_exercise_2">Exercise 2</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>This exercise is similar to <a href="#Exercise 1">[Exercise 1]</a> above, but this time we want to
+create a system variable instead of a system function:</p></div>
+<div class="paragraph"><p><em>Add a new system variable named <strong>⎕FOO</strong> to GNU APL so that:</em></p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>*⎕FOO←B* with 1-item integer B shall remember B, while</em>
+</p>
+</li>
+<li>
+<p>
+<em>*Z←⎕FOO* shall be the APL value (string) "FOO-B".</em>
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>System variables are inherently more complex than system variables because
+most system functions are stateless, while system variables typically have
+state that needs to be )SAVEd in workspaces.</p></div>
+<div class="sect2">
+<h3 id="_solution_sketch_with_comments_2">Solution (sketch with comments)</h3>
+<div class="paragraph"><p>The solution is for the most part, similar to the previoius example. We
+therefore only discuss the differences.</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+System variables are (directly or indirectly) derived from class
+   <strong>SystemVariable</strong>, while system functions are derived from class <strong>Function</strong>.
+   System functions overload one or more (virtual) <strong>eval_XXX()</strong>, while system
+   variables overload the virtual;
+</p>
+<div class="ulist"><ul>
+<li>
+<p>
+<strong>Value_P get_apl_value() const</strong>, used when the variable is referenced,
+</p>
+</li>
+<li>
+<p>
+<strong>assign(Value_P B, &#8230;)</strong>, used when the variable is assigned,
+</p>
+</li>
+<li>
+<p>
+possibly <strong>*assign_indexed()</strong> for indexed assignment (if the variable
+   supportes it), and
+</p>
+</li>
+<li>
+<p>
+possibly <strong>push()</strong> and <strong>pop()</strong> functions if the variable can be localized.
+</p>
+</li>
+<li>
+<p>
+Therefore <strong>Quad_FOO.hh</strong> reads:
+</p>
+</li>
+</ul></div>
+</li>
+</ul></div>
+<div class="listingblock">
+<div class="content">
+<pre>
+
+<code>//----------------------------------------------------------------------------
+#ifndef __Quad_FOO_HH_DEFINED__
+#define __Quad_FOO_HH_DEFINED__
+
+/**
+   System variable Quad-FOO.
+ */
+/// The class implementing ⎕FOO
+class Quad_FOO : public SystemVariable
+{
+public:
+   /// Constructor.
+   Quad_IO()
+   : SystemVariable(ID_Quad_IO)
+      {
+         Symbol::assign(IntScalar(0, LOC), false, LOC);
+      }
+
+
+protected:
+  /// overloaded Symbol::assign().
+   virtual void assign(Value_P B, bool clone, const char * loc);
+
+   // overloaded Symbol::push()
+   virtual void push()
+      {
+        Symbol::push();
+        Symbol::assign(IntScalar(0, LOC), false, LOC);
+      }
+};
+
+#endif // __Quad_FOO_HH_DEFINED__</code>
+
+</pre>
+</div></div>
+<div class="ulist"><ul>
+<li>
+<p>
+and the <strong>TD()</strong> macro now becomes:
+</p>
+<div class="listingblock">
+<div class="content">
+<pre>
+
+<code>TD(TOK_Quad_FOO      , TC_SYMBOL    , TV_SYM  , ID_Quad_FOO     )</code>
+
+</pre>
+</div></div>
+</li>
+<li>
+<p>
+The <strong>sf_def()</strong> macro (<strong>sf</strong> stands for <strong>s</strong>ystem <strong>f</strong>unction) above in
+  <strong>SystemVariable.def</strong>  now becomes:
+</p>
+<div class="listingblock">
+<div class="content">
+<pre>
+
+<code>  rw_sv_def(Quad_FOO,  "FOO",    "not BAR "                 )</code>
+
+</pre>
+</div></div>
+<div class="paragraph"><p>where <strong>rw_sv_def</strong> stands for <strong>r</strong>ead/<strong>w</strong>rite <strong>s</strong>ystem <strong>v</strong>ariable. If
+⎕FOO* were read-only (which implies that localizing it has no effect), then
+macro <strong>ro_sv_def</strong> would have been used instead.</p></div>
+</li>
+</ul></div>
+<div class="paragraph"><p>The name <strong>SystemVariable.def</strong> is a little misleading because it contains the
+macros for both variables and functions.</p></div>
+</div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="_references">References</h2>
 <div class="sectionbody">
-<div class="sect2">
-<h3 id="_1_iso_iec_standard_13751_em_programming_language_apl_extended_em">[1] ISO/IEC Standard 13751: <em>Programming Language APL, Extended</em></h3>
+<div class="ulist"><ul>
+<li>
+<p>
+<a id="ISO"></a>[ISO] ISO/IEC Standard 13751.
+<em>Programming Language APL, Extended</em>
+</p>
 <div class="paragraph"><p><strong>www.math.uwaterloo.ca/~ljdickey/apl-rep/docs/is13751.pdf</strong></p></div>
-<div class="paragraph"><p>This file is, despite of its <strong>.pdf</strong> extension, a <strong>gzip</strong> compressed file which
-will expand into a proper <strong>.pdf</strong> file after uncompressed it (with <strong>gunzip</strong>).</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<img src="/usr/share/asciidoc/icons/note.png" alt="Note" />
+</td>
+<td class="content">This file is, despite of its <strong>.pdf</strong> extension, a <strong>gzip</strong> compressed
+file which will ionly expand into a proper <strong>.pdf</strong> file after uncompressed
+it (with <strong>gunzip</strong>).
+&#160;<br />
+&#160;<br /></td>
+</tr></table>
 </div>
-<div class="sect2">
-<h3 id="_2_ibm_apl2_em_language_reference_em">[2] IBM APL2: <em>Language Reference</em></h3>
+</li>
+<li>
+<p>
+<a id="IBM"></a>[IBM] IBM Corp.
+<em>APL2: Language Reference</em>
+</p>
 <div class="paragraph"><p><strong>www.ibm.com/downloads/cas/ZOKMYKOY</strong>.</p></div>
-<div class="paragraph"><p>The exact download location seem to change from time to time.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<img src="/usr/share/asciidoc/icons/note.png" alt="Note" />
+</td>
+<td class="content">The exact download location seems to change every now and then.
+&#160;<br />
+&#160;<br /></td>
+</tr></table>
 </div>
-<div class="sect2">
-<h3 id="_3_dr_jürgen_sauermann">[3] Dr. Jürgen Sauermann</h3>
-<div class="paragraph"><p><em>Ein Paralleler APL Rechner (A Parallel APL Computer)</em>.</p></div>
-<div class="paragraph"><p>Ph.D Thesis 1990, Universität des Saarlandes.</p></div>
-</div>
-<div class="sect2">
-<h3 id="_4_dipl_inf_dieter_scheerer">[4] Dipl.-inf. Dieter Scheerer</h3>
-<div class="paragraph"><p><em>Entwurf und Realisierung eines Verbindungsnetzwerks als Teil des
- Multiprozerssorsystems DATIS-P-256.</em></p></div>
-<div class="paragraph"><p>Masters Thesis 1989, Universität des Saarlandes.</p></div>
-</div>
-<div class="sect2">
-<h3 id="_5_dipl_inf_andreas_gergen">[5] Dipl.-inf. Andreas Gergen</h3>
-<div class="paragraph"><p><em>Entwurf und Realisierung einer Master-Slave Kommunikation im
-Multiprozerssorsystem DATIS-P-256</em></p></div>
-<div class="paragraph"><p>Masters Thesis 1989, Universität des Saarlandes.</p></div>
-</div>
-<div class="sect2">
-<h3 id="_6_dipl_inf_thomas_mörsdorf">[6] Dipl.-inf. Thomas Mörsdorf</h3>
-<div class="paragraph"><p><em>Entwurf, Bau, und Test einer 32-bit CPU als Teil des
-Multiprozerssorsystems DATIS-P-256.</em></p></div>
-<div class="paragraph"><p>Masters Thesis 1989, Universität des Saarlandes.</p></div>
-</div>
-<div class="sect2">
-<h3 id="_7_dipl_inf_ina_gläs">[7] Dipl.-inf. Ina Gläs</h3>
-<div class="paragraph"><p><em>Die Lösung spezieller Probleme bei der Realisierung eines
-Permutationsnetzwerkes als Teil des Multiprozerssorsystems DATIS-P-256.</em></p></div>
-<div class="paragraph"><p>Masters Thesis 1989, Universität des Saarlandes.</p></div>
-</div>
+</li>
+<li>
+<p>
+<a id="Sau"></a>[Sau] Dr. Jürgen Sauermann
+<em>Ein Paralleler APL Rechner (A Parallel APL Computer)</em>.
+</p>
+<div class="paragraph"><p>Ph.D Thesis 1990, Universität des Saarlandes.
+&#160;<br />
+&#160;<br /></p></div>
+</li>
+<li>
+<p>
+<a id="Sch"></a>[Sch] Dipl. inf. Dieter Scheerer
+<em>Entwurf und Realisierung eines Verbindungsnetzwerks als Teil des
+ Multiprozerssorsystems DATIS-P-256.</em>
+</p>
+<div class="paragraph"><p>Masters Thesis 1989, Universität des Saarlandes.
+&#160;<br />
+&#160;<br /></p></div>
+</li>
+<li>
+<p>
+<a id="Ger"></a>[Ger] Dipl. inf. Andreas Gergen
+<em>Entwurf und Realisierung einer Master-Slave Kommunikation im
+Multiprozerssorsystem DATIS-P-256</em>
+</p>
+<div class="paragraph"><p>Masters Thesis 1989, Universität des Saarlandes.
+&#160;<br />
+&#160;<br /></p></div>
+</li>
+<li>
+<p>
+<a id="Mör"></a>[Mör] Dipl. inf. Thomas Mörsdorf
+<em>Entwurf, Bau, und Test einer 32-bit CPU als Teil des
+Multiprozerssorsystems DATIS-P-256.</em>
+</p>
+<div class="paragraph"><p>Masters Thesis 1989, Universität des Saarlandes.
+&#160;<br />
+&#160;<br /></p></div>
+</li>
+<li>
+<p>
+<a id="Glä"></a>[Glä]] Dipl. inf. Ina Gläs
+<em>Die Lösung spezieller Probleme bei der Realisierung eines
+Permutationsnetzwerkes als Teil des Multiprozerssorsystems DATIS-P-256.</em>
+</p>
+<div class="paragraph"><p>Masters Thesis 1989, Universität des Saarlandes.
+&#160;<br />
+&#160;<br /></p></div>
+</li>
+</ul></div>
 </div>
 </div>
 </div>
@@ -5188,7 +5724,7 @@ Permutationsnetzwerkes als Teil des Multiprozerssorsystems DATIS-P-256.</em></p>
 <div id="footer">
 <div id="footer-text">
 Last updated
- 2023-05-06 19:55:18 CEST
+ 2023-05-07 19:55:30 CEST
 </div>
 </div>
 </body>
