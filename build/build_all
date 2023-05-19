@@ -56,6 +56,87 @@ declare -i configs_good=0
 declare -i test_errors=0
 bad_configs=""
 
+# print the.html table row for one build artifact
+# print nothing if the artifact does not exist
+#
+artifact()
+{
+local indent="      " # <TR> indentation
+local htmlname="$1"   # description (TD1)
+local filename="$2"   # anchor text
+local linkname="$3"   # anchor href (name of a symbolic link to $2
+                      # in /var/www/html/
+
+local TD1="<TD><b>$htmlname</b> : </TD>"
+local TD2="<TD><A href=\"$linkname\">$filename</A><$1</TD>"
+local noTD2="<TD>missing (<b>$linkname</b>: No such file or directory)<$1</TD>"
+
+if [ -f $linkname ]
+then
+      echo "
+$indent <TR>
+$indent   $TD1
+$indent   $TD2
+$indent </TR>
+"
+else
+      echo "
+$indent <TR>
+$indent   $TD1
+$indent   $noTD2
+$indent </TR>
+"
+fi
+}
+
+write_nightly_build_results()
+{
+# produce a .html file with the nightly build result. We do not
+# add the </body> and </html> end tags because we (and also the
+# /etc/cron.daily/znightly_build_apl script) will append to the .html
+# file later on
+#
+   if [ -d /var/www/html ]
+   then
+   { 
+echo "<!DOCTYPE html>
+<html>
+<head>
+  <title>Nightly Build Results for GNU APL</title>
+  <meta charset="UTF-8"/>
+</head>
+<body>
+  <H1><center>Nightly Build Results for GNU APL</center></H1>
+  <HR>
+  Build date:  $(date)<br><br>
+  SVN version: $SVN_VERSION<br><br>
+  $build_errors build errors<br>
+  $missing_files missing files (build results)<br>
+  $configs_bad configurations failed: $bad_configs<br>
+  $configs_good configurations succeeded<br>
+  $test_errors testcases failed<br>
+"
+
+echo "<H3>Nightly Build Artifacts (if any)</H3>
+<TABLE>"
+artifact "GNU APL interpreter" "build/apl--standard" "./apl"
+artifact "libapl.so (shared library)" "build/xxx" "./libapl.so"
+artifact "libapl.a  (static library)" "build/xxx" "./libapl.a"
+echo "</TABLE>"
+echo "<H3>Other</H3>"
+
+} > /var/www/html/nightly_build_results.html
+   fi
+}
+# refresh /var/www/html/nightly_build_results.html
+if [ "x$1" = "xnightly" ]
+then
+   write_nightly_build_results
+   exit 0
+fi
+
+# new run (takes a long timr)
+
 # remove old build results and start a fresh summary file
 #
 rm -f "$TOP_BUILD_dir"/apl-*
@@ -306,8 +387,17 @@ build_develop()
 
    # by default build all configurations (nightly build)
    #
-  configs="standard develop tar git libxcb rational \
-           libapl parallel_bench erlang python"
+  configs=""
+  configs="$configs standard"
+  configs="$configs develop"
+  configs="$configs tar"
+# configs="$configs git"
+  configs="$configs libxcb"
+  configs="$configs rational"
+  configs="$configs libapl"
+  configs="$configs parallel_bench"
+  configs="$configs erlang"
+  configs="$configs python"
 
   # however, the user may set $1 and then only that configurations is built.
   [ -n "$1" ] && configs="$1"
@@ -330,25 +420,7 @@ build_develop()
 
 cat "$TOP_LOG_dir/summary.log"
 
-   if [ -d /var/www/html ]
-   then echo "<!DOCTYPE html>
-<html>
-<head>
-  <title>Nightly Build Results for GNU APL</title>
-  <meta charset="UTF-8"/>
-</head>
-<body>
-  <H1><center>Nightly Build Results for GNU APL</center></H1>
-  <HR>
-  Build date:  $(date)<br><br>
-  SVN version: $SVN_VERSION<br><br>
-  $build_errors build errors<br>
-  $missing_files missing files (build results)<br>
-  $configs_bad configurations failed: $bad_configs<br>
-  $configs_good configurations succeeded<br>
-  $test_errors testcases failed<br>
-" > /var/www/html/nightly_build_results.html
-   fi
+write_nightly_build_results
 
 cd $START_dir     # undo all cds in this script
 stty sane         # in case some testcase failed badly
