@@ -81,16 +81,36 @@ Parser::parse(const Token_string & input, Token_string & tos) const
 std::vector<Token_string *> statements;
    {
      Token_string * stat = new Token_string();
+     int curly_depth = 0;
      loop(idx, input.size())
         {
           const Token & tok = input[idx];
-          if (tok.get_tag() == TOK_DIAMOND)
+          switch(tok.get_tag())
              {
-               statements.push_back(stat);
-               stat = new Token_string();
-             }
-          else
-             {
+               case TOK_L_CURLY:
+                    ++curly_depth;
+                    stat->push_back(tok);
+                    break;
+
+               case TOK_R_CURLY:
+                    if (curly_depth)   --curly_depth;
+                    else               return E_UNBALANCED_R_CURLY;
+                    stat->push_back(tok);
+                    break;
+
+               case TOK_DIAMOND:
+                    if (curly_depth)   // ◊ inside { ... }
+                       {
+               //        return E_ILLEGAL_DIAMOND;  // single statement { ... }
+                         stat->push_back(tok);      // multi  statement { ... }
+                       }
+                    else               // normal ◊
+                       {
+                         statements.push_back(stat);
+                         stat = new Token_string();
+                       }
+                    break;
+          default:
                stat->push_back(tok);
              }
         }
@@ -689,24 +709,31 @@ std::vector<ShapeItem> stack;
          switch(tos[t].get_Class())
            {
              // for [ ( or { push the position onto stack
-             case TC_L_BRACK:  if (tos[t].get_tag() != TOK_L_BRACK)   continue;
+             case TC_L_BRACK:
+                  if (tos[t].get_tag() != TOK_L_BRACK)   continue;
+                  /* fall through */
              case TC_L_PARENT:
-             case TC_L_CURLY:  stack.push_back(t);
-                               continue;
+             case TC_L_CURLY:
+                  stack.push_back(t);
+                  continue;
 
-             case TC_R_BRACK:  ec = E_UNBALANCED_BRACKET;
-                               tc_peer = TC_L_BRACK;
-                               break;
+             case TC_R_BRACK:
+                  ec = E_UNBALANCED_R_BRACKET;   // for empty stack below
+                  tc_peer = TC_L_BRACK;
+                  break;
 
-             case TC_R_PARENT: ec = E_UNBALANCED_PARENT;
-                               tc_peer = TC_L_PARENT;
-                               break;
+             case TC_R_PARENT:
+                  ec = E_UNBALANCED_R_PARENT;    // for empty stack below
+                  tc_peer = TC_L_PARENT;
+                  break;
 
-             case TC_R_CURLY:  ec = E_UNBALANCED_CURLY;
-                               tc_peer = TC_L_CURLY;
-                               break;
+             case TC_R_CURLY:
+                  ec = E_UNBALANCED_R_CURLY;     // for empty stack below
+                  tc_peer = TC_L_CURLY;
+                  break;
 
-             default:          continue;
+             default:
+                  continue;
            }
 
           // at this point, a closing ), ], or } was detected
@@ -723,14 +750,16 @@ std::vector<ShapeItem> stack;
           tos[t1].set_int_val2(diff);
        }
 
-   // if there are unmatched items: return syntax error of the outer token
+   // at this point all [ ( or { should have been matced (and therefore
+   // stack shuld be empty. If not:  return syntax error of the outer token
    //
    if (stack.size())
       {
         const TokenClass outer = tos[stack[0]].get_Class();
-        if (outer == TC_L_BRACK)    return E_UNBALANCED_BRACKET;
-        if (outer == TC_L_PARENT)   return E_UNBALANCED_PARENT;
-        return E_UNBALANCED_CURLY;
+        if (outer == TC_L_BRACK)    return E_UNBALANCED_L_BRACKET;
+        if (outer == TC_L_PARENT)   return E_UNBALANCED_L_PARENT;
+        if (outer == TC_L_CURLY)    return E_UNBALANCED_L_CURLY;
+        FIXME;
       }
 
    return E_NO_ERROR;

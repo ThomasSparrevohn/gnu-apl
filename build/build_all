@@ -1,5 +1,35 @@
 #!/bin/bash
 
+# process command line arguments. By default build all configurations
+# (aka. nightly build)
+   #
+   case "$1" in
+
+      "")   # default: build all configurations
+         configs="$configs standard"
+         configs="$configs develop"
+         configs="$configs tar"
+       # configs="$configs git"
+         configs="$configs libxcb"
+         configs="$configs rational"
+         configs="$configs libapl"
+         configs="$configs parallel_bench"
+         configs="$configs erlang"
+         configs="$configs python"
+         ;;
+
+      "clean")   # clean up everything
+         configs=""
+         ;;
+
+      "nightly")   # only refresh /var/www/html/nightly_build_results.html
+         configs=""
+         ;;
+
+      *)
+   esac
+         configs="$*"
+
 # this script builds different GNU APL variants and tests some of them
 
 # First of all, figure and normalize some directory names:
@@ -205,12 +235,15 @@ build_one()
    if [ $make_result -eq 0 ] ; then   # make succeeded
       echo "    make OK for configuration: $1" >> $summ
       if [ -f "$VSRC_dir/apl" ] ; then
+         cp -f "$VSRC_dir/apl" "/var/www/html/apl--$1"
          mv -f "$VSRC_dir/apl" "$TOP_BUILD_dir/apl--$1"
          configs_good=$((configs_good+1))
       elif [ -f "$VSRC_dir/.libs/libapl.so" ] ; then
+         cp -f "$VSRC_dir/.libs/libapl.so" "/var/www/html/libapl.so"
          mv -f "$VSRC_dir/.libs/libapl.so" "$TOP_BUILD_dir/"
          configs_good=$((configs_good+1))
       elif [ -f "$VSRC_dir/.libs/lib_gnu_apl.so" ] ; then
+         cp -f "$VSRC_dir/.libs/lib_gnu_apl.so" "/var/www/html/lib_gnu_apl.so"
          mv -f "$VSRC_dir/.libs/lib_gnu_apl.so" "$TOP_BUILD_dir/"
          configs_good=$((configs_good+1))
       elif [ ! -f $3 ] ; then
@@ -384,23 +417,6 @@ build_develop()
   #
   echo "Build Summary:" > "$TOP_LOG_dir/summary.log"
   echo "Build Summary Errors:" 2> "$TOP_LOG_dir/summary.log2"
-
-   # by default build all configurations (nightly build)
-   #
-  configs=""
-  configs="$configs standard"
-  configs="$configs develop"
-  configs="$configs tar"
-# configs="$configs git"
-  configs="$configs libxcb"
-  configs="$configs rational"
-  configs="$configs libapl"
-  configs="$configs parallel_bench"
-  configs="$configs erlang"
-  configs="$configs python"
-
-  # however, the user may set $1 and then only that configurations is built.
-  [ -n "$1" ] && configs="$1"
 
   for config in $configs
   do

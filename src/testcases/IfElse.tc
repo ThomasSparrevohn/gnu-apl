@@ -1,0 +1,236 @@
+⍝ IfElse.tc
+
+  ⍝   ]log 9  ON   ⍝ fix logging
+  ⍝   ]log 48 ON   ⍝ IfElse logging
+
+      ⍝ test various COND →→ THEN ←→ ELSE ←← cases
+
+      ⍝ test COND variants (primarily error conditions)
+      ⍝
+      2 →→ 'True' ←→ 'False' ←←
+DOMAIN ERROR+
+      2
+      ^
+      )MORE
+In B ←← ... →→ : condition B is not Boolean
+      )SIC
+      )CHECK BRIEF
+
+
+      1+1 →→ 'True' ←→ 'False' ←←
+DOMAIN ERROR+
+      1+1
+      ^
+      )MORE
+In B ←← ... →→ : condition B is not Boolean
+      )SIC
+      )CHECK BRIEF
+
+
+      1 1 →→ 'True' ←→ 'False' ←←
+LENGTH ERROR+
+      1 1
+      ^
+      )MORE
+In B ←← ... →→ : condition B is too long
+      )SIC
+      )CHECK BRIEF
+
+
+      ''  →→ 'True' ←→ 'False' ←←
+LENGTH ERROR+
+      ''
+      ^
+      )MORE
+In B ←← ... →→ : condition B is empty
+      )SIC
+      )CHECK BRIEF
+
+
+      ⍝ test COND TRUE variants
+      ⍝
+      1 →→ 'True' ←→ 'False' ←←
+True
+      1 →→ 1+1 ←→ 'False' ←←
+2
+      1 →→ ←→ 'False' ←←   ⍝ empty THEN
+main: Parse error+
+      )MORE
+empty →→ ... ←→ (aka. empty THEN)
+      )SIC
+      )CHECK BRIEF
+
+
+      1 →→ 'True' ←→  ←←   ⍝ empty ELSE
+main: Parse error+
+      )MORE
+empty ←→ ... ←← (aka. empty ELSE)
+      )SIC
+      )CHECK BRIEF
+
+      1 →→ ←→ ←←           ⍝ empty THEN and ELSE
+main: Parse error+
+      )MORE
+empty →→ ... ←→ (aka. empty THEN)
+      )SIC
+      )CHECK BRIEF
+
+
+      ⍝ test COND FALSE variants
+      ⍝
+      0 →→ 'True' ←→ 'False' ←←
+False
+      0 →→ 'True' ←→ 9-7 ←←
+2
+      0 →→ 'True' ←→ 4-7 ←←
+¯3
+      0 →→ 'True' ←→ 'False' ←←
+False
+      0 →→  ←→ 'False' ←←   ⍝ empty THEN
+main: Parse error+
+      )MORE
+empty →→ ... ←→ (aka. empty THEN)
+      )SIC
+      )CHECK BRIEF
+
+
+      0 →→ 'True' ←→ ←←   ⍝ empty ELSE
+main: Parse error+
+      )MORE
+empty ←→ ... ←← (aka. empty ELSE)
+      )SIC
+      )CHECK BRIEF
+      
+
+            0 →→ 'True' ←→ ←←   ⍝ empty ELSE
+main: Parse error+
+      )MORE
+empty ←→ ... ←← (aka. empty ELSE)
+      )SIC
+      )CHECK BRIEF
+
+
+      0 →→ ←→ ←←           ⍝ empty THEN and ELSE
+main: Parse error+
+      )MORE
+empty →→ ... ←→ (aka. empty THEN)
+      )SIC
+      )CHECK BRIEF
+
+
+      ⍝ functions
+      ⍝
+      )ERASE FOO
+
+∇FOO COND
+[1] 'Line 1 (if-else-endif)'
+[2] COND    →→
+[3] 'TRUE'  ←→
+[4] 'FALSE' ←←
+[5]  'Line 5' COND
+∇
+
+      )SIC
+      )CHECK BRIEF
+
+      FOO 0
+Line 1 (if-else-endif)
+FALSE
+ Line 5 0 
+
+      FOO 1
+Line 1 (if-else-endif)
+TRUE
+ Line 5 1 
+
+      )MORE
+NO )MORE ERROR INFO
+
+      )SIC
+      )CHECK BRIEF
+
+      )ERASE FOO
+
+∇FOO COND
+[1]  'Line 1 (if-endif)'
+[2]  COND   →→
+[3]  'TRUE' ←←
+[4]  'Line 4' COND
+∇
+
+      )CHECK BRIEF
+
+      FOO 0
+Line 1 (if-endif)
+ Line 4 0 
+
+      FOO 1
+Line 1 (if-endif)
+TRUE
+ Line 4 1 
+
+      )ERASE FOO
+
+∇FOO COND
+[1] 'Line 1 (single line if-else-endif)'
+[2] COND →→ 'TRUE' ←→ 'FALSE' ←←
+[3]  'Line 3' COND
+∇
+
+      FOO 0
+Line 1 (single line if-else-endif)
+FALSE
+ Line 3 0 
+
+      FOO 1
+Line 1 (single line if-else-endif)
+TRUE
+ Line 3 1 
+
+      )MORE
+NO )MORE ERROR INFO
+
+      ⍝ nested if clause
+      ⍝
+      T←t←1 ◊ E←e←0
+      E →→ e →→ 'Tt' ←→ 'Te' ←← ←→ 'E'←←
+E
+      E →→ t →→ 'Tt' ←→ 'Te' ←← ←→ 'E'←←
+E
+      T →→ e →→ 'Tt' ←→ 'Te' ←← ←→ 'E'←←
+Te
+      T →→ t →→ 'Tt' ←→ 'Te' ←← ←→ 'E'←←
+Tt
+
+      ⍝ nested else clause
+      ⍝
+      E →→ 'T' ←→ e →→ 'Et' ←→ 'Ee' ←← ←←
+Ee
+      E →→ 'T' ←→ t →→ 'Et' ←→ 'Ee' ←← ←←
+Et
+      T →→ 'T' ←→ e →→ 'Et' ←→ 'Ee' ←← ←←
+T
+      T →→ 'T' ←→ t →→ 'Et' ←→ 'Ee' ←← ←←
+T
+
+      ⍝ nested then and nested else clauses
+      ⍝
+      E →→   e →→ 'Tt' ←→ 'Te' ←←   ←→   e →→ 'Et' ←→ 'Ee' ←← ←←
+Ee
+      E →→   e →→ 'Tt' ←→ 'Te' ←←   ←→   t →→ 'Et' ←→ 'Ee' ←← ←←
+Et
+      E →→   t →→ 'Tt' ←→ 'Te' ←←   ←→   e →→ 'Et' ←→ 'Ee' ←← ←←
+Ee
+      E →→   t →→ 'Tt' ←→ 'Te' ←←   ←→   t →→ 'Et' ←→ 'Ee' ←← ←←
+Et
+      T →→   e →→ 'Tt' ←→ 'Te' ←←   ←→   e →→ 'Et' ←→ 'Ee' ←← ←←
+Te
+      T →→   e →→ 'Tt' ←→ 'Te' ←←   ←→   t →→ 'Et' ←→ 'Ee' ←← ←←
+Te
+      T →→   t →→ 'Tt' ←→ 'Te' ←←   ←→   e →→ 'Et' ←→ 'Ee' ←← ←←
+Tt
+      T →→   t →→ 'Tt' ←→ 'Te' ←←   ←→   t →→ 'Et' ←→ 'Ee' ←← ←←
+Tt
+
+      )SIC
+      )CHECK BRIEF

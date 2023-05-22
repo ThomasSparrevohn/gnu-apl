@@ -103,7 +103,8 @@ UserFunction::UserFunction(const UCS_string txt, const char * loc,
 }
 //----------------------------------------------------------------------------
 UserFunction::UserFunction(Fun_signature sig, int lambda_num,
-                           const UCS_string & text, Token_string & lambda_body)
+                           const UCS_string & text, Token_string & lambda_body,
+                           const vector<Symbol *> & lvars)
   : Function(ID_USER_SYMBOL, TOK_FUN0),
     Executable(sig, lambda_num, text, LOC),
     header(sig, lambda_num),
@@ -130,14 +131,7 @@ UserFunction::UserFunction(Fun_signature sig, int lambda_num,
    else if (header.B())    tag = TOK_FUN1;
    else                    tag = TOK_FUN0;
 
-   while (lambda_body.size() > 2 &&
-          lambda_body.back().get_Class() == TC_SYMBOL &&
-          lambda_body[lambda_body.size() - 2].get_tag() == TOK_SEMICOL)
-      {
-        header.add_local_var(lambda_body.back().get_sym_ptr());
-        lambda_body.pop_back();   // varname
-        lambda_body.pop_back();   // semicolon
-      }
+   loop(lv, lvars.size())   header.add_local_var(lvars[lv]);
 
    // order of local vars is reversed. Fix that.
    //
@@ -955,6 +949,9 @@ UCS_string_vector original_text;
 
    // restore the original text (before any multi-line expansion)
    if (original_text.size())   text = original_text;
+
+   // recompute the →→ ←→ ←← jump PCs
+   compute_if_else_targets();
 }
 //----------------------------------------------------------------------------
 UserFunction *
@@ -975,11 +972,96 @@ UserFunction * fun = 0;
    catch (...)
       {
         delete fun;
-        CERR << "Caught some exception\n";
+        CERR << "Caught unexpected exception at " << LOC << endl;
         return 0;
       }
 
    return fun;
+}
+//----------------------------------------------------------------------------
+void
+UserFunction::optimize_unconditional_branches()
+{
+   /* check for: VALUE → ENDL      e.g. → 4
+      or:        SYMBOL → ENDL     e.g. → LABEL
+
+      but rule out expressions:   e.g. → 4 + 5
+
+      ⎕FX "FOO" "X←2" "→2" "Y←5"
+      ⎕FX "FOO" "X←2" "→0" "'NOT REACHED'"
+      ⎕FX "FOO" "X←2" "LABEL: Z←3 ◊ →LABEL" "Y←5"
+
+    */
+   for (Function_PC pc = Function_PC_0; pc < body.size() - 3; ++pc)
+      {
+        if (body[pc].get_Class()   != TC_END)       continue;
+        if (body[pc+2].get_Class() != TC_R_ARROW)   continue;
+        if (body[pc+3].get_Class() != TC_END)       continue;
+
+        // at this point we have →N where N is an integer literal pr a label.
+        // figure the function line (which may ne impossibe)
+        //
+        Function_Line function_line = Function_Invalid;
+        if (body[pc+1].get_Class() == TC_VALUE)
+           {
+             // e.g. → 4
+             // 
+             if (const Value * v_line = body[pc+1].get_apl_val().get())
+                {
+                  if (v_line->is_int_scalar())
+                     {
+                       function_line =
+                          Function_Line(v_line->get_cscalar().get_int_value());
+                     }
+                }
+           }
+        else if (body[pc+1].get_Class() == TC_SYMBOL)
+           {
+             // e.g. → LABEL
+             //
+             if (const Symbol * sym = body[pc+1].get_sym_ptr())
+                {
+                  // at this point, sym->top_of_stack() is of little use
+                  // because this function is not called. We therefore
+                  // cannot use sym->top_of_stack() but have to search
+                  // the label in UserFunction_header::label_values
+                  //
+                  loop(l, header.get_label_count())
+                      {
+                        const labVal & lv = header.get_label(l);
+                        if (sym == lv.sym)   // label found
+                           {
+                             function_line = lv.line;
+                             break;
+                           }
+                      }
+                }
+           }
+
+        if (function_line != Function_Invalid)   // if line found
+           {
+             // at this point we have found a valid line for the branch.
+             // The line may be before, inside, or past of the body.
+             //
+             int64_t target = Function_PC_done;   // assume →0 or so
+             if (function_line >= Function_Line_1 &&
+                  function_line < Function_Line(line_starts.size()))   // valid
+                {
+                  target = line_starts[function_line];
+                }
+
+             // maybe do it. This optimization does not work well with
+             // conditonals,so we don't if we see one.
+             //
+             if (!body[pc + 3].is_COND())
+                {
+                  body[pc + 1].clear(LOC);   // release B
+                  body[pc + 1] = Token(TOK_GOTO_PC, target);   // B with →PC
+                  body[pc + 2].copy_N(body[pc + 3]);           // → with ENDL
+               // body[pc + 3] does not hurt, so we leave it as is
+                }
+           }
+      }
 }
 //----------------------------------------------------------------------------
 void
@@ -1041,7 +1123,7 @@ int error_line = -1;
 Function_PC
 UserFunction::pc_for_line(Function_Line line) const
 {
-   if (line < 1 || line >= int(line_starts.size()))
+   if (line <= Function_Line_0 || line >= Function_Line(line_starts.size()))
       return Function_PC(body.size() - 1);
 
    return line_starts[line];
@@ -1148,22 +1230,35 @@ Function_P old_function = symbol->get_function();
         CERR <<  "------------------- UserFunction::fix() OK --" << endl;
       }
 
+   ufun->optimize_unconditional_branches();
+   if (ufun->compute_if_else_targets())
+      {
+        // must NOT: delete ufun;
+
+        if (tolerant)   return 0;   // caller checks result
+        DEFN_ERROR;
+      }
+
    return ufun;
 }
 //----------------------------------------------------------------------------
 UserFunction *
 UserFunction::fix_lambda(Symbol & var, const UCS_string & text)
 {
+   // NOTE: only called from Archive::read_Function to adjust the different
+   // texts of normal defined functions (where local vars are in the header)
+   // and lambdas (where the local vars are at the end of the lambda).
+
    /* Example: consider {⍺+⍵;LOCAL}
 
-      text a normal (non-lambda) function like:
+      the )SAVE'd function body is:
 
       λ←⍺ λ1 ⍵;LOCAL
       λ← ⍺+⍵
 
-       which has a slightly different lambda body like:
+      this function restores it to:
 
-       λ← ⍺+⍵;LOCAL
+      λ← ⍺+⍵;LOCAL
 
     */
 int signature = SIG_FUN | SIG_Z;
@@ -1174,17 +1269,17 @@ ShapeItem semi = -1;
        {
          switch(text[t++])
             {
-              case UNI_CHI:             signature |= SIG_X;    continue;
-              case UNI_OMEGA:           signature |= SIG_B;    continue;
-              case UNI_ALPHA_UNDERBAR:  signature |= SIG_LO;   continue;
-              case UNI_OMEGA_UNDERBAR:  signature |= SIG_RO;   continue;
-              case UNI_ALPHA:           signature |= SIG_A;    continue;
+              case UNI_CHI:            signature |= SIG_X;    continue;
+              case UNI_OMEGA:          signature |= SIG_B;    continue;
+              case UNI_ALPHA_UNDERBAR: signature |= SIG_LO;   continue;
+              case UNI_OMEGA_UNDERBAR: signature |= SIG_RO;   continue;
+              case UNI_ALPHA:          signature |= SIG_A;    continue;
 
-              case UNI_SEMICOLON: if (semi == -1)   semi = t - 1;
-                                        continue;
+              case UNI_SEMICOLON:      if (semi == -1)   semi = t - 1;
+                                       continue;
 
-              case UNI_LF:        break;   // header done
-              default:                  continue;
+              case UNI_LF:             break;   // header line done
+              default:                 continue;
             }
 
          break;   // header done
@@ -1217,15 +1312,24 @@ Token_string body;
       }
 
 const Parser parser(PM_FUNCTION, LOC, false);
-const ErrorCode ec = parser.parse(body_text, body);
-   if (ec)
+   if (const ErrorCode ec = parser.parse(body_text, body))
       {
         CERR << "Parsing '" << body_text << "' failed" << endl;
         return 0;
       }
 
+vector<Symbol *> local_vars;
+   while (body.size() >= 2)
+      {
+        const size_t semi = body.size() - 2;
+        if (body[semi]    .get_tag() != TOK_SEMICOL)   break;
+        if (body[semi + 1].get_Class() != TC_SYMBOL)   break;
+        local_vars.push_back(body[semi + 1].get_sym_ptr());
+        body.resize(semi);   // leave ENDL and RETURN_SYMBOL
+      }
+
 UserFunction * ufun = new UserFunction(Fun_signature(signature), 0,
-                                       body_text, body);
+                                       body_text, body, local_vars);
    return ufun;
 }
 //----------------------------------------------------------------------------

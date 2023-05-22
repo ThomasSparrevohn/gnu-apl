@@ -1066,6 +1066,7 @@ character:
                   ┌──────────────┐
                   │ process_line │
                   └──────┬───────┘
+                         │
          ┌───────────────┼──────────────────┐
          │               │                  │
          ∇              ),]               other
@@ -1264,24 +1265,37 @@ By reversing every statement the same processing order now becomes:
       └───────┘ └───┘ └───┘ └───┘ └─────┘ └───┘ └───┘ └─────┘
 ----
 
-This order can be processed much faster since the order is now linear and no
-more back and forth jumps are needed when the token string is interpreted.
+*DEFINITION*: in source code comments, we refer to the initial token order
+(statement tokens from left to right, statements from left to right,
+and lines from top to bottom) as the *APL order* and to the order after
+reversing the tokens of every statements (statement tokens from right to left,
+statements from left to right, and lines from top to bottom) as the
+*reversed order*. The reversion is performed in *Executable::parse_body_line().
+In other words, function *Tokenizer::tokenize()* produces a *Token_string tos*
+in APL order, which is later reversed into the final function body
+*Token_string Executable::body*.
+
+The reversed order can be processed much faster since the order is now linear
+and no more back and forth jumps are needed when the token string is
+interpreted.
 
 Another trick in the pre-parsing phase is to store the distance between
 opening and closing parentheses and square brackets (curly bracket are removed
-entirely in this phase). Sometimes the prefix-parser (*Prefix.cc*)  that
-finally performs the interpretation has to jump over a pair of parentheses
-or brackets as to find the token left of them. Instead of scanning the token
-string at runtime until a matching parenthesis or bracket is found, one can
-compute its location directly (i.e. in time O(1) rather than O(∆) for distance
-∆ between the matching parentheses or brackets):
+entirely in this phase) in the token itself. Sometimes the prefix-parser
+(*Prefix.cc*)  that finally performs the interpretation has to jump
+over a pair of parentheses or brackets as to find the token left of them.
+Instead of scanning the token string at runtime until a matching parenthesis
+or bracket is found, one can compute its location directly (i.e. in time
+O(1) rather than O(∆) for distance ∆ between the matching parentheses
+or brackets):
+
 ----
-    ┌─────┐     ┌─────┐           ┌─────┐     ┌─────┐
-    │ [,∆ │ ... │ ],∆ │   resp.   │ (,∆ │ ... │ ),∆ │ 
-    └─────┘     └─────┘           └─────┘     └─────┘
-       │← ← ←∆→ → →│                 │← ← ←∆→ → →│   
+    ┌─────┐       ┌─────┐            ┌─────┐       ┌─────┐
+    │ [,∆ │  ...  │ ],∆ │   resp.    │ (,∆ │  ...  │ ),∆ │ 
+    └─────┘       └─────┘            └─────┘       └─────┘
+      │← ← ← ∆ → → →│                  │← ← ← ∆ → → →│   
 ----
-The Pre-parser function returns an error code and fills its argument tos
+The Pre-parser function returns an error code and fills its argument *tos*
 as a side effect:
 ----
   Parser.hh:
@@ -1360,7 +1374,8 @@ the first character in their name (the character after ⎕ for system functions
 and variables) or e.g. "P" for Plus, "M" for Minus etc. These IDs are not only
 used in the body tokens of executables but also in )SAVEd .xml snapshot. It is
 therefore essential that new IDs are added at the end of ID group that starts
-with the same character. The first character (upper 8 bits of of the ID are
+with the same character, and that obsolete IDs are kept (or at least their
+ID are never reused). The first character (upper 8 bits of of the ID are
 chosen in a way that simplifies debugging a Little at no cost.
 
 All user defined symbols have the ID 0x0000 and their token contains a unique
@@ -1368,6 +1383,23 @@ All user defined symbols have the ID 0x0000 and their token contains a unique
 *SymbolTable.hh*) is only used by the pre-parser (to ensure that all symbols
 have the same *Symbol *) and by some APL commands like *)FNS*, *)VARS*,
 *)OPS*, etc..
+
+The Id.def file classifies the around 200 IDs via 5 macros that indicate their
+porpose or usage:
+
+* macro *pp(...)*: **p**retty   **p**rint. For constructing the name (usually
+  "---") of a token that has no permanent role, e.g. pass C function arguments.
+  E.g. NO_VALUE, VARIABLE, ...
+* macro *qf(...)*: **q**quad    **f**unction. Quad function, 
+  e.g. ⎕DL, ⎕FX, ...
+* macro *qv(...)*: **q**quad    **v**ariable Wuad variable,
+  e.g. ⎕CT, ⎕IO, ...
+* macro *sf(...)*: **s**system  **f**function. An APL priMitive,
+  e.g. ⍴, ⌽,  ...
+ ...
+* macro *st(...)*: **s**system  **t**oken. An ID for other token,
+  e.g. ⍺, →. ...
+
 
 === Token Structure
 

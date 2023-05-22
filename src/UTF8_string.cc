@@ -401,7 +401,7 @@ UTF8_string::round_0_1()
 }
 //----------------------------------------------------------------------------
 ostream &
-operator<<(ostream & os, const UTF8_string & utf)
+operator <<(ostream & os, const UTF8_string & utf)
 {
    loop(c, utf.size())   os << utf[c];
    return os;

@@ -258,6 +258,7 @@ enum Bitmask
 /// return from the function).
 enum Function_Line
 {
+   Function_Invalid = -3,   // invalid function line (in →N optimization)
    Function_Retry   = -2,   // →'' in immediate execution
    Function_Return  = -1,   // →N with N≤0 or large
    Function_Line_0  =  0,
@@ -341,7 +342,7 @@ enum PrintStyle
 enum Function_PC
 {
    Function_PC_0       =  0,   ///< the first token in a function
-   Function_PC_done    = -1,   ///< goto 0
+   Function_PC_done    = -1,   ///< goto 0 (leave function)
    Function_PC_invalid = -1    ///< dito
 };
 //----------------------------------------------------------------------------

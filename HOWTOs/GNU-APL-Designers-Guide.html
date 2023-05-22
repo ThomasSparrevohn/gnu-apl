@@ -2300,6 +2300,7 @@ character:</p></div>
 <code>                  ┌──────────────┐
                   │ process_line │
                   └──────┬───────┘
+                         │
          ┌───────────────┼──────────────────┐
          │               │                  │
          ∇              ),]               other
@@ -2598,28 +2599,39 @@ be processed like this:</p></div>
 
 </pre>
 </div></div>
-<div class="paragraph"><p>This order can be processed much faster since the order is now linear and no
-more back and forth jumps are needed when the token string is interpreted.</p></div>
+<div class="paragraph"><p><strong>DEFINITION</strong>: in source code comments, we refer to the initial token order
+(statement tokens from left to right, statements from left to right,
+and lines from top to bottom) as the <strong>APL order</strong> and to the order after
+reversing the tokens of every statements (statement tokens from right to left,
+statements from left to right, and lines from top to bottom) as the
+<strong>reversed order</strong>. The reversion is performed in <strong>Executable::parse_body_line().
+In other words, function *Tokenizer::tokenize()</strong> produces a <strong>Token_string tos</strong>
+in APL order, which is later reversed into the final function body
+<strong>Token_string Executable::body</strong>.</p></div>
+<div class="paragraph"><p>The reversed order can be processed much faster since the order is now linear
+and no more back and forth jumps are needed when the token string is
+interpreted.</p></div>
 <div class="paragraph"><p>Another trick in the pre-parsing phase is to store the distance between
 opening and closing parentheses and square brackets (curly bracket are removed
-entirely in this phase). Sometimes the prefix-parser (<strong>Prefix.cc</strong>)  that
-finally performs the interpretation has to jump over a pair of parentheses
-or brackets as to find the token left of them. Instead of scanning the token
-string at runtime until a matching parenthesis or bracket is found, one can
-compute its location directly (i.e. in time O(1) rather than O(∆) for distance
-∆ between the matching parentheses or brackets):</p></div>
+entirely in this phase) in the token itself. Sometimes the prefix-parser
+(<strong>Prefix.cc</strong>)  that finally performs the interpretation has to jump
+over a pair of parentheses or brackets as to find the token left of them.
+Instead of scanning the token string at runtime until a matching parenthesis
+or bracket is found, one can compute its location directly (i.e. in time
+O(1) rather than O(∆) for distance ∆ between the matching parentheses
+or brackets):</p></div>
 <div class="listingblock">
 <div class="content">
 <pre>
 
-<code>    ┌─────┐     ┌─────┐           ┌─────┐     ┌─────┐
-    │ [,∆ │ ... │ ],∆ │   resp.   │ (,∆ │ ... │ ),∆ │
-    └─────┘     └─────┘           └─────┘     └─────┘
-       │← ← ←∆→ → →│                 │← ← ←∆→ → →│</code>
+<code>    ┌─────┐       ┌─────┐            ┌─────┐       ┌─────┐
+    │ [,∆ │  ...  │ ],∆ │   resp.    │ (,∆ │  ...  │ ),∆ │
+    └─────┘       └─────┘            └─────┘       └─────┘
+      │← ← ← ∆ → → →│                  │← ← ← ∆ → → →│</code>
 
 </pre>
 </div></div>
-<div class="paragraph"><p>The Pre-parser function returns an error code and fills its argument tos
+<div class="paragraph"><p>The Pre-parser function returns an error code and fills its argument <strong>tos</strong>
 as a side effect:</p></div>
 <div class="listingblock">
 <div class="content">
@@ -2746,13 +2758,50 @@ the first character in their name (the character after ⎕ for system functions
 and variables) or e.g. "P" for Plus, "M" for Minus etc. These IDs are not only
 used in the body tokens of executables but also in )SAVEd .xml snapshot. It is
 therefore essential that new IDs are added at the end of ID group that starts
-with the same character. The first character (upper 8 bits of of the ID are
+with the same character, and that obsolete IDs are kept (or at least their
+ID are never reused). The first character (upper 8 bits of of the ID are
 chosen in a way that simplifies debugging a Little at no cost.</p></div>
 <div class="paragraph"><p>All user defined symbols have the ID 0x0000 and their token contains a unique
 <strong>Symbol *</strong> pointer. The symbol table (class <strong>SymbolTable</strong> in file
 <strong>SymbolTable.hh</strong>) is only used by the pre-parser (to ensure that all symbols
 have the same <strong>Symbol *) and by some APL commands like *)FNS</strong>, <strong>)VARS</strong>,
 <strong>)OPS</strong>, etc..</p></div>
+<div class="paragraph"><p>The Id.def file classifies the around 200 IDs via 5 macros that indicate their
+porpose or usage:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+macro <strong>pp(&#8230;)</strong>: <strong>p</strong>retty   <strong>p</strong>rint. For constructing the name (usually
+  "---") of a token that has no permanent role, e.g. pass C function arguments.
+  E.g. NO_VALUE, VARIABLE, &#8230;
+</p>
+</li>
+<li>
+<p>
+macro <strong>qf(&#8230;)</strong>: <strong>q</strong>quad    <strong>f</strong>unction. Quad function,
+  e.g. ⎕DL, ⎕FX, &#8230;
+</p>
+</li>
+<li>
+<p>
+macro <strong>qv(&#8230;)</strong>: <strong>q</strong>quad    <strong>v</strong>ariable Wuad variable,
+  e.g. ⎕CT, ⎕IO, &#8230;
+</p>
+</li>
+<li>
+<p>
+macro <strong>sf(&#8230;)</strong>: <strong>s</strong>system  <strong>f</strong>function. An APL priMitive,
+  e.g. ⍴, ⌽,  &#8230;
+ &#8230;
+</p>
+</li>
+<li>
+<p>
+macro <strong>st(&#8230;)</strong>: <strong>s</strong>system  <strong>t</strong>oken. An ID for other token,
+  e.g. ⍺, →. &#8230;
+</p>
+</li>
+</ul></div>
 </div>
 <div class="sect2">
 <h3 id="_token_structure">Token Structure</h3>
@@ -5724,7 +5773,7 @@ Permutationsnetzwerkes als Teil des Multiprozerssorsystems DATIS-P-256.</em>
 <div id="footer">
 <div id="footer-text">
 Last updated
- 2023-05-07 19:55:30 CEST
+ 2023-05-15 19:50:52 CEST
 </div>
 </div>
 </body>
