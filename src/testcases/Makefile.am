@@ -96,6 +96,7 @@ dist_noinst_DATA =                              \
         Oper_negative.tc                        \
         OperPower.tc                            \
         Oper_userfun.tc                         \
+        Optimization.tc                         \
         Or.tc                                   \
         OuterProduct.tc                         \
         Parallel.tc                             \

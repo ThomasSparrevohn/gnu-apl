@@ -591,13 +591,15 @@ Prefix::push_next_token()
         return false;
       }
 
+again:
+
    // TC_END is the end of the statement (i.e. the leftmost token in APL).
    // The caller wants one more Token, but we may not have any. In that
    /// case: prepare the )MORE info and throw a SYNTAX_ERROR.
    //
    if (size() > 0 && at0().get_Class() == TC_END)   push_END_error();
 
-Token_loc tloc = lookahead();   // possibly changed by Symbol::resolve()
+Token_loc tloc = lookahead();   // tloc is possibly changed by Symbol::resolve()
 const TokenClass tcl = tloc.tok.get_Class();
    Log(LOG_prefix_parser)
       {
@@ -609,9 +611,16 @@ const TokenClass tcl = tloc.tok.get_Class();
 
    PC_range_high = tloc.pc;   // expand the PC range of the stack
 
-   if (tcl == TC_SYMBOL)   // resolve symbol if necessary
+   if (tloc.tok.get_tag() == TOK_GOTO_PC)   // →N
+      {
+        PC = Function_PC(tloc.tok.get_int_val());
+        Assert1(size() == 0);
+        goto again;
+      }
+
+   if (tcl == TC_SYMBOL)          // resolve symbol if necessary
       return push_Symbol(tloc);   // true iff )SI pushed
-   else if (tcl == TC_ASSIGN)   // update assign_state (from right to left)
+   else if (tcl == TC_ASSIGN)     // update assign_state (from right to left)
       {
         if (get_assign_state() != ASS_none)   syntax_error(LOC);
         set_assign_state(ASS_arrow_seen);
@@ -2307,7 +2316,7 @@ Prefix::reduce_END_VOID__()
    if (size() != 2)   syntax_error(LOC);
 
 const bool end_of_line = at0().get_tag() == TOK_ENDL;
-const bool trace = (at0().get_int_val() & 1) != 0;
+const bool trace = end_of_line && (at0().get_int_val() & 1);
 
    pop_and_discard();   // pop END
    pop_and_discard();   // pop VOID
@@ -2333,8 +2342,8 @@ Prefix::reduce_END_B__()
    if (size() != 2)   syntax_error(LOC);
 
 const Token END = pop().tok;   // pop END
-bool end_of_line = END.get_tag() == TOK_ENDL;
-bool trace = (END.get_int_val() & 1) != 0;
+const bool end_of_line = END.get_tag() == TOK_ENDL;
+const bool trace = end_of_line && (END.get_int_val() & 1);
 
 Token B = pop().tok;   // pop B
 
@@ -2382,7 +2391,6 @@ Token B = pop().tok;   // pop B
    //
    if (END.get_tag() == TOK_IF_END)
       {
-        trace = false;
         Log(LOG_IfElse)   CERR << 
             "ENDIF reached, PC is now: " << PC << endl;
         while (body[PC].get_tag() == TOK_IF_END)   ++PC;
@@ -2393,7 +2401,6 @@ Token B = pop().tok;   // pop B
       }
    else if (END.get_tag() == TOK_IF_ELSE)
       {
-        trace = false;
         PC = Function_PC(END.get_int_val()); 
         Log(LOG_IfElse)   CERR << 
             "END of THEN reached, PC is now: " << PC << endl;
@@ -2510,7 +2517,7 @@ Prefix::reduce_END_GOTO_B_()
    //       or TOK_OPER1
    //
 const bool end_of_line = at0().get_tag() == TOK_ENDL;
-const bool trace = at0().get_Class() == TC_END && (at0().get_int_val() & 1);
+const bool trace = end_of_line && (at0().get_int_val() & 1);
 
 const Value * line = at2().get_apl_val().get();
 

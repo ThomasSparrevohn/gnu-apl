@@ -532,6 +532,12 @@ enum TimeScale
   SECONDS_PER_QUARTER =          SECONDS_PER_YEAR / 4,   ///<  7,884,000
 };
 //----------------------------------------------------------------------------
+/// the number of TOK_VOID removed from the body of an \b Executable
+enum VoidCount
+{
+  NO_VOID_TOKEN_REMOVED = 0
+};
+//----------------------------------------------------------------------------
 
 //////////////////////////////////////////////////////////////
 // C. structs                                               //

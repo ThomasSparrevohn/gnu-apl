@@ -8,7 +8,7 @@
 :iconsdir: /usr/share/asciidoc/icons
 :icons:
 
-= An Introduction for GNU APL Interpreter Designers and Contributors
+= An Introduction for Designers and Contributors to the GNU APL Interpreter
 
 == Abstract
 
@@ -2294,7 +2294,7 @@ corresponding *Value::Value(...)**. On the other hand, many functions use
 function arguments. This is safe and slightly more efficient if the called
 function does not modify the Value (and hence its ownership) passed as argument.
 
-=== Cloning of Values
+==== Cloning of Values
 
 The cloning (deep aka. recursive) copying of a Value is somewhat expensive in
 terms of performance. Cloning is, however, only needed if the close is
@@ -2496,6 +2496,152 @@ with the name of the symbol is defined with *⎕FX* or the ∇-editor.
 The actual role of a user defined symbol can change over time, while the role
 of a system name is fixed and can not be changed. E.g. *⎕IO* is always a
 variable and *⎕UCS* is always a function.
+
+== Executables
+
+Every APL input line is first tokenized, and the result of this tokenization
+is an *Executable*. The primary content of any *Executable* is a *TokenString*
+named *body*:
+
+----
+   Token.hh:
+
+class Token_string : public  std::vector<Token> { ... }
+
+    Executable.hh:
+
+// Base class for ExecuteList, StatementList, and UserFunction
+class Executable
+{
+   ...
+   Token_string body;
+   ...
+}
+----
+
+The rest of class *Executable* are helper functions that support the
+execution of the raw *body*.
+
+There are 3 cases where **Executable**s are produced (in order of decreasing
+relevance):
+
+. The definition of a defined function, either interactively with the
+  ∇-editor, or programmatically in APL with *⎕FX*.
+. The evaluation of a single input line in immediate execution, and
+. The evaluation of an APL string with APL primitive ⍎ (aka. Execute).
+
+For each of these 3 cases (which also correspond to the *ParseMode* mentioned
+above), a corresponding class for that case is derived:
+
+----
+    Executable.hh:
+    ...
+class UserFunction : public Function, public Executable { ... }
+class StatementList : public Executable { ... }
+class ExecuteList : public Executable { ... }
+    ....
+----
+
+In some debug outputs, as well as in some commands and in ⎕SI, the derived
+class of a particular *Executable* is displayed as a single character like
+this:
+
+* class UserFunction: ∇
+* class StatementList: ◊
+* class ExecuteList: ⍎
+
+Each of a derived class has a static function *fix()* which creates an
+instance of that class. The *fix()* function acts as a constructor for
+the derived class. Unlike a normal constructor (which either returns a
+valid object of the class or else throws an execption, the *fix()*  function
+returns 0 if the construction fails (typically due to some SYNTAX ERROR in
+the input line(s) passed to it. The *fix()* functon of class  *UserFunction*
+is essentially the implementation of *monadic ⎕FX*, and is also called after
+the ∇-editor finalizes a function definition (trailing ∇).
+
+The main differences between the 3 classes are:
+
+[cols="<,^,^,^,^,^", options="header,autowidth"]
+|====
+| Derived Class | Number of lines | Statements/Line | Jumps/Labels +
+                | Arguments | Result
+| ExecuteList          | single line    | one     | no  | no  | yes
+| StatementList        | single line    | several | no  | no  | no
+| UserFunction ∇, ⎕FX  | multiple lines | several | yes | yes | yes
+| UserFunction { ... } | single line    | one     | no  | yes | yes
+|====
+
+=== The classes ExecuteList and StatementList
+
+The execution of **ExecuteList**s and **StatementList**s is rather simple:
+the tokens of their body are intepreter from the start of the body to its end,
+no arguments can be passed to the body, no change of the execution with
+branches (→N), etc..
+
+=== The class UserFunction
+
+Defined functions (class UserFunction) are far more complex. As can be seen
+above, class UserFunction inherits from the two classes *Function* and
+*Executable*.
+
+The inheritance from *Function* overrides its various virtual *eval_XXX()*
+functions, so that a defined function can be called like an APL primitive,
+The arity of a defined function (monadic, dyadic, operator etc.)
+is determined by the function header and since class UserFunction cannot know
+it before the header is parsed, it must overload all possible virtual
+*eval_XXX()* declared in base class *Function*.
+
+The inheritance from *Executable* provides the construction of the body
+(tokenization of the function lines (in class *Tokenizer*), pre-parsing (in
+class *Parser*), and some optimizations (also in class *Parser*).
+
+There are two aspects of class *UserFunction* that are not considered in 
+either of its base classes:
+
+* Local variables, and
+* Branches (→N)
+
+These aspects are implemented by means of two member variables
+* *vector<Function_PC> UserFunction::line_starts* is a jump table that
+  tells, for every function line N, which token is the start of line N in
+  the (linear) body of the executable. For APL jump statement, say *→N*,
+  *line_starts[N]* is the first token in line N and its execution simply
+  continues at token *body[line_starts[N]*.
+* when a defined function is called then its arguments (if any) are assigned
+  to the formal arguments declared in the function header and the local
+  variables in the header are pushed. This happens in member
+  *UserFunction::UserFunction_header header*, which is a functional grouping
+  of the somewhat large class *UserFunction*.
+
+Let:
+
+----
+∇Z←A SUM B;C;D
+ Z←A + B
+∇
+----
+
+The typical life-cycle of Userfunction SUM is then:
+
+. The *Userfunction* named *SUM*,  is created with the ∇-editor or with *⎕FX*
+  (which calls *Userfunction::fix()*).
+. The APL pattern matching (*Prefix.cc*) detects a call of *SUM*,
+  say pattern *3 SUM 42*.
+. The function is called:
+.. Symbols *Z*, *A*, *B*, *C*, and *D* are pushed (and become, at this
+   point in time, temporarily undefined).
+.. The actual arguments *2* and *42* of *SUM* are assigned to the formal
+   arguments *A* and *B* of *SUM*. that is, *A←3 ◊ B←42*; *C* and *D* remain
+   unassigned.
+.. The *Executable::body* is executed. This computes *Z←45*.
+. At some point in time *SUM* returns (either when the end of the body is
+  reached, or the when execution is stopped explitly (e.g. *→0*).
+.. The current value of *Z* (if any) is set aside (and will later be
+   returned to the caller).
+.. The Symbols *Z*, *A*, *B*, *C*, and *D* are poped again (restored).
+.. The pattern matched above (*3 FOO 42*) is replaced by former value
+   of *Z* (i.e. *45*).
+
 
 === Ravel Cells
 

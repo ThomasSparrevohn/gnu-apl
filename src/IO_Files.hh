@@ -38,28 +38,28 @@ using namespace std;
  testcase execution. It works like this:
 
        (cin)
-         |
-         |
+         │
+         │
          V
-     +---+---+             +-------------------+
-     | Input | <--------   | testcase files(s) |
-     +---+---+             +---------+---------+
-         |                           |
-         |                           |
-         V                           |
-      +--+--+                        |
-      | APL |                        |
-      +--+--+                        |
-         |                           |
-         |                           |
-         +-----------------------+   |
-         |                       |   |
-         |                       V   V
-         |                    +--+---+--+
-         |                    | compare |
-         |                    +----+----+
-         |                         |
-         |                         |
+     ╔═══════╗             ╔═══════════════════╗
+     ║ Input ║ <────────── ║ testcase files(s) ║
+     ╚═══════╝             ╚═══════════════════╝
+         │                           │
+         │                           │
+         V                           │
+      ╔═════╗                        │
+      ║ APL ║                        │
+      ╚═════╝                        │
+         │                           │
+         │                           │
+         ├───────────────────────┐   │
+         │                       │   │
+         │                       V   V
+         │                    ╔═════════╗
+         │                    ║ compare ║
+         │                    ╚═════════╝
+         │                         │
+         │                         │
          V                         V
        (cout)                (test results)
  
@@ -194,6 +194,12 @@ protected:
 
    /// the current test report
    static ofstream current_testreport;
+
+   /// name of the summary file (same directory as first testcase).
+   static UTF8_string summary_path;
+
+   /// when a .tc file was started
+   static APL_time_us start_usecs;
 };
 
 #endif // __IO_FILES_HH_DEFINED__

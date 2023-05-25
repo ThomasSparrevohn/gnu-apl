@@ -44,22 +44,30 @@
 #    configurations produced by this script are stored in corresponding
 #    subdirectories, e.g. in builddir_standard for configuration "standard"
 #
+#    Example: /home/username/apl-1.8/build
+#
 # TOP_LOG_dir:
-#    the directory where logfiles produced during the builds are stored.
+#    the directory where top-level logfiles produced by the builds are stored.
 #    Normally TOP_LOG_dir is the same as TOP_BUILD_dir
 #
 # ROOT_dir:
 #    the GNU APL top-level directory. This is the one and only
-#    directory than contains the ./configure script for GNU APL. Normally
-#    TOP_BUILD_dir is $ROOT_dir/build.
+#    directory than contains the ./configure script for GNU APL.
+#    Normally #    TOP_BUILD_dir is $ROOT_dir/build.
+#
+#    Example: /home/username/apl-1.8
 #
 # APL_VERSION:
-#    the current version (including the 'apl-') prefix. For example 'apl-1.8'.
+#    the current version (including the 'apl-' prefix).
+#
+#    Example: apl-1.8
 #
 # VSRC_dir:
 #    this is (despite of its name 'src' the destination directory for a single
 #    configuration. For example: the VSRC_dir for configuration "standard" is:
 #    $TOP_BUILD_dir/build/builddir_standard/src
+#
+#    Example: /home/username/apl-1.8/src
 #
 START_dir=$(pwd)      # e.g. /etc/cron.daily
 
@@ -149,9 +157,9 @@ echo "<!DOCTYPE html>
 
 echo "<H3>Nightly Build Artifacts (if any)</H3>
 <TABLE>"
-artifact "GNU APL interpreter" "build/apl--standard" "./apl"
-artifact "libapl.so (shared library)" "build/xxx" "./libapl.so"
-artifact "libapl.a  (static library)" "build/xxx" "./libapl.a"
+artifact "GNU APL interpreter" "build/apl--standard" "apl"
+artifact "libapl.so (shared library)" "build/xxx" "libapl.so"
+artifact "libapl.a  (static library)" "build/xxx" "libapl.a"
 echo "</TABLE>"
 echo "<H3>Other</H3>"
 

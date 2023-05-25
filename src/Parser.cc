@@ -149,7 +149,7 @@ Parser::parse_statement(Token_string & tos)
    // 1. convert (X) into X and ((X...)) into (X...)
    //
    remove_nongrouping_parantheses(tos);
-   remove_void_token(tos);
+   remove_TOK_VOID(tos);
 
    Log(LOG_parse)
       {
@@ -164,7 +164,7 @@ Parser::parse_statement(Token_string & tos)
    for (int progress = true; progress;)
       {
         progress = collect_groups(tos);
-        if (progress)   remove_void_token(tos);
+        if (progress)   remove_TOK_VOID(tos);
       }
 
    Log(LOG_parse)
@@ -177,7 +177,7 @@ Parser::parse_statement(Token_string & tos)
    //
    collect_constants(tos);
    replace_literal_axes(tos);
-   remove_void_token(tos);
+   remove_TOK_VOID(tos);
 
    // special case: single APL value (to speed up ⍎)
    //
@@ -205,7 +205,7 @@ Parser::parse_statement(Token_string & tos)
    // 5. replace bitwise functons ⊤∧, ⊤∨, ⊤⍲, and ⊤⍱ by their bitwise variant
    //
    replace_bitwise_functions(tos);
-   remove_void_token(tos);
+   remove_TOK_VOID(tos);
    Log(LOG_parse)
       {
         CERR << "parse 6 [" << tos.size() << "]: ";
@@ -682,8 +682,8 @@ Parser::replace_literal_axes(Token_string & tos)
        }
 }
 //----------------------------------------------------------------------------
-void
-Parser::remove_void_token(Token_string & tos)
+VoidCount
+Parser::remove_TOK_VOID(Token_string & tos)
 {
 ShapeItem dst = 0;
 
@@ -694,7 +694,9 @@ ShapeItem dst = 0;
          ++dst;
        }
 
+const VoidCount ret = VoidCount(tos.size() - dst);
    tos.resize(dst);
+   return ret;
 }
 //----------------------------------------------------------------------------
 ErrorCode

@@ -2022,6 +2022,23 @@ rlimit rl;
 }
 //----------------------------------------------------------------------------
 void
+Command::cmd_OPTIM(ostream & out, const UCS_string & arg)
+{
+   if (arg.starts_iwith("CLEAR"))
+      {
+        out << "Optimization counters cleared" << endl;
+        OptmizationStatistics::reset_all();
+        return;
+      }
+
+int ulen;
+#define optim(opt, text) ulen = 40 + UTF8_string::bytes_chars(text);   \
+        out << left << setw(ulen) << text << right << " : "            \
+        << setw(6) << OptmizationStatistics::get(OPTI_ ## opt) << endl;
+#include "Performance.def"
+}
+//----------------------------------------------------------------------------
+void
 Command::cmd_NEXTFILE(ostream & out, const UCS_string_vector & args)
 {
    loop(a, args.size())

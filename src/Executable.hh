@@ -129,8 +129,9 @@ public:
    virtual Function_PC line_start(Function_Line line) const
       { return Function_PC_0; }
 
-   /// adjust line starts before calling Parser::remove_void_token(body)
-   virtual void adjust_line_starts() {}
+   /// remove all TOK_VOID token from the body.
+   /// Return the number of tokens removed
+   virtual VoidCount remove_TOK_VOID();
 
    /// compute lines 2 and 3 in \b error
    void set_error_info(Error & error, Function_PC2 range) const;

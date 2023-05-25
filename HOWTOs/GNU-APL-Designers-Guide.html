@@ -5,7 +5,7 @@
 <head>
 <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
 <meta name="generator" content="AsciiDoc 10.1.2" />
-<title>An Introduction for GNU APL Interpreter Designers and Contributors</title>
+<title>An Introduction for Designers and Contributors to the GNU APL Interpreter</title>
 <style type="text/css">
 /* Shared CSS for AsciiDoc xhtml11 and html5 backends */
 
@@ -734,11 +734,10 @@ asciidoc.install(4);
 </head>
 <body class="article">
 <div id="header">
-<h1>An Introduction for GNU APL Interpreter Designers and Contributors</h1>
+<h1>An Introduction for Designers and Contributors to the GNU APL Interpreter</h1>
 <span id="author">Dr. Jürgen Sauermann, GNU APL</span><br />
 <div id="toc">
   <div id="toctitle">Table of Contents</div>
-  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
 </div>
 </div>
 <div id="content">
@@ -4185,9 +4184,8 @@ corresponding <strong>Value::Value(&#8230;)</strong>*. On the other hand, many f
 function arguments. This is safe and slightly more efficient if the called
 function does not modify the Value (and hence its ownership) passed as argument.</p></div>
 </div>
-</div>
-<div class="sect2">
-<h3 id="_cloning_of_values">Cloning of Values</h3>
+<div class="sect3">
+<h4 id="_cloning_of_values">Cloning of Values</h4>
 <div class="paragraph"><p>The cloning (deep aka. recursive) copying of a Value is somewhat expensive in
 terms of performance. Cloning is, however, only needed if the close is
 modified later (which would corrupt the original). When a <strong>Value</strong> is assigned
@@ -4271,6 +4269,7 @@ Otherwise, <em>in particular if <strong>#define NEW_CLONE</strong> makes a diffe
 </p>
 </li>
 </ul></div>
+</div>
 </div>
 </div>
 </div>
@@ -4461,6 +4460,280 @@ with the name of the symbol is defined with <strong>⎕FX</strong> or the ∇-ed
 <div class="paragraph"><p>The actual role of a user defined symbol can change over time, while the role
 of a system name is fixed and can not be changed. E.g. <strong>⎕IO</strong> is always a
 variable and <strong>⎕UCS</strong> is always a function.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_executables">Executables</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Every APL input line is first tokenized, and the result of this tokenization
+is an <strong>Executable</strong>. The primary content of any <strong>Executable</strong> is a <strong>TokenString</strong>
+named <strong>body</strong>:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre>
+
+<code>   Token.hh:
+
+class Token_string : public  std::vector&lt;Token&gt; { ... }
+
+    Executable.hh:
+
+// Base class for ExecuteList, StatementList, and UserFunction
+class Executable
+{
+   ...
+   Token_string body;
+   ...
+}</code>
+
+</pre>
+</div></div>
+<div class="paragraph"><p>The rest of class <strong>Executable</strong> are helper functions that support the
+execution of the raw <strong>body</strong>.</p></div>
+<div class="paragraph"><p>There are 3 cases where <strong>Executable</strong>s are produced (in order of decreasing
+relevance):</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+The definition of a defined function, either interactively with the
+  ∇-editor, or programmatically in APL with <strong>⎕FX</strong>.
+</p>
+</li>
+<li>
+<p>
+The evaluation of a single input line in immediate execution, and
+</p>
+</li>
+<li>
+<p>
+The evaluation of an APL string with APL primitive ⍎ (aka. Execute).
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p>For each of these 3 cases (which also correspond to the <strong>ParseMode</strong> mentioned
+above), a corresponding class for that case is derived:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre>
+
+<code>    Executable.hh:
+    ...
+class UserFunction : public Function, public Executable { ... }
+class StatementList : public Executable { ... }
+class ExecuteList : public Executable { ... }
+    ....</code>
+
+</pre>
+</div></div>
+<div class="paragraph"><p>In some debug outputs, as well as in some commands and in ⎕SI, the derived
+class of a particular <strong>Executable</strong> is displayed as a single character like
+this:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+class UserFunction: ∇
+</p>
+</li>
+<li>
+<p>
+class StatementList: ◊
+</p>
+</li>
+<li>
+<p>
+class ExecuteList: ⍎
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Each of a derived class has a static function <strong>fix()</strong> which creates an
+instance of that class. The <strong>fix()</strong> function acts as a constructor for
+the derived class. Unlike a normal constructor (which either returns a
+valid object of the class or else throws an execption, the <strong>fix()</strong>  function
+returns 0 if the construction fails (typically due to some SYNTAX ERROR in
+the input line(s) passed to it. The <strong>fix()</strong> functon of class  <strong>UserFunction</strong>
+is essentially the implementation of <strong>monadic ⎕FX</strong>, and is also called after
+the ∇-editor finalizes a function definition (trailing ∇).</p></div>
+<div class="paragraph"><p>The main differences between the 3 classes are:</p></div>
+<div class="tableblock">
+<table rules="all"
+frame="border"
+cellspacing="0" cellpadding="4">
+<col />
+<col />
+<col />
+<col />
+<col />
+<col />
+<thead>
+<tr>
+<th align="left" valign="top"> Derived Class </th>
+<th align="center" valign="top"> Number of lines </th>
+<th align="center" valign="top"> Statements/Line </th>
+<th align="center" valign="top"> Jumps/Labels<br />
+                </th>
+<th align="center" valign="top"> Arguments </th>
+<th align="center" valign="top"> Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left" valign="top"><p class="table">ExecuteList</p></td>
+<td align="center" valign="top"><p class="table">single line</p></td>
+<td align="center" valign="top"><p class="table">one</p></td>
+<td align="center" valign="top"><p class="table">no</p></td>
+<td align="center" valign="top"><p class="table">no</p></td>
+<td align="center" valign="top"><p class="table">yes</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">StatementList</p></td>
+<td align="center" valign="top"><p class="table">single line</p></td>
+<td align="center" valign="top"><p class="table">several</p></td>
+<td align="center" valign="top"><p class="table">no</p></td>
+<td align="center" valign="top"><p class="table">no</p></td>
+<td align="center" valign="top"><p class="table">no</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">UserFunction ∇, ⎕FX</p></td>
+<td align="center" valign="top"><p class="table">multiple lines</p></td>
+<td align="center" valign="top"><p class="table">several</p></td>
+<td align="center" valign="top"><p class="table">yes</p></td>
+<td align="center" valign="top"><p class="table">yes</p></td>
+<td align="center" valign="top"><p class="table">yes</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">UserFunction { &#8230; }</p></td>
+<td align="center" valign="top"><p class="table">single line</p></td>
+<td align="center" valign="top"><p class="table">one</p></td>
+<td align="center" valign="top"><p class="table">no</p></td>
+<td align="center" valign="top"><p class="table">yes</p></td>
+<td align="center" valign="top"><p class="table">yes</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_the_classes_executelist_and_statementlist">The classes ExecuteList and StatementList</h3>
+<div class="paragraph"><p>The execution of <strong>ExecuteList</strong>s and <strong>StatementList</strong>s is rather simple:
+the tokens of their body are intepreter from the start of the body to its end,
+no arguments can be passed to the body, no change of the execution with
+branches (→N), etc..</p></div>
+</div>
+<div class="sect2">
+<h3 id="_the_class_userfunction">The class UserFunction</h3>
+<div class="paragraph"><p>Defined functions (class UserFunction) are far more complex. As can be seen
+above, class UserFunction inherits from the two classes <strong>Function</strong> and
+<strong>Executable</strong>.</p></div>
+<div class="paragraph"><p>The inheritance from <strong>Function</strong> overrides its various virtual <strong>eval_XXX()</strong>
+functions, so that a defined function can be called like an APL primitive,
+The arity of a defined function (monadic, dyadic, operator etc.)
+is determined by the function header and since class UserFunction cannot know
+it before the header is parsed, it must overload all possible virtual
+<strong>eval_XXX()</strong> declared in base class <strong>Function</strong>.</p></div>
+<div class="paragraph"><p>The inheritance from <strong>Executable</strong> provides the construction of the body
+(tokenization of the function lines (in class <strong>Tokenizer</strong>), pre-parsing (in
+class <strong>Parser</strong>), and some optimizations (also in class <strong>Parser</strong>).</p></div>
+<div class="paragraph"><p>There are two aspects of class <strong>UserFunction</strong> that are not considered in
+either of its base classes:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Local variables, and
+</p>
+</li>
+<li>
+<p>
+Branches (→N)
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>These aspects are implemented by means of two member variables
+* <strong>vector&lt;Function_PC&gt; UserFunction::line_starts</strong> is a jump table that
+  tells, for every function line N, which token is the start of line N in
+  the (linear) body of the executable. For APL jump statement, say <strong>→N</strong>,
+  <strong>line_starts[N]</strong> is the first token in line N and its execution simply
+  continues at token <strong>body[line_starts[N]</strong>.
+* when a defined function is called then its arguments (if any) are assigned
+  to the formal arguments declared in the function header and the local
+  variables in the header are pushed. This happens in member
+  <strong>UserFunction::UserFunction_header header</strong>, which is a functional grouping
+  of the somewhat large class <strong>UserFunction</strong>.</p></div>
+<div class="paragraph"><p>Let:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre>
+
+<code>∇Z←A SUM B;C;D
+ Z←A + B
+∇</code>
+
+</pre>
+</div></div>
+<div class="paragraph"><p>The typical life-cycle of Userfunction SUM is then:</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+The <strong>Userfunction</strong> named <strong>SUM</strong>,  is created with the ∇-editor or with <strong>⎕FX</strong>
+  (which calls <strong>Userfunction::fix()</strong>).
+</p>
+</li>
+<li>
+<p>
+The APL pattern matching (<strong>Prefix.cc</strong>) detects a call of <strong>SUM</strong>,
+  say pattern <strong>3 SUM 42</strong>.
+</p>
+</li>
+<li>
+<p>
+The function is called:
+</p>
+<div class="olist loweralpha"><ol class="loweralpha">
+<li>
+<p>
+Symbols <strong>Z</strong>, <strong>A</strong>, <strong>B</strong>, <strong>C</strong>, and <strong>D</strong> are pushed (and become, at this
+   point in time, temporarily undefined).
+</p>
+</li>
+<li>
+<p>
+The actual arguments <strong>2</strong> and <strong>42</strong> of <strong>SUM</strong> are assigned to the formal
+   arguments <strong>A</strong> and <strong>B</strong> of <strong>SUM</strong>. that is, <strong>A←3 ◊ B←42</strong>; <strong>C</strong> and <strong>D</strong> remain
+   unassigned.
+</p>
+</li>
+<li>
+<p>
+The <strong>Executable::body</strong> is executed. This computes <strong>Z←45</strong>.
+</p>
+</li>
+</ol></div>
+</li>
+<li>
+<p>
+At some point in time <strong>SUM</strong> returns (either when the end of the body is
+  reached, or the when execution is stopped explitly (e.g. <strong>→0</strong>).
+</p>
+<div class="olist loweralpha"><ol class="loweralpha">
+<li>
+<p>
+The current value of <strong>Z</strong> (if any) is set aside (and will later be
+   returned to the caller).
+</p>
+</li>
+<li>
+<p>
+The Symbols <strong>Z</strong>, <strong>A</strong>, <strong>B</strong>, <strong>C</strong>, and <strong>D</strong> are poped again (restored).
+</p>
+</li>
+<li>
+<p>
+The pattern matched above (<strong>3 FOO 42</strong>) is replaced by former value
+   of <strong>Z</strong> (i.e. <strong>45</strong>).
+</p>
+</li>
+</ol></div>
+</li>
+</ol></div>
+</div>
 <div class="sect2">
 <h3 id="_ravel_cells">Ravel Cells</h3>
 <div class="paragraph"><p>The ravel of every <strong>Value</strong> is simple C array and not a C++
@@ -5773,7 +6046,7 @@ Permutationsnetzwerkes als Teil des Multiprozerssorsystems DATIS-P-256.</em>
 <div id="footer">
 <div id="footer-text">
 Last updated
- 2023-05-15 19:50:52 CEST
+ 2023-05-22 20:53:03 CEST
 </div>
 </div>
 </body>

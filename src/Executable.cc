@@ -23,6 +23,7 @@
 
 
 #include "Executable.hh"
+#include "Parser.hh"
 #include "Output.hh"
 #include "PrintOperator.hh"
 #include "UCS_string.hh"
@@ -541,6 +542,12 @@ UCS_string ret;
    return ret;
 }
 //----------------------------------------------------------------------------
+VoidCount
+Executable::remove_TOK_VOID()
+{
+   return Parser::remove_TOK_VOID(body);
+}
+//----------------------------------------------------------------------------
 void
 Executable::set_error_info(Error & error, Function_PC2 pc_from_to) const
 {
@@ -768,8 +775,7 @@ int lambda_num = 0;
    reverse_each_statement(body);
 
    Parser::match_par_bra(body, true);
-   adjust_line_starts();
-   Parser::remove_void_token(body);   // do this AFTER adjust_line_starts() !!!
+   remove_TOK_VOID();
 }
 //----------------------------------------------------------------------------
 ShapeItem

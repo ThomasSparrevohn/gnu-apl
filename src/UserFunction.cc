@@ -979,6 +979,108 @@ UserFunction * fun = 0;
    return fun;
 }
 //----------------------------------------------------------------------------
+bool
+UserFunction::resolve_labels()
+{
+const int label_count = header.get_label_count();
+   if (label_count == 0)   return false;   // no labels defined
+
+int count = 0;
+   loop(pc, body.size())
+       {
+         const Token & tok = body[pc];
+         if (tok.get_tag() != TOK_SYMBOL)   continue;
+         const Symbol * symbol = tok.get_sym_ptr();
+         loop(idx, label_count)
+             {
+               const labVal & label = header.get_label(idx);
+               if (symbol == label.sym)
+                  {
+                    // do not (yet) create a Value since we may collect
+                    // several labels below.
+                    //
+                    body[pc] = Token(TOK_INTEGER, int64_t(label.line));
+                    OptmizationStatistics::count(OPTI_FT_LABEL_LITERAL);
+
+                    ++count;
+                  }
+             }
+       }
+
+   if (count == 0)   return false;
+
+   // now collect the integers. The typical use cases are:
+   //
+   // case 1:   → N                 branch to single label
+   // case 2:   → SEL/N1 N2 N3...   switch with strand notation
+   // case 3:   → SEL/N1,N2,N3...   switch with comma separated labels
+   // case 4:   a mix of cases 2 and 3
+   //
+bool void_inserted = false;
+   loop(pc, body.size())
+       {
+         if (body[pc].get_tag() != TOK_INTEGER)   continue;
+
+         // see collect labels, starting at pc. Remember that the labels
+         // run bacwards (i.e. start with the rightmost label).
+         vector<int> labels;
+         for (int pc_1 = pc; pc_1 < body.size(); ++pc_1)
+             {
+               const TokenTag tag_1 = body[pc_1].get_tag();
+               if (tag_1 == TOK_INTEGER)   // label (set above)
+                  {
+                    // case 2. : INT INT
+                    labels.push_back(body[pc_1].get_int_val());
+                    body[pc_1] = Token();
+                    void_inserted = true;
+                    continue;   // nexct pc_1
+                  }
+
+               const int pc_2 = pc + 2;
+               const TokenTag tag_2 = pc_2 < body.size()
+                                    ? body[pc_2].get_tag() : TOK_INVALID;
+               if (tag_1 == TOK_F12_COMMA && tag_2 == TOK_INTEGER)
+                  {
+                    // case 3. : INT , INT
+                    labels.push_back(body[pc_1].get_int_val());
+                    body[pc_1] = Token();
+                    body[pc_2] = Token();
+                    void_inserted = true;
+                    continue;   // next pc_1
+                  }
+             }
+
+         Assert(labels.size());   // since body[pc]
+
+         if (labels.size() == 1)   // single label
+            {
+              Value_P value = IntScalar(labels[0], LOC);
+              Token tok(TOK_APL_VALUE1, value);
+              body[pc].move(tok, LOC);
+              Log(LOG_optimization) CERR << "optimizing scalar label" << endl;
+            }
+         else                      // multiple labels
+            {
+              Value_P value(labels.size(), LOC);
+              loop(l, labels.size())   value->next_ravel_Int(labels[l]);
+              value->check_value(LOC);
+              Token tok(TOK_APL_VALUE1, value);
+              body[pc].move(tok, LOC);
+              Log(LOG_optimization)
+                 {
+                   CERR << "optimizing label vector[" << labels.size() << "] =";
+                   loop(l, labels.size())
+                       CERR << " [" << labels[labels.size() - l - 1] << "]";
+                   CERR << endl;
+                 }
+            }
+       }
+
+   if (void_inserted)   remove_TOK_VOID();
+
+   return true;
+}
+//----------------------------------------------------------------------------
 void
 UserFunction::optimize_unconditional_branches()
 {
@@ -1006,36 +1108,13 @@ UserFunction::optimize_unconditional_branches()
            {
              // e.g. → 4
              // 
-             if (const Value * v_line = body[pc+1].get_apl_val().get())
+             const Value * v_line = body[pc+1].get_apl_val().get();
+             if (v_line->is_int_scalar())
                 {
-                  if (v_line->is_int_scalar())
-                     {
-                       function_line =
+                  function_line =
                           Function_Line(v_line->get_cscalar().get_int_value());
-                     }
                 }
-           }
-        else if (body[pc+1].get_Class() == TC_SYMBOL)
-           {
-             // e.g. → LABEL
-             //
-             if (const Symbol * sym = body[pc+1].get_sym_ptr())
-                {
-                  // at this point, sym->top_of_stack() is of little use
-                  // because this function is not called. We therefore
-                  // cannot use sym->top_of_stack() but have to search
-                  // the label in UserFunction_header::label_values
-                  //
-                  loop(l, header.get_label_count())
-                      {
-                        const labVal & lv = header.get_label(l);
-                        if (sym == lv.sym)   // label found
-                           {
-                             function_line = lv.line;
-                             break;
-                           }
-                      }
-                }
+             else continue;
            }
 
         if (function_line != Function_Invalid)   // if line found
@@ -1053,13 +1132,11 @@ UserFunction::optimize_unconditional_branches()
              // maybe do it. This optimization does not work well with
              // conditonals,so we don't if we see one.
              //
-             if (!body[pc + 3].is_COND())
-                {
-                  body[pc + 1].clear(LOC);   // release B
-                  body[pc + 1] = Token(TOK_GOTO_PC, target);   // B with →PC
-                  body[pc + 2].copy_N(body[pc + 3]);           // → with ENDL
-               // body[pc + 3] does not hurt, so we leave it as is
-                }
+             body[pc + 1].clear(LOC);   // release B
+             body[pc + 1] = Token(TOK_GOTO_PC, target);   // B with →PC
+             body[pc + 2].copy_N(body[pc + 3]);           // → with ENDL
+          // body[pc + 3] does not hurt, so we leave it as is
+             OptmizationStatistics::count(OPTI_FT_DIRECT_BRANCHES);
            }
       }
 }
@@ -1230,6 +1307,7 @@ Function_P old_function = symbol->get_function();
         CERR <<  "------------------- UserFunction::fix() OK --" << endl;
       }
 
+   ufun->resolve_labels();
    ufun->optimize_unconditional_branches();
    if (ufun->compute_if_else_targets())
       {
@@ -1489,36 +1567,39 @@ UCS_string ucs;
    return ucs;
 }
 //----------------------------------------------------------------------------
-void
-UserFunction::adjust_line_starts()
+VoidCount
+UserFunction::remove_TOK_VOID()
 {
-   // this function is called from Executable::setup_lambdas() just before
-   // Parser::remove_void_token(body) in order to adjust line_starts
-   //
-std::vector<ShapeItem> gaps;
-   gaps.reserve(line_starts.size());   // count TOK_VOID in every line
-   loop(ls, line_starts.size())
+   if (line_starts.size() == 0)   // line_starts not yet initialized
       {
-         gaps.push_back(0);
-         if (ls == 0)   continue;   // function header (has no TOK_VOID)
-
-         const ShapeItem from = line_starts[ls];
-         ShapeItem to = body.size();    // end of function (for last line)
-         if (ls < (ShapeItem(line_starts.size()) - 1))
-            to = line_starts[ls + 1];
-
-        for (ShapeItem b = from; b < to; ++b)
-            {
-             if (body[b].get_tag() == TOK_VOID)   ++gaps.back();
-            }
+        Parser::remove_TOK_VOID(body);
+        return NO_VOID_TOKEN_REMOVED;
       }
 
-int total_gaps = 0;
-   loop(ls, line_starts.size())
-       {
-          line_starts[ls] = Function_PC(line_starts[ls] - total_gaps);
-          total_gaps += gaps[ls];
-       }
+size_t current_line = Function_Line_0;
+Function_PC next_PC = Function_PC_0;
+Function_PC dst     = Function_PC_0;
+
+   loop(src, body.size())
+      {
+        if (src == next_PC)   // start of next line reached
+           {
+             ++current_line;
+             if (current_line < line_starts.size())
+                line_starts[current_line] = Function_PC(dst);
+             if ((current_line + 1) < line_starts.size())
+                next_PC = line_starts[current_line + 1];
+           }
+
+        if (body[src].get_tag() == TOK_VOID)   continue;   // ignore (skip)
+        if (src != dst)   body[dst].move(body[src], LOC);
+         ++dst;
+      }
+
+const VoidCount ret = VoidCount(body.size() - dst);
+   body.resize(dst);
+   line_starts[0] = dst;   // convention: line_starts[0] is end of body
+   return ret;
 }
 //----------------------------------------------------------------------------
 Function_PC

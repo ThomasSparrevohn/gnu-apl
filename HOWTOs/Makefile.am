@@ -42,13 +42,16 @@ dist_doc_DATA = \
     APL5.png
 
 # use asciidoc (if installed) to convert .asciidoc to .html
-#
+# The .html has a stupid <noscript> tag that needs to be removed
+# in order to properly display the Table of Contents.
 .asciidoc.html:
 	@if [ -z `which asciidoc` ] ; then touch $@ ;        \
 	else asciidoc -a icons -o $@ $< ;                    \
         sed -i 's|Cpp|C++|g'                        $@ ; \
         sed -i 's|<pre><code>|<pre>\n\n<code>|'     $@ ; \
         sed -i 's|</code></pre>|</code>\n\n</pre>|' $@ ; \
+	    grep -v -F "<noscript>" $@           > /tmp/$@ ; \
+        mv -f /tmp/$@                               $@ ; \
     fi
 
 # use LibreOffic Writer (if installed) to convert .html to .pdf

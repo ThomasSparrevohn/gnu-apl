@@ -161,9 +161,6 @@ public:
    static void load(const char * workspace, const char * function,
                     UserFunction * & fun);
 
-   /// optimize unconditional (→N) branches.
-   void optimize_unconditional_branches();
-
    /// create a user defined function according to \b data of length \b len
    /// in workspace \b w.
    static UserFunction * fix(const UCS_string & text, int & err_line,
@@ -232,8 +229,8 @@ public:
    /// overloaded Executable::line_start()
    virtual Function_PC line_start(Function_Line line) const;
 
-   /// overloaded Executable::adjust_line_starts
-   virtual void adjust_line_starts();
+   /// overloaded Executable::remove_TOK_VOID()
+   virtual VoidCount remove_TOK_VOID();
 
    /// compute lines 2 and 3 in \b error
    void set_locked_error_info(Error & error) const;
@@ -296,6 +293,13 @@ protected:
 
    /// "[nn] " prefix
    UCS_string line_prefix(Function_Line l) const;
+
+   /// resolve labels in the function body. Return \b true if any
+   /// labels were resolved.
+   bool resolve_labels();
+
+   /// optimize unconditional (→N) branches.
+   void optimize_unconditional_branches();
 
    /// the header (line [0]) of the user-defined function
    UserFunction_header header;
