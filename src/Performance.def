@@ -96,8 +96,11 @@ perfo_4(M_join         , _AB, "M_join(B)",  -1)                       // 56
 
 optim(FT_LABEL_LITERAL,   "⎕FX Time: Label to integer literal")   // 0
 optim(FT_DIRECT_BRANCHES, "⎕FX Time: Unconditional branches"  )   // 1
-optim(RT_A_RHO_B,         "Run Time: in-place A⍴B"            )   // 2
-optim(RT_COMMA_B,         "Run Time: in-place ,B"             )   // 3
+optim(FT_LITERAL_AXIS,    "⎕FX Time: Literal axis [X]"        )   // 2
+optim(FT_LITERAL_INDEX,   "⎕FX Time: Literal index [X1;...]"  )   // 3
+optim(FT_SHORT_A_RHO_B,   "⎕FX Time: Short A⍴B"               )   // 4
+optim(RT_A_RHO_B,         "Run Time: In-place A⍴B"            )   // 5
+optim(RT_COMMA_B,         "Run Time: In-place ,B"             )   // 6
 
 #undef optim
 #undef perfo_1

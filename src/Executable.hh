@@ -133,7 +133,7 @@ public:
    /// Return the number of tokens removed
    virtual VoidCount remove_TOK_VOID();
 
-   /// compute lines 2 and 3 in \b error
+   /// compute error lines 2 and 3 in \b error
    void set_error_info(Error & error, Function_PC2 range) const;
 
    /// return the start of the statement to which pc belongs

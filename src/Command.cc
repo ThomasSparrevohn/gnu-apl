@@ -318,7 +318,9 @@ Executable * statements = 0;
         bool plus = Workspace::more_error().size();   // assume + needed
         const char * error_name = Error::error_name(err.get_error_code());
         if (strchr(error_name, UNI_PLUS))   plus = false;   // not needed
-        if (Workspace::more_error().back() == UNI_PLUS)   plus = false; // dito.
+        if (Workspace::more_error().size() &&
+               Workspace::more_error().back() == UNI_PLUS)
+           plus = false; // dito.
 
         UERR << error_name;
         if (plus)   UERR << UNI_PLUS;

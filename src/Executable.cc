@@ -148,7 +148,7 @@ Executable::parse_body_line(Function_Line line, const UCS_string & ucs_line,
 
 Token_string in;
 const Parser parser(get_parse_mode(), loc, macro);
-   if (const ErrorCode ec = parser.parse(ucs_line, in))
+   if (const ErrorCode ec = parser.parse(ucs_line, in, true))
       {
         if (tolerant)   return ec;    // the caller will check ec
 
@@ -551,6 +551,82 @@ Executable::remove_TOK_VOID()
 void
 Executable::set_error_info(Error & error, Function_PC2 pc_from_to) const
 {
+   // called rarely, so we have time.
+   //
+
+   // check if any optimizations were performed with the failed line
+   //
+   if (0) {
+     Assert(pc_from_to.low <= pc_from_to.high);
+
+     // figure line and statement in line
+     //
+     int line = 0;
+     int statement = 0;
+     int last_END = 0;    // first token after the last END or ENDL;
+//   int last_ENDL = 0;   // first token after the last ENDL;
+     loop(pc, pc_from_to.low)
+         {
+           const TokenTag tag = body[pc].get_tag();
+           if (tag == TOK_END)   // end of statement
+              {
+                ++statement;
+                last_END = pc + 1;
+              }
+           else if (tag == TOK_ENDL)   // end of line
+              {
+                line++;
+                statement = 0;
+                last_END = pc + 1;
+//              last_ENDL = pc + 1;
+              }
+         }
+
+//   const int statement_PC = last_END - last_ENDL - 1;
+     Assert(line < text.size());
+     UCS_string failed_line = text[line];
+
+     Token_string after_opt;
+
+     for (int t = last_END; t < body.size(); ++t)
+         {
+           if (body[t].get_tag() == TOK_ENDL)   break;
+           after_opt.push_back(body[t]);
+         }
+
+     // extract the failed statement text from the failed_line
+     //
+     UCS_string failed_statement;
+     int l = 0;
+
+     loop(f, failed_line.size())
+         {
+             if (failed_line[f] == UNI_DIAMOND)   { ++l;   continue; }
+             if (l > statement)   break;      // subsequent line
+             if (l < statement)   continue;   // previous line
+             failed_statement += failed_line[f];
+         }
+     failed_statement.remove_leading_and_trailing_whitespaces();
+
+     const Parser parser(get_parse_mode(), LOC, false);
+     Token_string before_opt;
+     const ErrorCode ec = parser.parse(failed_statement, before_opt, false);
+     Assert(ec == E_NO_ERROR);
+
+     if (before_opt.size() != after_opt.size())   // optimized !
+        {
+//        Q1("OPTIMIZED");
+          UCS_string line("      ");
+          line.append(failed_statement);
+          error.set_error_line_2(line, 6, 5 + failed_statement.size());
+          return;
+        }
+
+
+   }   // optimization check
+
+   // at this point, the line was NOT optimized.
+
 const ErrorCode ec = error.get_error_code();
 UCS_string message_2(error.get_error_line_2());
 
@@ -638,7 +714,7 @@ int len_between = 0;   // distance between the carets
               len = -len;
             }
 
-         if (q > pc_from_to.high)         len_left += len;
+         if (q > pc_from_to.high)       len_left += len;
          else if (q > pc_from_to.low)   len_between += len;
        }
 

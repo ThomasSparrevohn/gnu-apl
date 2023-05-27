@@ -333,7 +333,7 @@ Error::update_error_info(StateIndicator * si)
    set_right_caret(-1);
    set_left_caret(6);            // first char after the APL prompt
 
-   // prepare second error line (failed statement)
+   // prepare the second error line (= display of the failed statement)
    //
    if (const UserFunction * ufun = si->get_executable()->get_exec_ufun())
       {
