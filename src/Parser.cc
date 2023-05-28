@@ -179,10 +179,17 @@ Parser::parse_statement(Token_string & tos, bool optimize)
    //
    if (collect_constants(tos))           remove_TOK_VOID(tos);
 
+   // parse_statement() is normally called with optimize == true; However,
+   // Executable::reparse() calls it with optimize == false in order to
+   // restore the body before it was optimized.
+   //
    if (optimize)
       {
-        if (optimize_literal_axes(tos))       remove_TOK_VOID(tos);
-  //    if (optimize_short_primitives(tos))   remove_TOK_VOID(tos);
+        if (DO_FT_LITERAL_AXIS && optimize_literal_axes(tos))
+           remove_TOK_VOID(tos);
+
+        if (DO_FT_SHORT_PRIMITIVE && optimize_short_primitives(tos))
+           remove_TOK_VOID(tos);
       }
 
    // special case: single APL value (to speed up ⍎)
@@ -630,6 +637,8 @@ Parser::get_assign_state(Token_string & tos, ShapeItem pos)
 bool
 Parser::optimize_literal_axes(Token_string & tos)
 {
+   if (!(DO_FT_LITERAL_AXIS && DO_FT_LITERAL_INDEX))   return false;
+
    // replace [ ] or [ N ] by their complete index or axis, as to relieve
    // the Prefix parser.
 bool progress = false;
@@ -704,6 +713,8 @@ bool progress = false;
 bool
 Parser::optimize_short_primitives(Token_string & tos)
 {
+   if (DONT_FT_SHORT_PRIMITIVE)   return false;
+
    // replace primitives with short literal results and arguments,
    // such as 4⍴0 with their result.
    //
@@ -758,7 +769,7 @@ vector<ShapeItem> ends;
                          tok_F.clear(LOC);   // sets it to TOK_VOID
                          tok_B.clear(LOC);
                          tok_B.move(tZ, LOC);
-                         OptmizationStatistics::count(OPTI_FT_SHORT_A_RHO_B);
+                         OptmizationStatistics::count(OPTI_FT_SHORT_PRIMITIVE);
                          progress = true;
                        }
                   }

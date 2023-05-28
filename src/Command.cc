@@ -2034,9 +2034,11 @@ Command::cmd_OPTIM(ostream & out, const UCS_string & arg)
       }
 
 int ulen;
-#define optim(opt, text) ulen = 40 + UTF8_string::bytes_chars(text);   \
-        out << left << setw(ulen) << text << right << " : "            \
-        << setw(6) << OptmizationStatistics::get(OPTI_ ## opt) << endl;
+#define optim(ena, opt, text) ulen = 40 + UTF8_string::bytes_chars(text);   \
+   out << left << setw(ulen) << text << right << " : ";                     \
+   if (ena) out << setw(6) << OptmizationStatistics::get(OPTI_ ## opt);     \
+   else     out << "disabled";                                              \
+   out << endl;
 #include "Performance.def"
 }
 //----------------------------------------------------------------------------
