@@ -183,6 +183,9 @@ Parser::parse_statement(Token_string & tos, bool optimize)
    // Executable::reparse() calls it with optimize == false in order to
    // restore the body before it was optimized.
    //
+   // To disable optimizations you must set the enable arg(s) in
+   // Performance.def to 0 (as opposed to setting optimize to false.
+   //
    if (optimize)
       {
         if (DO_FT_LITERAL_AXIS && optimize_literal_axes(tos))
@@ -716,21 +719,26 @@ Parser::optimize_short_primitives(Token_string & tos)
    if (DONT_FT_SHORT_PRIMITIVE)   return false;
 
    // replace primitives with short literal results and arguments,
-   // such as 4⍴0 with their result.
+   // such as 4⍴0 with their result. The scope of tos is one statement.
    //
 bool progress = false;
-   if (tos.size() < 2)   return false;
+   if (tos.size() < 2)   return false;   // too short to optimize
 
+// CERR << endl << "tos: ";   tos.print(CERR, false);
 
-   // create a list of 'terminal literals' from where the
-   // replacement may restart.
+   // create a list of 'terminal literals' from where the optimization
+   //  may restart. For example:
+   //
+   //  (2⍴5) ⍴ 6
+   //
+   // The optimization starts at 6 (end of statement) and restarts at ).
    //
 vector<ShapeItem> ends;
-   ends.push_back(tos.size() - 1);
+   ends.push_back(tos.size());
 
-   // tos is in APL direction. We move backwards from the end
+   // tos is in forward (aka. APL) order. We move backwards from the end
    //
-   for (ShapeItem pc = tos.size() - 1; 2 <= --pc;)
+   for (int pc = tos.size() - 1; pc >= 0; --pc)
        {
          const TokenTag tag = tos[pc].get_tag();
          if (tag == TOK_R_BRACK || tag == TOK_R_PARENT)   ends.push_back(pc);
@@ -760,6 +768,7 @@ vector<ShapeItem> ends;
                     // NOTE: we use Bif_F12_RHO::do_reshape() instead of
                     // Bif_F12_RHO::eval_AB() as to bypass the ⍴ optimization
                     // (which won't work well here)
+                    //
                     const Shape sh_A(*tok_A.get_apl_val(), /* qio */ 0);
                     if (sh_A.fits_into(cfg_SHORT_VALUE_LENGTH_WANTED))
                        {

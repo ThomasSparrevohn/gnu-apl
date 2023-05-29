@@ -549,7 +549,7 @@ Executable::remove_TOK_VOID()
 }
 //----------------------------------------------------------------------------
 void
-Executable::set_error_info(Error & error, Function_PC2 pc_from_to) const
+Executable::set_error_info(Error & error, Function_PC2 body_from_to) const
 {
    // called rarely, so we have time.
    //
@@ -557,33 +557,33 @@ Executable::set_error_info(Error & error, Function_PC2 pc_from_to) const
    // for value errors we point to the failed symbol itself.
    //
    if (error.get_error_code() == E_VALUE_ERROR)
-      pc_from_to.low = pc_from_to.high;
+      body_from_to.low = body_from_to.high;
 
    Log(LOG_prefix__location_info)
       {
         Q1(body.size())
-        Q1(pc_from_to.low)
-        Q1(pc_from_to.high)
+        Q1(body_from_to.low)
+        Q1(body_from_to.high)
       }
 
-   // decrement pc_from_to.high if it points to the end of
+   // decrement body_from_to.high if it points to the end of
    // the function.
    //
-   if (body[pc_from_to.high].get_Class() == TC_RETURN &&
-       pc_from_to.high > pc_from_to.low)   --pc_from_to.high;
+   if (body[body_from_to.high].get_Class() == TC_RETURN &&
+       body_from_to.high > body_from_to.low)   --body_from_to.high;
 
-Function_PC start = get_statement_start(pc_from_to.low);
-Function_PC end = get_statement_end(pc_from_to.high);
+Function_PC start = get_statement_start(body_from_to.low);
+Function_PC end = get_statement_end(body_from_to.high);
 
-   Assert(start   <= pc_from_to.low);
-   Assert(pc_from_to.low  <= pc_from_to.high);
-   if (pc_from_to.high > end)   pc_from_to.high = end;
+   Assert(start   <= body_from_to.low);
+   Assert(body_from_to.low  <= body_from_to.high);
+   if (body_from_to.high > end)   body_from_to.high = end;
 
    Log(LOG_prefix__location_info)
       {
         Q1(start)
-        Q1(pc_from_to.low)
-        Q1(pc_from_to.high)
+        Q1(body_from_to.low)
+        Q1(body_from_to.high)
         Q1(end)
       }
 
@@ -591,85 +591,74 @@ Function_PC end = get_statement_end(pc_from_to.high);
    // they refer to the failed statement (as opposed to body).
    //
 Token_string after_opt(body, start, end - start);
-   pc_from_to.low  = Function_PC(pc_from_to.low  - start);
-   pc_from_to.high = Function_PC(pc_from_to.high - start);
 
-   // check if any optimizations were performed with the failed line
+const Function_PC2 after_from_to = { body_from_to.low  - start,
+                                    body_from_to.high - start };
+
+   // expand any optimizations that were performed with the failed line
    //
-   if (0) {
+   if (0)
+   {
      Token_string before_opt;
-     reparse(before_opt, pc_from_to);
+     reparse(before_opt, body_from_to);
+     before_opt.reverse_from_to(0, before_opt.size() - 1);
 
-     if (before_opt.size() != after_opt.size())   // optimized !
+CERR << "before opt: ";   before_opt.print(CERR, false);
+CERR << "after opt : ";   after_opt .print(CERR, false);
+Q1(after_from_to.low)
+Q1(after_from_to.high)
+CERR << endl;
+
+     bool optimized = false;
+     Function_PC2 before_from_to = after_from_to;
+     {
+       int pc_after = 0;
+       loop(pc_before, before_opt.size())
+           {
+             const Token & tok_before = before_opt[pc_before];
+             const Token & tok_after  = after_opt[pc_after];
+
+             // map from_to
+             //
+             if (pc_after == after_from_to.low)
+                {
+                   CERR << "low:  after pc " << pc_after
+                        << " → before pc "   << pc_before << endl;
+                   before_from_to.low = Function_PC(pc_before);
+                }
+             if (pc_after == after_from_to.high)
+                {
+                   CERR << "high: after pc " << pc_after
+                        << " → pc_before "   << pc_before << endl;
+                   before_from_to.high = Function_PC(pc_before);
+                }
+
+             if (tok_before.get_Class() != tok_after.get_Class())
+                   {
+                     optimized = true;
+                     pc_before += 2;
+Q1(pc_after)
+Q1(pc_before)
+Q1(tok_before)
+Q1(tok_after)
+                   }
+
+             ++pc_after;
+           }
+     }
+
+     if (optimized)   // optimized !
         {
           Q1("OPTIMIZED");
+          Q1(before_from_to.low)
+          Q1(before_from_to.high)
+
+          set_error_info(error, before_opt, before_from_to);
           return;
         }
    }   // optimization check
 
-/*
-    The statement is stored in reverse order in the body:
-
-    Body:  
-          start ... pc_low      ...       pc_high ... end
-                    ^                     ^
-                    |                     |
-                    +--- failed action ---+
-
-    Display:
-          end ... pc_high      ...      pc_low ... start ◊ next statement
-                  ^                     ^
-                  |                     |
-                  +--- failed action ---+
- */
-
-   set_error_info(error, after_opt, pc_from_to);
-}
-//----------------------------------------------------------------------------
-void
-Executable::reparse(Token_string & original, Function_PC2 range) const
-{
-   Assert(range.low <= range.high);
-
-   // figure line and the statement in line
-   //
-int line = 0;
-int statement = 0;
-   loop(pc, range.low)
-       {
-         const TokenTag tag = body[pc].get_tag();
-         if (tag == TOK_END)   // end of statement
-            {
-              ++statement;
-            }
-         else if (tag == TOK_ENDL)   // end of line
-            {
-              line++;
-              statement = 0;
-            }
-       }
-
-   Assert(line < text.size());
-UCS_string failed_line = text[line];
-
-   // extract the failed statement text from the failed_line
-   //
-UCS_string failed_statement;
-   {
-     int l = 0;
-
-     loop(f, failed_line.size())
-         {
-           if (failed_line[f] == UNI_DIAMOND)   { ++l;   continue; }
-           if (l > statement)   break;      // subsequent line
-           if (l < statement)   continue;   // previous line
-           failed_statement += failed_line[f];
-         }
-   }
-
-const Parser parser(get_parse_mode(), LOC, false);
-const ErrorCode ec = parser.parse(failed_statement, original, false);
-   Assert(ec == E_NO_ERROR);
+   set_error_info(error, after_opt, after_from_to);
 }
 //--------------------------------------------------------------------------
 void
@@ -694,6 +683,22 @@ Executable::set_error_info(Error & error,
 
    // Line 2: statement
    //
+/*
+    The statement is stored in reverse order in the body:
+
+    Body:  
+          start ... pc_low      ...       pc_high ... end
+                    ^                     ^
+                    |                     |
+                    +--- failed action ---+
+
+    Display:
+          end ... pc_high      ...      pc_low ... start ◊ next statement
+                  ^                     ^
+                  |                     |
+                  +--- failed action ---+
+ */
+
 int len_left = 0;      // characters before the left caret
 int len_between = 0;   // distance between the left and the right caret
 
@@ -738,6 +743,53 @@ UCS_string message_2(error.get_error_line_2());
       {
         error.set_right_caret(error.get_left_caret() + len_between);
       }
+}
+//----------------------------------------------------------------------------
+void
+Executable::reparse(Token_string & original, Function_PC2 range) const
+{
+   Assert(range.low <= range.high);
+
+   // compute the failed line and the failed statement in the line
+   // by considering the token before range.low.
+   //
+int line = 0;
+int statement = 0;
+   loop(pc, range.low)
+       {
+         const TokenTag tag = body[pc].get_tag();
+         if (tag == TOK_END)   // end of statement
+            {
+              ++statement;
+            }
+         else if (tag == TOK_ENDL)   // end of line
+            {
+              line++;
+              statement = 0;
+            }
+       }
+
+   Assert(line < text.size());
+UCS_string failed_line = text[line];
+
+   // extract the failed statement text from the failed_line
+   //
+UCS_string failed_statement;
+   {
+     int l = 0;
+
+     loop(f, failed_line.size())
+         {
+           if (failed_line[f] == UNI_DIAMOND)   { ++l;   continue; }
+           if (l > statement)   break;      // subsequent line
+           if (l < statement)   continue;   // previous line
+           failed_statement += failed_line[f];
+         }
+   }
+
+const Parser parser(get_parse_mode(), LOC, false);
+const ErrorCode ec = parser.parse(failed_statement, original, false);
+   Assert(ec == E_NO_ERROR);
 }
 //----------------------------------------------------------------------------
 Function_PC
