@@ -82,7 +82,7 @@ init_DWARF(const char * binary_filename)
 
 void init_DWARF(const char * binary_filename)
 {
-   cerr << "init_DWARF(): NO dwarf" << endl;
+   // cerr << "init_DWARF(): NO dwarf" << endl;
 }
 
 #endif
