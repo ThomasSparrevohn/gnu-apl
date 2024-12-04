@@ -3733,6 +3733,8 @@ shown in the examples below.
 @node    Section 2.31
 @section ⎕MX - Matrix/Statistics
 
+⎕MX was kindly contributed by Henrik Moller
+
 ⎕MX[x] is a system function that provides a collection of matrix and
 statistical operations such as covariance, eigensystems, and so on, along
 with random number generation in several statistical distributions. Particular
@@ -5400,7 +5402,8 @@ Examples:
 @node    Section 2.37
 @section ⎕SQL - SQL Database Interface
 
-As of GNU APL 1.6, the native function SQL has been replaced by the
+⎕SQL was kindly contributed by Elias Mårtenson.
+
 system function ⎕SQL, described below. ⎕SQL has an axis argument that
 selects a sub-function of ⎕SQL.
 
