@@ -991,7 +991,7 @@ UserFunction::optimize_labels()
 const size_t labels_declared = header.get_label_count();
    if (labels_declared == 0)   return false;   // function has no labels
 
-   for (int pc = Function_PC(-1); pc < body.size() - 3; ++pc)
+   for (int pc = Function_PC(-1); pc < body.size() - 4; ++pc)
        {
          if (body[pc + 2].get_tag() == TOK_R_ARROW &&   // least likely first
              body[pc + 3].get_tag() == TOK_ENDL    &&
