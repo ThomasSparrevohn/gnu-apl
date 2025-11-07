@@ -1612,7 +1612,6 @@ Value_P     B = at2().get_apl_val();
    // At this point we have f ⍤ [X] y_B with y_B glued in Parser.cc.
    // Unglue it. NOTE that B is y (and not the real B).
    //
-B->print_boxed(CERR << "B:", 4);
 Value_P y123_orig;
 Value_P B_orig;
    Bif_OPER2_RANK::split_y123_B(B, y123_orig, B_orig);
