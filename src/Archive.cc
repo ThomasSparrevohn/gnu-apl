@@ -2545,8 +2545,17 @@ bool no_copy = is_protected || (have_allowed_objects && !is_selected);
         else if (is_tag("Shared-Variable"))   read_Shared_Variable(d, *symbol);
       }
 
-   // the same symbol may have been localized in
-   Assert(symbol->value_stack_size() >= SI_depth);
+   /*
+       see bugapl@gnu.org, Roy Tobin, Nov. 6, 2025.
+
+       Normally the depth of the )SI stack and the depth of localized
+       function names go hand in hand (and then the two depths are equal).
+
+       An exception are lambdas where the function names like λ0, λ1, ...
+       may be localized more often tnah )SI entries are created.
+    */
+Q(symbol->get_name())
+   Assert(symbol->value_stack_size() == SI_depth);
    next_tag(LOC);
    expect_tag("/Symbol", LOC);
 }
