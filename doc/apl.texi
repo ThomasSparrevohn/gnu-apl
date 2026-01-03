@@ -768,35 +768,36 @@ unction Groups
 * Section 2.20::  ⊥ with Axis
 * Section 2.21::  Generalized ⍳
 * Section 2.22::  ⌹[X] - Miscellaneous Matrix and Vector Operations
-* Section 2.23::  Dyadic ⎕CR
-* Section 2.24::  Dyadic ⎕FX (Native Functions)
-* Section 2.25::  ⎕ARG  - Interpreter command line arguments
-* Section 2.26::  ⎕DLX  - Knuth's Dancing Links Algorithm
-* Section 2.27::  ⎕ENV  - Environment Variable
-* Section 2.28::  ⎕FIO  - File I/O Functions
-* Section 2.29::  ⎕FFT  - Fast Fourier Transform
-* Section 2.30::  ⎕GTK  - GTK Interface
-* Section 2.31::  ⎕JSON - JSON Parsing
-* Section 2.32::  ⎕MAP  - Map Value
-* Section 2.33::  ⎕MX   - Matrix/Statistics
-* Section 2.34::  ⎕PLOT - Plot Data
-* Section 2.35::  ⎕PNG  - Portable Network Graphics
-* Section 2.36::  ⎕PS   - Print Style
-* Section 2.37::  ⎕RE   - Regular Expressions
-* Section 2.38::  ⎕RVAL - Random APL value
-* Section 2.39::  ⎕SQL  - SQL Database Interface
-* Section 2.40::  ⎕SI   - State Indicator
-* Section 2.41::  ⎕SYL  - System limits
-* Section 2.42::  ⎕XML  - XML Parsing
-* Section 2.43::  Conditionals
-* Section 2.44::  Matrix Product
+* Section 2.23::  ⎕CC   - Character Classes
+* Section 2.24::  Dyadic ⎕CR
+* Section 2.25::  Dyadic ⎕FX (Native Functions)
+* Section 2.26::  ⎕ARG  - Interpreter command line arguments
+* Section 2.27::  ⎕DLX  - Knuth's Dancing Links Algorithm
+* Section 2.28::  ⎕ENV  - Environment Variable
+* Section 2.29::  ⎕FIO  - File I/O Functions
+* Section 2.30::  ⎕FFT  - Fast Fourier Transform
+* Section 2.31::  ⎕GTK  - GTK Interface
+* Section 2.32::  ⎕JSON - JSON Parsing
+* Section 2.33::  ⎕MAP  - Map Value
+* Section 2.34::  ⎕MX   - Matrix/Statistics
+* Section 2.35::  ⎕PLOT - Plot Data
+* Section 2.36::  ⎕PNG  - Portable Network Graphics
+* Section 2.37::  ⎕PS   - Print Style
+* Section 2.38::  ⎕RE   - Regular Expressions
+* Section 2.39::  ⎕RVAL - Random APL value
+* Section 2.40::  ⎕SQL  - SQL Database Interface
+* Section 2.41::  ⎕SI   - State Indicator
+* Section 2.42::  ⎕SYL  - System limits
+* Section 2.43::  ⎕XML  - XML Parsing
+* Section 2.44::  Conditionals
+* Section 2.45::  Matrix Product
 @end menu
 
 There are a few hopefully useful features in GNU APL:
 
 
 @c ----------------------------------------------------------------------------
-@node    Section 2.1
+@node Section 2.1
 @section APL Scripting
 
 @menu
@@ -1532,7 +1533,7 @@ with the new one and no DEFN ERROR is raised.
 
 
 @c ----------------------------------------------------------------------------
-@node    Section 2.2
+@node Section 2.2
 @section Axis argument in defined functions
 
 Defined functions and operators (including lambdas) accept an axis argument.
@@ -1560,7 +1561,7 @@ Use this feature carefully!
 
 
 @c ----------------------------------------------------------------------------
-@node    Section 2.3
+@node Section 2.3
 @section Function Groups
 
 In the old APL1 every function of the interpreter was represented by a single
@@ -1713,7 +1714,7 @@ Let @b{FOO} be a function group. Then:
 @end itemize
 
 @c ----------------------------------------------------------------------------
-@node    Section 2.4
+@node Section 2.4
 @section Colored Output
 
 The APL interpreter gets its input from the standard input (stdin),
@@ -1741,7 +1742,7 @@ contains a description of all possible color settings.
 
 
 @c ----------------------------------------------------------------------------
-@node    Section 2.5
+@node Section 2.5
 @section Comparison Rules
 
 Both IBM APL2 and the ISO standard require that the arguments of <, ≤, ≥,
@@ -1878,14 +1879,14 @@ being compared or sorted. A simple way to achieve that is the use of
 
 
 @c ----------------------------------------------------------------------------
-@node    Section 2.6
+@node Section 2.6
 @section Complex Numbers
 
 Complex numbers are fully supported.
 
 
 @c ----------------------------------------------------------------------------
-@node    Section 2.7
+@node Section 2.7
 @section Debug Commands
 
 In addition to the classical APL commands like )LOAD or )SAVE, GNU APL
@@ -1899,7 +1900,7 @@ Type )HELP or ]HELP in the interpreter for a list of all commands available.
 
 
 @c ----------------------------------------------------------------------------
-@node    Section 2.8
+@node Section 2.8
 @section Direct Functions (Lambdas)
 
 GNU APL supports direct functions (aka. lambdas), but only in a rather
@@ -2041,7 +2042,7 @@ and for properly defined functions. As one of the consequences, you
 
 
 @c ----------------------------------------------------------------------------
-@node    Section 2.9
+@node Section 2.9
 @section ]DOXY Command
 
 A particularly useful debug command is ]DOXY. It dumps the current workspace
@@ -2105,7 +2106,7 @@ do regular APL comments).
 
 
 @c ----------------------------------------------------------------------------
-@node    Section 2.10
+@node Section 2.10
 @section Commands )COPY_ONCE, )DUMP, and DUMP-HTML
 
 In standard APL, workspaces are processed with the standard commands )LOAD,
@@ -2150,7 +2151,7 @@ in several )DUMP-ed or )SAVE-ed workspaces.
 
 
 @c ----------------------------------------------------------------------------
-@node    Section 2.11
+@node Section 2.11
 @section ]NEXTFILE and ]PUSHFILE Commands
 
 @c ............................................................................
@@ -2194,7 +2195,7 @@ command, the immediate execution context processing proceeds at the next
 line after the ]PUSHFILE command.
 
 @c ----------------------------------------------------------------------------
-@node    Section 2.12
+@node Section 2.12
 @section History and TAB completion
 
 Until GNU APL 1.4 / SVN 465, GNU APL used libreadline for interactive user
@@ -2237,7 +2238,7 @@ function or variable name.
 
 
 @c ----------------------------------------------------------------------------
-@node    Section 2.13
+@node Section 2.13
 @section Logging Facilities
 
 The APL interpreter has over 30 logging facilities. Each logging facility
@@ -2288,7 +2289,7 @@ toggles the state of logging facility N from OFF to ON and back.
 
 
 @c ----------------------------------------------------------------------------
-@node    Section 2.14
+@node Section 2.14
 @section Rational Numbers
 
 GNU APL has limited support for rational numbers. Instead of dividing integers
@@ -2309,7 +2310,7 @@ be enabled via ./configure (see README-2-configure).
 
 
 @c ----------------------------------------------------------------------------
-@node    Section 2.15
+@node Section 2.15
 @section Hex Numbers
 
 GNU APL supports sedecimal numbers. They start with $ and can be uppercase or
@@ -2325,7 +2326,7 @@ lowercase:
 
 
 @c ----------------------------------------------------------------------------
-@node    Section 2.16
+@node Section 2.16
 @section User-defined Commands
 
 There is a simple mechanism to define additional APL commands. This mechanism
@@ -2361,7 +2362,7 @@ be deleted like this:
 @end example
 
 @c ----------------------------------------------------------------------------
-@node    Section 2.17
+@node Section 2.17
 @section Structured Variables and Associative Arrays
 
 GNU APL has implemented two features that are closely related because, under
@@ -2650,7 +2651,7 @@ is ⍴ASSOC_ARRAY[;1] and the capacity is ↑⍴ASSOC_ARRAY.
 
 
 @c ----------------------------------------------------------------------------
-@node    Section 2.18
+@node Section 2.18
 @section Monadic ⊢ and ⊣, dyadic ⊢ with Axis
 
 Monadic ⊢ is the identity function. It returns its (committed or non-committed)
@@ -2713,7 +2714,7 @@ a*c
 
 
 @c ----------------------------------------------------------------------------
-@node    Section 2.19
+@node Section 2.19
 @section Bit-wise Logical Functions ⊤∧, ⊤∨, ⊤⍲, ⊤⍱, ⊤≠, and ⊤=
 
 The APL functions And (∧), Or (∨), Nand (⍲), and Nor (⍱) operate primarily on
@@ -2894,7 +2895,7 @@ BE
 
 
 @c ----------------------------------------------------------------------------
-@node    Section 2.20
+@node Section 2.20
 @section ⊤ (Encode) with Axis
 
 The dyadic primitive function @b{A ⊥ B} (Decode) computes the @b{values}
@@ -3012,7 +3013,7 @@ Examples:
 
 
 @c ----------------------------------------------------------------------------
-@node    Section 2.21
+@node Section 2.21
 @section Generalized ⍳
 
 @c ............................................................................
@@ -3045,7 +3046,7 @@ if the item was not found).
 
 
 @c ----------------------------------------------------------------------------
-@node    Section 2.22
+@node Section 2.22
 @section ⌹[X] - Miscellaneous Matrix and Vector Operations
 
 @c ............................................................................
@@ -3509,7 +3510,7 @@ annihilated (by subtracting a multiple of the divisor from it).
 
 Now, a commonly used order in the division of polynomials, and also the order
 used by @b{A ⌹[10] B}, is the @i{lexicographic order} of the polynomials.
-@xref{Scan Polynomial B, Scan Polynomial}.
+@xref{Subsection 2.22.1}.
 
 For example: @b{x < x²}, @b{xy < xyz}, @b{y < x⁸}, and @b{y⁸ < x} in the
 lexicographic order.
@@ -3641,7 +3642,7 @@ Putting the pieces together:
 @end example
 
 @c ----------------------------------------------------------------------------
-@node    Scan Polynomial B
+@node Subsection 2.22.1
 @subsubsection ⌹[11] B: Scan Polynomial B
 
 @b{⌹[11] B} aka. @b{⌹.poly_scan B} is the inverse function of @b{⌹[7] B}.
@@ -3697,7 +3698,7 @@ but in this context all vectors compared have the same length (number of
 indeterminants).
 
 @c ----------------------------------------------------------------------------
-@node    Integral B
+@node Subsection 2.22.2
 @subsubsection A ⌹[20] B: Integral B
 
 Function @b{A ⌹[20] B} aka. @b{A ⌹.integral B} computes the integral of
@@ -3765,7 +3766,71 @@ is defined which defines the format of the result:
 @b{Dot} is a program for printing directed graphs.
 
 @c ----------------------------------------------------------------------------
-@node    Section 2.23
+@node Section 2.23
+@section  ⎕CC - Character Classes
+
+Some older APL interpreters (e.g. APL68000) had system variables for
+character classes, such as @b{⎕D} for digits 0..9 or @b{⎕A} for letters
+A..Z. GNU APL provides a single system function @b{⎕CC} for a similar
+purpose.
+
+@subsection  monadic ⎕CC B: Return character class
+
+@b{⎕CC B} returns all characters of character class(es) @b{B}. If @b{B} is an
+scalar then the result is a character vector, If @b{B} is an integer vector
+then the result is a nested vector of integer vectors, with one item per
+character class.
+
+@example
+      ⍝ character class 1: digits (old ⎕D)
+      ⍝
+      ⎕CC 1
+0123456789
+
+      ⍝ character class 2: uppercase letters A..Z (old ⎕A)
+ABCDEFGHIJKLMNOPQRSTUVWXYZ
+
+      ⍝ character class 3: lowercase letters a..z
+abcdefghijklmnopqrstuvwxyz
+
+      ...
+
+      ⍝ Line drawing characters
+      ⎕CC 7
+┌─┬─┐╒═╤═╕╓─╥─╖╔═╦═╗
+├─┼─┤╞═╪═╡╟─╫─╢╠═╬═╣
+└─┴─┘╘═╧═╛╙─╨─╜╚═╩═╝
+
+      ⍝ Some mathematical symbols
+      ⎕CC 8
+⎲⎛⎞⎡⎤⎧⎫
+⎳⎜⎟⎢⎥⎨⎬
+↔⎝⎠⎣⎦⎮⎮
+ℕℤℚℝℂ⎩⎭
+@end example
+
+
+@c ----------------------------------------------------------------------------
+@subsection  dyadic A ⎕CC B: Test character class
+
+The dyadic @b{A ⎕CC B} returns, for every item in A, integer @b{1} if the item
+is contained in one of the character classes @b{B} and @b{0} otherwise.
+
+@example
+      'a45Y' ⎕CC 1
+0 1 1 0
+
+      'a45Y' ⎕CC 1 2
+0 1 1 1
+
+       (⎕CC 7) ⎕CC 7
+1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+@end example
+
+@c ----------------------------------------------------------------------------
+@node Section 2.24
 @section Dyadic ⎕CR
 
 The @b{⎕CR} function has now an optional left argument that selects one of
@@ -3943,7 +4008,7 @@ a name. For example: monadic @b{⎕CR.hex_to_bytes} is the same as monadic
 @b{⎕CR[13]} or dyadic @b{13 ⎕CR}.
 
 @c ----------------------------------------------------------------------------
-@node    Section 2.24
+@node Section 2.25
 @section  Dyadic ⎕FX (Native Functions)
 
 A Native Function is a function that can be called in APL like a normal user
@@ -4020,14 +4085,14 @@ system function ⎕FIO. The syntax of ⎕FIO is the same as for FILE_IO. The
 
 
 @c ----------------------------------------------------------------------------
-@node    Section 2.25
+@node Section 2.26
 @section ⎕ARG - Interpreter command line arguments
 
 @b{⎕ARG} contains the command line arguments with which GNU APL was invoked.
 @xref{Section 2.1}.
 
 @c ----------------------------------------------------------------------------
-@node    Section 2.26
+@node Section 2.27
 @section ⎕DLX - Knuth's Dancing Links Algorithm
 
 ⎕DLX is an implementation of Donald Knuth's Dancing Links Algorithm (called
@@ -4271,15 +4336,14 @@ sudoku_DLX.apl (which solves sudokus using ⎕DLX).
 
 
 @c ----------------------------------------------------------------------------
-@node    Section 2.27
+@node Section 2.28
 @section ⎕ENV - Environment Variables
 
 ⎕ENV contains the environment variables of the process that is running
 GNU APL. @xref{Section 2.1}.
 
-
 @c ----------------------------------------------------------------------------
-@node    Section 2.28
+@node Section 2.29
 @section ⎕FIO - File I/O Functions
 
 As of GNU APL 1.6, the native function FILE_IO has been replaced by the
@@ -4423,7 +4487,7 @@ Z F¨Z←⎕FIO[49] 'filename'
 
 
 @c ----------------------------------------------------------------------------
-@node    Section 2.29
+@node Section 2.30
 @section ⎕FFT - Fast Fourier Transform
 
 For those interested in signal processing and the like, GNU APL provides ⎕FFT:
@@ -4480,7 +4544,7 @@ few hours, though, so that creating it will not pay off for most mortals.
 
 
 @c ----------------------------------------------------------------------------
-@node    Section 2.30
+@node Section 2.31
 @section ⎕GTK - GTK Interface
 
 GTK (Gimp ToolKit) is a rather powerful library for creating graphical user
@@ -4494,7 +4558,7 @@ and has therefore been put into a separate document.
 See: @b{HOWTOs/Quad-GTK.html}.
 
 @c ----------------------------------------------------------------------------
-@node    Section 2.31
+@node Section 2.32
 @section ⎕JSON - JSON Parsing
 
 GNU APL provides ⎕JSON for decoding and encoding JSON strings and files.
@@ -4540,7 +4604,7 @@ is large.
 
 
 @c ----------------------------------------------------------------------------
-@node    Section 2.32
+@node Section 2.33
 @section ⎕MAP  - Map Value
 
 ⎕MAP changes the ravel items of its right argument according to a mapping
@@ -4644,7 +4708,7 @@ shown in the examples below.
 
 
 @c ----------------------------------------------------------------------------
-@node    Section 2.33
+@node Section 2.34
 @section ⎕MX - Matrix/Statistics
 
 ⎕MX was kindly contributed by Henrik Moller
@@ -5099,7 +5163,7 @@ Print: 10+⍳10
 @end example
 
 @c ----------------------------------------------------------------------------
-@node    Section 2.34
+@node Section 2.35
 @section ⎕PLOT - Plot Data
 
 ⎕PLOT is a function for visualizing numerical APL values. The values to be
@@ -5122,7 +5186,7 @@ The general syntax of ⎕PLOT is:
 @end example
 
 @c ............................................................................
-@node The Plot Data B
+@node Subsection 2.34.1
 @subsection The Plot Data B
 
 The plot data @b{B} can be a vector (for a single plot line to be drawn)
@@ -5191,7 +5255,7 @@ makes little sense. If at least one item of the plot data B is complex, then
 all real items in B are taken as complex with imaginary part 0.
 
 @c ............................................................................
-@node The Plot Attributes A
+@node Subsection 2.34.2
 @subsection The Plot Attributes A
 
 There are a number of attributes like colors, point sizes, line widths,
@@ -5385,7 +5449,7 @@ A ⎕PLOT 1○.1×⍳100
 If the global attribute @b{output_filename} is given, then the plot is
 not only displayed in a window on the screen, but also written to a file
 with the name of the file provided as the value of the attribute.
-@xref{Output File Format} below.
+@xref{Subsection 2.34.4} below.
 
 For example:
 
@@ -5481,7 +5545,7 @@ reason there is no @b{gridY_variable} or @b{gridZ_variable}.
 
 
 @c ............................................................................
-@node Plot Window Handling
+@node Subsection 2.34.3
 @subsection Plot Window Handling
 
 Each call of ⎕PLOT with some plot data @b{B} opens a separate window in the X
@@ -5508,7 +5572,7 @@ mouse or the keyboard (as opposed to programmatically with @b{⎕PLOT ¯3} or
 corresponds to the typical method(s) for closing windows on most systems.
 
 @c ............................................................................
-@node Output File Format
+@node Subsection 2.34.4
 @subsection Output File Format
 
 Early versions of ⎕PLOT were using @b{libxcb} to display the results of
@@ -5623,7 +5687,7 @@ be supported for a while, but new features will only be added to the
 @b{GTK} driver.
 
 @c ----------------------------------------------------------------------------
-@node    Section 2.35
+@node Section 2.36
 @section ⎕PNG - Portable Network Graphics
 
 Portable Network Graphics is a file format for images, defined in
@@ -5836,7 +5900,7 @@ the GNU APL color model into a PNG file.
 
 
 @c ----------------------------------------------------------------------------
-@node    Section 2.36
+@node Section 2.37
 @section ⎕PS - Print Style
 
 ⎕PS is an integer vector that currently (read: as of SVN 982) contains
@@ -5863,7 +5927,7 @@ Note: For compatibility with older workspaces, assigning a single value to
 
 
 @c ----------------------------------------------------------------------------
-@node    Section 2.37
+@node Section 2.38
 @section ⎕RE - Regular Expressions
 
 ⎕RE is a function that provides access to a subset of libpcre2, which is a
@@ -6202,7 +6266,7 @@ The same for the pos+len output format:
 
 
 @c ----------------------------------------------------------------------------
-@node    Section 2.38
+@node Section 2.39
 @section ⎕RVAL - Random APL value
 
 The standard way to produce random numbers is the primitive function ?
@@ -6516,7 +6580,7 @@ argument A and also the subfunction notation:
 @end example
 
 @c ----------------------------------------------------------------------------
-@node    Section 2.39
+@node Section 2.40
 @section ⎕SI - State Indicator
 
 ⎕SI returns aspects of the current State Indicator, similar to the standard
@@ -6594,7 +6658,7 @@ the caller, and so on.
 
 
 @c ----------------------------------------------------------------------------
-@node    Section 2.40
+@node Section 2.41
 @section ⎕SQL - SQL Database Interface
 
 ⎕SQL was kindly contributed by Elias Mårtenson.
@@ -7268,7 +7332,7 @@ As usual, the number of rows must match the number of placeholders in the
 query parameter @b{B} (an APL vector).
 
 @c ----------------------------------------------------------------------------
-@node    Section 2.41
+@node Section 2.42
 @section ⎕SYL - System limits
 
 System variable ⎕SYL shows a number of system limits when referenced:
@@ -7372,7 +7436,7 @@ is printed instead of VALUE. The shape SH is computed like this:
 @end example
 
 @c ----------------------------------------------------------------------------
-@node    Section 2.42
+@node Section 2.43
 @section ⎕XML  - XML Parsing
 
 @c ............................................................................
@@ -7898,7 +7962,7 @@ follow these top-level steps:
 @end enumerate
 
 @c ----------------------------------------------------------------------------
-@node    Section 2.43
+@node Section 2.44
 @section Conditionals
 
 @b{WARNING}: GNU APL conditionals are experimental. Use them with care and
@@ -8270,7 +8334,7 @@ that if not syntactically required. Some people even use double parentheses to
 emphasize the condition of a conditional statement or expression.
 
 @c ----------------------------------------------------------------------------
-@node    Section 2.44
+@node Section 2.45
 @section Matrix Product
 
 In standard APL, the inner product Z of two matrices A and B as known from
@@ -8361,7 +8425,7 @@ of @b{A} and @b{B}. Naturally, the multiplications of these 0-columns or
 @end itemize
 
 @c ----------------------------------------------------------------------------
-@node    Section 2.45
+@node Section 2.46
 @section Monadic ≠ (Nub Sieve)
 
 The nub sieve @b{Z←≠B} of a value @b{B} is a Boolean vector @b{Z} with the
@@ -8479,7 +8543,8 @@ As far as xterm is concerned, the xterm command line options --u8, --lc, and
 * Section 5.3::   Quotes from the lrm
 * Section 5.4::   Some APL2 Tests
 * Section 5.5::   Definitions
-* Section 5.6::   GNU APL Vector Notation
+* Section 5.6::   Unexpected Stranding
+* Section 5.7::   GNU APL Vector Notation
 @end menu
 
 This chapter describes details of the GNU APL vector notation. Unfortunately
@@ -8543,7 +8608,7 @@ characters can be listed within one set of single quotation marks:
 @item @b{lrm page 33}: @i{The hierarchy of binding strengths is listed
       below in descending order.}
 @verbatim
-     Binding Strength            What Is Bound
+        Binding Strength         What Is Bound
      ──────────────────────      ────────────────────────────────────
      1. Brackets                 Brackets to what is on their left
      2. Specification left       Left arrow to what is on its left
@@ -8555,12 +8620,12 @@ characters can be listed within one set of single quotation marks:
      8. Specification right      Left arrow to what is on its right
      ════════════════════════════════════════════════════════════════
 @end verbatim
-    The binding strength 4. above is the one for vector notation. It defines
-    how the items of a vector notation are bound together (as opposed to being
-    bound to other tokens). For example: @b{1 2 3[2]} becomes @b{1 2 (3[2])}
-    because @b{[2]} binds stronger to @b{3} on its left than @b{3} binds to
-    @b{2} in its left (which then raises a @b{RANK ERROR} because @b{3} is
-    a scalar).
+    The binding strength @b{4.} above is the one for vector notation. It
+    defines how the items of a vector notation are bound together (as
+    opposed to being bound to other tokens). For example: @b{1 2 3[2]}
+    becomes @b{1 2 (3[2])} because @b{[2]} binds stronger to @b{3} left
+    of it than @b{3} binds to @b{2} left  of it (which then raises
+    a @b{RANK ERROR} because @b{3} is a scalar).
 @end enumerate
 
 
@@ -8605,10 +8670,10 @@ b
 @b{Test 1c}: no surprise for the binding strength. This test confirms
 the second quote on page 14 of the lrm.
 
-@subsection Test 1: Binding strength of the left operand
+@subsection Test 2: Binding strength of the left operand
 
-For this test we create a defined function @b{SHOW_NC}, a monadic defined
-operator @b{OPER1}, and a dyadic defined operator @b{OPER2}:
+For this test we create a monadic defined function @b{SHOW_NC}, a monadic
+defined operator @b{OPER1}, and a dyadic defined operator @b{OPER2}:
 
 @example
       ⍝ display the name class of B¯B
@@ -8677,7 +8742,7 @@ B       : Value  1 2 3
 
       ⍝ Test 2d. binding of the right operand
       ⍝
-      11 22 33 'lop' OPER1 'rop' 1 2 3
+      11 22 33 'lop' OPER2 'rop' 1 2 3
 A       : Unused Name
 LO      : Value  11 22 33 lop
 OPER2   : Operator
@@ -8757,21 +8822,38 @@ as @b{0 1 2(⌽∘0 1) 'ABC'} as @b{iso} suggests.
 @node Section 5.5
 @section Definitions
 
-@b{Definition}: A @i{strand} consists of two (!) or more adjacent values in
-a defined function, or in a string being ⍎'ed, or on a line entered in
-immediate execution mode. Such values can be literals (like in @b{1 2 3}),
+@b{Definition}: A @i{(complete) strand} consists of two (!) or more adjacent
+values in a defined function, or in a string being ⍎'ed, or on a line entered
+in immediate execution mode. Such values can be literals (like in @b{1 2 3}),
 but also values of variables or results of niladic functions. A strand is
 always a vector and we call the values in a strand the @i{items of the strand}.
 Strand items can be simple (i.e. numbers or single characters) or nested
-(strings or other strands). Strand items sre always (possibly nested)
+(strings or other strands). Strand items are always (possibly nested)
 APL scalars.
 
 @b{Definition}: A @i{literal strand} is a strand whose items are only
-literals (including nested literals like in 1 2 (3 4) 5).
+literals (including nested literals like in 1 2 (3 4) 5). Literal strands are
+created when an APL expression is tokenized. At that point in time the
+literal strand is incomplete and more strand items may be added to it when
+the statement is executed.
+
+@b{Note}: Strands are, in general, subject to what is known
+as @i{unexpected stranding}, which occurs when an operator accept values as
+operands. This is the case for the power operatror @b{⍣} and for the rank
+operator @b{⍤}; both can have values as right operands. The clean way of
+avoiding unexpected stranding is to put the operatorr and its operands
+into parentheses, but the @b{iso} does not do that and in order to make
+the examples in @b{iso} work, GNU APL has dedicated code for the rank and
+power operators that prevents unexpected stranding for their right operand
+and their right function value. For defined operators this is not possuble 
+because at tokenization time a defined operator is only a symbol whose
+name class at execution time is unknown at tokenization time of its caller.
+For the same reason. the binding strengths defined above can not cure this
+kind of unexpected stranding.
 
 @b{Definition}: An @i{extended literal strand} is a strand whose items are
-either literals (including nested literals) or iparticular simple primitive
-function with particular literal arguments.
+either literals (including nested literals) or particular simple primitive
+function is with particular literal arguments.
 
 @b{Definition}: A @i{mixed strand} is a strand which is not a literal strand.
 
@@ -8786,16 +8868,17 @@ Examples:
 @example
       1 2 3        ⍝ open literal strand
 
-      VAR←1 2 3
-      ∇Z←FOO
+      1 2 (3⍴4) 5     ⍝ open extended literal strand ←→ 1 2 4 4 4 5
+      1 2 (3/4) 5     ⍝ open extended literal strand ←→ 1 2 4 4 4 5
+     'ab' (⍳3) 'ef'   ⍝ open extended literal strand ←→ 'ab' (1 2 3) 'ef' 
+
+      VAR←1 2 3       ⍝ mixed strand item
+      ∇Z←FOO          ⍝ mixed strand item
        Z←1 2 3
       ∇
 
-      1 VAR 3       ⍝ nested open mixed strand
-      1 FOO 3       ⍝ open mixed strand\
-
-      1 2 (3⍴4) 5   ⍝ open extended literal strand ←→ 1 2 4 4 4 5
-      1 2 (3/4) 5   ⍝ open extended literal strand ←→ 1 2 4 4 4 5
+      1 VAR 3         ⍝ nested open mixed strand
+      1 FOO 3         ⍝ nested open mixed strand
 
       (1 2 3)       ⍝ closed literal strand
       'abc'         ⍝ closed literal strand
@@ -8804,6 +8887,209 @@ Examples:
 
 @c ----------------------------------------------------------------------------
 @node Section 5.6
+@section Unexpected Stranding
+
+@i{Unexpected stranding} (or better: @i{false stranding}) refers to a situation
+where the stranding of adjacent values leads to a wrong result. Unexpected
+stranding is not unexpected at all, as we will see in this section.
+
+In non-nested APL interpreters, such as APL \360, the binding strength of
+strand items was the highest. That was a wise decision which had two
+consequences:
+
+@itemize
+@item Expressions like @b{1 2 3[2]} were always valid in APL \360 and friends.
+      The current APL2 and, (for the sake of compatibility) also GNU APL cases,
+      where @b{1 2 3[2]} raises a RANK ERROR, are merely an unfortunate
+      consequence of binding expressions in brackets stronger than strand
+      items.
+@item Similarly, the IBM APL2 design decision to bind right operand stronger 
+      than strand items, together with the decision to allow values as operands,
+      create the possibility of false stranding.
+@end itemize
+
+@b{Corollary 1:} unexpected stranding was not an issue before binding strength
+in APL2 was introduced.
+
+@b{Corollary 2:} The only binding strengths for which unexpected stranding
+can occur are those for that bind stronger than vector (i.e. strand item),
+i.e. @b{1. bracket}, @b{2. specification left}, and @b{3. right operand}.
+Of these 3 binding strengths, only @b{3. right operand} conflicts with
+strand notation (because neither @b{[...]} nor @b{←} can be strand items.
+
+To go into a little more detail we consider the following token sequences:
+
+@example
+                                                        ⍝ at tokenizatio time...
+    PRIMITIVE_FUNCTION         VALUE_A VALUE_B          ⍝  ├── expected
+    PRIMITIVE_DYADIC_OPERATOR  VALUE_A VALUE_B          ⍝  ├── unexpected
+    VALUE                      VALUE_A VALUE_B          ⍝  ├── expected
+    SYMBOL                     VALUE_A VALUE_B          ⍝  └── unknown
+
+                                                        ⍝ at execution time...
+    VALUE                      VALUE_A VALUE_B          ⍝  ├── expected
+    FUNCTION                   VALUE_A VALUE_B          ⍝  ├── expected
+    DYADIC_OPERATOR            VALUE_A VALUE_B          ⍝  └── unexpected
+@end example
+
+The fact that @b{VALUE_A} and @b{VALUE_B} are adjacent constitues what is
+known as a @i{shift/reduce confict} in compiler terminology. Let's add
+some parentheses to see how these shift/reduce conficts are, by means
+of the APL2 binding strength, supposed to be resolved:
+
+@example
+                                                        ⍝ at tokenizatio time...
+    PRIMITIVE_FUNCTION       ( VALUE_A   VALUE_B )      ⍝  ├── expected
+  ( PRIMITIVE_DYADIC_OPERATOR  VALUE_A ) VALUE_B        ⍝  ├── unexpected
+    VALUE                    ( VALUE_A   VALUE_B )      ⍝  ├── expected
+  ? SYMBOL                   ? VALUE_A ? VALUE_B ?      ⍝  └── unknown
+
+                                                        ⍝ at execution time...
+    VALUE                    ( VALUE_A   VALUE_B )      ⍝  ├── expected
+    FUNCTION                 ( VALUE_A   VALUE_B )      ⍝  ├── expected
+  ( DYADIC_OPERATOR            VALUE_A ) VALUE_B        ⍝  └── unexpected
+@end example
+
+The first four sequences occurs at tokenization time, the others at
+execution time. The significant difference between primitive functions
+and primitive operators on the one hand and defined functions and defined
+operators on the other hand is that the parser "knows" in the first three
+cases if @b{VALUE_A} and @b{VALUE_B} shall be stranded together or not.
+In the fourth case the parser cannot decide whether @b{SYMBOL} refers to a
+defined function (including functions derived from monadic operators),
+to a variable, or to a dyadic defined operator. Therefore the parser can
+resolve the first three cases at tokenization time, i.e. bind @b{VALUE_A}
+to @b{PRIMITIVE_DYADIC_OPERATOR} or ito @b{VALUE} if so, and to @b{VALUE_B}
+otherwise. Only the binding of @b{SYMBOL} is left over and will be decided
+at execution time.
+
+At execution time, the first thing that happens is that @b{SYMBOL} is resolved
+to its current value (so its token class changes from @b{SYMBOL} to @b{VALUE}
+(for variables),  or to @b{FUNCTION} (for defined functions), or to
+@b{OPERATOR} for defined operators. At the time when the parser sees the
+pattern @b{VALUE_A VALUE_B} it can, with a lookahead of 1 token decide
+if the token @b{VALUE_A} shall be bound to it @b{PRIMITIVE_DYADIC_OPERATOR},
+or stranded to its adjacxent value @b{VALUE_B}. To do this a so-called
+@b{LALR-1} parser suffices. In simple terms: if the parser sees a
+@b{PRIMITIVE_DYADIC_OPERATOR} left of @b{VALUE_A VALUE_B} then it shifts
+@b{VALUE_A} (which will later on become the right operand of that operator)
+and otherwise it starts or continues strand building with @b{VALUE_A}.
+In @b{iso} terminology: the phrase evaluator for pattern @b{VALUE_A VALUE_B}
+stops the strand building (in compiler terminology it @b{shifts} @b{VALUE_A})
+when the lookahead token is @b{DYADIC_OPERATOR}), and otherwise it continues
+the strand building (in compiler terminology it @b{reduces} the pattern
+@b{VALUE_A VALUE_B}). 
+
+As an aside: The ISO standard provides examples with strand notation
+that would be illegal in IBM APL2 (rank operator, page 126):
+
+@example
+      0 1 2 ⌽⍤0 1 'ABC'
+ABC
+BCA
+CAB
+@end example
+
+In IBM APL2, the rightmost @b{0} would bind to @b{⍤} and not to the rightmost
+@b{1}, like in (parentheses added according to the APL bindig strength:
+
+@example
+      (0 1 2) (⌽ ⍤ 0) (1 'ABC')
+LENGTH ERROR
+      0 1 2(⌽⍤0 0 0)1 'ABC'
+      ^            ^
+@end example
+
+What saves IBM here is only the fact that the the two primitive operators
+that accept values as right operands (the rank operator ⍤ and the power 
+operator ⍣) are not implemented in IBM APL2. In contrast GNU APL has
+implemented both operators and the @b{iso} examples work as shown in
+the standard.
+
+The same @b{iso} example in Dyalog APL (who seem to be the inventor of these
+operators) does not work either (at least not without parentheses:
+
+@example
+      ⍝ Dyalog APL
+      ⍝
+      0 1 2 ⌽⍤0 1 'ABC'
+SYNTAX ERROR: Missing right argument
+ 0 1 2⌽⍤0 1 'ABC'
+      ∧
+
+      ⍝ Dyalog APL
+      ⍝
+      0 1 2 (⌽⍤0 1) 'ABC'
+ABC
+BCA
+CAB
+@end example
+
+and @b{1 2 3[2]} is valid in Dyalog APL, which suggests that Dyalog has not
+adapted the idea of binding strength but rather remains backward compatible
+with APL \360.
+
+@subsection Performance considerations
+
+But why bother? The tokenizer could have made its life easier by only
+converting (number-) strings and quoted strings to APL values and postpone
+the resolution of shift/reduce conflicts to the execution phase. To understand
+why it is important to perform as much of the strand building at tokenization
+time, have a look at the following, somwhat crude, APL code (which is not
+too uncommon in real life):
+
+@example
+      ∇Z←FOO N
+       Z←100⍴0 ◊ J←1
+       LOOP: Z[J]←J+1 2 3 4 5 6 7 8 9 10 ÷ →(100 < J←J+1)/LOOP
+      ∇
+@end example
+
+There are smarter ways to do that in APL, but before APL2 an APL programmer
+could corectly assume that @b{1 2 3 4 5 6 7 8 9 10} will be tokenized into
+a strand created at tokenization time, which would have been more efficient
+than e.g. storing that term in an APL variable. That strand would have been
+a single APL value.
+
+The tokenization of the LOOP line is pretty fast; the tokenizer runs once
+over the line and produces a strand as it goes. MOst of the tokenization, such
+as converting number strings to integers is the same in both cases compared 
+below.
+
+Now, if the strand is built at tokenization time, then the strand is created
+once and becomes a single APL value.
+
+If, however, the strand is built at execution time, then:
+
+@itemize
+@item the tokenization produces 10 scalar APL values,
+@item every iteration of the LOOP line creates 9 more values:
+      @itemize
+      @item 9 10
+      @item 8 (9 10)
+      @item 7 (8 (9 10))
+      @item ...
+      @end itemize
+@item and each of the 9 steps in the strand creation requires a pattern
+      match for the pattern @b{VALUE_A VALUE_B}
+@item
+@end itemize
+
+The function FOO would therefore create 900 more APL values and perform
+900 more pattern matches compared to the strand creation at tokenization time.
+GNU APL has further extended this principle to APL values that may not only
+contain literals but also a handful of primitives with literal argument.
+For example, the APL expression:
+
+@example
+      ⍪3 4⍴"Hello"
+@end example
+
+would be tokenized into a single APL value. This kind of optimization
+can be disabled at compile time.
+
+@c ----------------------------------------------------------------------------
+@node Section 5.7
 @section GNU APL Vector Notation
 
 With the definitions from the previous section we can explain how GNU APL
@@ -8812,11 +9098,11 @@ has implemented vector notation:
 1. GNU APL distinguishes between literal and mixed strands. literal strands
    are combined into a single APL value at tokenization time. This is a
    very effective optimization (which can be disabled at @b{./configure}
-   time). In contrast, mixed strands are created at prefix matching time, i.e.
+   time). In contrast, mixed strands are created at phrase matching time, i.e.
    when an APL expression is evaluated. The tokenizatio of APL expressions
-   happens only once, while prefix matching occurs every time when a
+   happens only once, while phrase matching occurs every time when a
    statement is being executed and therefore moving major parts of the strand
-   building from prefix matching time to tokenization time can bring
+   building from phrase matching time to tokenization time can bring
    substantial performance benefits.
 
 2. The tokenization expands simple APL primitives with literal arguments and
@@ -8824,13 +9110,13 @@ has implemented vector notation:
    @b{N⍴B}, @b{N/B}, @b{N⌿B}, @b{,B}, @b{⍪B}, and @b{⊂B} are handled this way.
 
 3. The tokenization of literal strands has dedicated code for literal
-   arguments of the rank operator (@b{⍤}) to make make it working like described
-   in the ISO standard. This is, in contrast to defined operators, possible
-   because the ISO standard defines in very detail how its right operand
-   needs to look like and how deviations shall be handled (@b{DOMAIN ERROR},
-   @b{LENGTH ERROR} etc.
+   arguments of the power (@b{⍣}) and rank operators (@b{⍤}) to make make
+   it working like described in the ISO standard. This is, in contrast to
+   defined operators, possible because the ISO standard defines in very
+   detail how its right operand needs to look like and how deviations shall
+   be handled (@b{DOMAIN ERROR}, @b{LENGTH ERROR} etc.
 
-4. The prefix matching of mixed strands builds the strand step-by-step
+4. The phrase matching of mixed strands builds the strand step-by-step
    according to the following rules:
 
 @itemize
@@ -8870,6 +9156,53 @@ has implemented vector notation:
    dedicated code that "unstrands" the right operand from a strand that
    may have been mistakenly created in @b{3.} above.
 
+@subsection Example
+
+Consider the following APL statement:
+
+@example
+      ∇FOO
+       "Time is now: " ⎕TS
+      ∇
+@end example
+
+When function @b{FOO} is created its single function line is being tokenized.
+The tokenization of the function line sees the string "Time is now: " which
+is a literal token wth 13 literal items (= single characters). The result of
+the tokenization is therefore 2 tokens: the string and the system function
+@b{⎕TS}. Naturally @b{⎕TS} is the time stamp when function @b{FOO} is called
+and not the the time when function @b{FOO} is created. Therefore the strand
+building stops at this point and leaves the string as an (incomplete) strand
+because the strand building can not predict when @b{FOO} will be called. At
+this point the incomplete strand and the system function @b{⎕TS} will become
+adjacent tokens in the function body of @b{FOO}.
+
+Later on (or maybe never) @b{FOO} will be called. The execution of @b{FOO}
+(which goes from  right to left) first sees the niladic token @b{⎕TS}, and
+evaluates it to an integer vector @b{B}, say @b{2026 1 1 18 5 6 194}. Values
+returned from functions, values of variables, and the literal strands from
+the tokenization are all closed and incomplete, and so is @b{B} at this point.
+The execution then fetches the next token @b{A}, which is the string. The
+two adjacent tokens @b{A} and @b{B} now match the pattern @b{A B} in the
+phrase table of the interpreter. The corresponding phrase evaluator for
+that pattern then prepends the items in @b{A} to @b{B} and replaces the
+two tokens @b{A} and @b{B} with the new (single) token for the modified @b{B}.
+The next token is then an @b{END} (for end of staement) token which causes
+@b{B} to be printed.
+
+@b{A final remark}: It should be noted, that the phrase table defined 
+in @b{iso} is somewhat incomplete. In particular the pattern @b{A B}
+above (which performs the strand building in the execution phase) is
+not present in @b{iso}. Also, @b{iso} defines @b{END} tokens as used
+above, but no pattern in ehich they appear. All this has the unfortunate
+consequence that vector notation is provided by every APL interpreter,
+but the details of it differ considerably. For example, @b{1 2 3[2]} could
+be @b{2} in one interpreter, but raise a @b{RANK ERROR} in another. Even
+for different interpreters od the same vendor. The only reliable way to
+write portable APL programs is to use (otherwise redundant) parentheses,
+in particular around operators and their operands, and around strands that
+are being indexed.
+
 
 @c ============================================================================
 @node Chapter 6
@@ -8879,11 +9212,8 @@ The top-level directory of the GNU APL project has a structure like this:
 
 @example
     apl-1.9/
-    ├── autom4te.cache
     ├── build
     ├── debian
-    ├── debian_tmp
-    ├── devel_doc
     ├── doc
     ├── erlang
     ├── gnu-apl.d

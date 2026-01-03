@@ -35,6 +35,7 @@ using namespace std;
 #include "IO_Files.hh"
 #include "LibPaths.hh"
 #include "Output.hh"
+#include "Quad_CC.hh"
 #include "Quad_FFT.hh"
 #include "Quad_FX.hh"
 #include "Quad_GTK.hh"
@@ -102,12 +103,6 @@ Workspace::is_CLEAR_WS()
 {
    return get_WSID().get_name()
                     .compare(UCS_ASCII_string("CLEAR WS")) == COMP_EQ;
-}
-//----------------------------------------------------------------------------
-DerivedFunction *
-Workspace::get_fun_oper_slot(const char * loc)
-{
-   return Workspace::SI_top()->get_fun_oper_slot(loc);
 }
 //----------------------------------------------------------------------------
 void
