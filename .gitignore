@@ -102,3 +102,7 @@ autom4te.cache/
 
 # macOS
 .DS_Store
+
+# Log files
+*.log
+

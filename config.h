@@ -5,7 +5,7 @@
 #define ARCHIVE_SVN "cmake"
 
 /* How and when GNU APL was configured */
-#define BUILDTAG PACKAGE_NAME, PACKAGE_VERSION " / cmake", "2026-04-27 23:03:39 UTC", "macOS 20 core Apple M1 Ultra", "cmake -S . -B <builddir>"
+#define BUILDTAG PACKAGE_NAME, PACKAGE_VERSION " / cmake", "2026-04-27 23:38:55 UTC", "macOS 20 core Apple M1 Ultra", "cmake -S . -B <builddir>"
 
 /* Define to 1 iff pthread_setaffinity_np() is available */
 /* #undef HAVE_AFFINITY_NP */
@@ -29,7 +29,7 @@
 #define HAVE_EXECINFO_H 1
 
 /* Define to 1 if you have the <ext/atomicity.h> header file. */
-/* #undef HAVE_EXT_ATOMICITY_H */
+#define HAVE_EXT_ATOMICITY_H 1
 
 /* Define to 1 if you have the <fcntl.h> header file. */
 #define HAVE_FCNTL_H 1
