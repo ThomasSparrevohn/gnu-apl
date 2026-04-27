@@ -1,0 +1,36 @@
+⍝ APnnn_1011.tc2
+⍝ Partner testcase for APnnn.tc: runs as interpreter --id 1011.
+⍝ Couples VAR444 with interpreter 1010, sets a control vector,
+⍝ then reverses the value it receives and sends it back.
+
+      ]xterm off
+
+∇SYNC B;C;Q
+    Q←B ⎕SVO 'VAR444' ◊ I←0
+L:  C←⎕SVO 'VAR444' ◊ →(2=C)/OK ◊ 0⍴⎕DL 0.1 ◊ →(10≠I←I+1)/L
+    'SYNC FAILED:' ◊ C ◊ →0
+OK: ⎕SVE←0 ◊ 0⍴⎕SVE ◊ 0⍴⎕DL 0.1 ◊ 'SYNC OK'
+∇
+
+      ⍝ offer VAR444 to AP 1010 and wait for sharing to complete
+      ⍝
+      SYNC 1010
+
+      ⎕SVO 'VAR444'
+
+      ⍝ 1. set control vector
+      ⍝
+      1 0 1 0 ⎕SVC 'VAR444'
+
+      ⍝ 2. wait for AP 1010 to set control vector
+      ⍝
+      ⎕SVE←1.3 ◊ ⎕SVE
+      ⎕SVC 'VAR444'
+
+      VAR444←⌽VAR444
+
+      ⍝ wait for peer to finish reading VAR444
+      ⍝
+      ⎕DL 0.2
+
+      )OFF

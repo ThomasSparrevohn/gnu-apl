@@ -261,6 +261,35 @@ char peer[100];
         else   // TCP transport
 #endif
            {
+             // On macOS (and POSIX generally) a TCP socket cannot be
+             // reconnected after a failed connect(); recreate it each time.
+             if (retry > 0)
+                {
+                  ::close(sock);
+                  sock = TCP_socket(socket(AF_INET, SOCK_STREAM, 0));
+                  if (sock == NO_TCP_SOCKET)
+                     {
+                       get_CERR() << "*** socket(AF_INET, SOCK_STREAM, 0) "
+                                     "failed at " << LOC << endl;
+                       return NO_TCP_SOCKET;
+                     }
+                  const int ndelay = 1;
+                  setsockopt(sock, 6, TCP_NODELAY,
+                             reinterpret_cast<const char *>(&ndelay),
+                             sizeof(int));
+                  SockAddr local2;
+                  memset(&local2, 0, sizeof(SockAddr));
+                  local2.inet.sin_family = AF_INET;
+                  local2.inet.sin_addr.s_addr = htonl(0x7F000001);
+                  if (::bind(sock, &local2.addr, sizeof(sockaddr_in)))
+                     {
+                       get_CERR() << "bind(127.0.0.1) failed: "
+                                  << strerror(errno) << endl;
+                       ::close(sock);
+                       return NO_TCP_SOCKET;
+                     }
+                }
+
              SockAddr remote;
              memset(&remote, 0, sizeof(sockaddr_in));
              remote.inet.sin_family = AF_INET;

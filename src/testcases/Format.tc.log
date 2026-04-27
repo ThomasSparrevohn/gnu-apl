@@ -1,0 +1,286 @@
+----> ⍝ Format.tc
+----> ⍝ ----------------------------------
+----> 
+---->       R←2 3ρ'ONE' 1 1 'TWO' 2 22
+---->       R
+==  ONE 1  1 
+==  TWO 2 22 
+----> 
+---->       Z←⍕R
+---->       Z
+==  ONE 1  1 
+==  TWO 2 22 
+----> 
+---->       ρZ
+== 2 10
+----> 
+----> ⍝ printing width ----------------------------------
+----> 
+---->       ⎕PW←30
+---->       T←34559898 449449449 13981 93891293
+---->       T
+== 34559898 449449449 13981
+==       93891293
+----> 
+---->       U←⍕T
+---->       U
+== 34559898 449449449 13981 
+==       93891293
+----> 
+---->       ⎕PW←80
+----> 
+----> ⍝ simple char arrays ----------------------------------
+----> 
+---->       M←'3  5  SIX'
+---->       M
+== 3  5  SIX
+----> 
+---->       N←⍕M
+---->       N
+== 3  5  SIX
+---->       N≡M
+== 1
+----> 
+---->       S←4×ι4
+---->       S
+== 4 8 12 16
+----> 
+---->       Y←⍕S
+---->       Y
+== 4 8 12 16
+----> 
+---->       S≡Y
+== 0
+----> 
+---->       ρS
+== 4
+---->       ρY
+== 9
+----> 
+----> ⍝ nested arrays ----------------------------------
+----> 
+---->       B←(2 3 4) 5 (⊂7 8 (9 10 11))
+---->       ρB
+== 3
+---->       ≡B
+== 4
+---->       C←⍕B
+---->       ρC
+== 27
+---->       B
+==  2 3 4  5   7 8  9 10 11   
+---->       C
+==  2 3 4  5   7 8  9 10 11   
+----> 
+----> ⍝2^3^4^^5^^^7^8^^9^10^11^^^
+----> 
+----> 
+---->       D←(1 2) (3 4 5) 6 (2 2 3ρ6+ι12)
+---->       D
+==  1 2  3 4 5  6     7  8  9 
+==                   10 11 12 
+== 
+==                   13 14 15 
+==                   16 17 18 
+----> 
+---->       E←⍕D
+---->       ρE
+== 5 27
+---->       E
+==  1 2  3 4 5  6     7  8  9 
+==                   10 11 12 
+==                            
+==                   13 14 15 
+==                   16 17 18 
+----> 
+---->       ⍝ replace ' ' with '^' to improve readability
+---->       ((' ' = ϵE)/ϵE) ← '^'
+---->       E
+== ^1^2^^3^4^5^^6^^^^^7^^8^^9^
+== ^^^^^^^^^^^^^^^^^^10^11^12^
+== ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+== ^^^^^^^^^^^^^^^^^^13^14^15^
+== ^^^^^^^^^^^^^^^^^^16^17^18^
+----> 
+----> ⍝ effect of printing precision ----------------------------------
+----> 
+---->       ⎕PP←5
+---->       H←÷3 6
+---->       H
+== 0.33333 0.16667
+----> 
+---->       I←⍕H
+---->       I
+== 0.33333 0.16667
+----> 
+---->       ⎕PP←8
+---->       H
+== 0.33333333 0.16666667
+---->       I
+== 0.33333 0.16667
+----> 
+---->       ⎕PP←10
+----> 
+---->       ⍝ lrm vs, ISO issues regarding the rank of the result.
+---->       ⍝ We follow the lrm ( ⍴⍴Z ←→ 1⌈⍴⍴B
+---->       ⍝
+---->       ⍴⍕1 1 1 1⍴5
+== 1 1 1 1
+----> 
+---->       ⍴⍕1 1 1⍴5
+== 1 1 1
+----> 
+---->       ⍴⍕1 1⍴5
+== 1 1
+----> 
+---->       ⍴⍕1⍴5
+== 1
+---->       ⍴⍕5
+== 1
+----> 
+---->       ⍝ regression
+---->       ⍝
+---->       ⍕⊂[4 5]1 1 1 2 2 ⍴ ⍳4
+==  1 2 
+==  3 4 
+----> 
+---->       ⍕2 1⍴⊂2 2 ⍴ ⍳4
+==  1 2 
+==  3 4 
+==      
+==  1 2 
+==  3 4 
+----> 
+---->       ⍝ rank B > 2
+---->       ⊢R←3 4 16⍴⍳100
+==  1  2  3   4  5  6  7  8  9 10 11 12 13 14 15 16
+== 17 18 19  20 21 22 23 24 25 26 27 28 29 30 31 32
+== 33 34 35  36 37 38 39 40 41 42 43 44 45 46 47 48
+== 49 50 51  52 53 54 55 56 57 58 59 60 61 62 63 64
+== 
+== 65 66 67  68 69 70 71 72 73 74 75 76 77 78 79 80
+== 81 82 83  84 85 86 87 88 89 90 91 92 93 94 95 96
+== 97 98 99 100  1  2  3  4  5  6  7  8  9 10 11 12
+== 13 14 15  16 17 18 19 20 21 22 23 24 25 26 27 28
+== 
+== 29 30 31  32 33 34 35 36 37 38 39 40 41 42 43 44
+== 45 46 47  48 49 50 51 52 53 54 55 56 57 58 59 60
+== 61 62 63  64 65 66 67 68 69 70 71 72 73 74 75 76
+== 77 78 79  80 81 82 83 84 85 86 87 88 89 90 91 92
+----> 
+---->       ⍕R
+==  1  2  3   4  5  6  7  8  9 10 11 12 13 14 15 16
+== 17 18 19  20 21 22 23 24 25 26 27 28 29 30 31 32
+== 33 34 35  36 37 38 39 40 41 42 43 44 45 46 47 48
+== 49 50 51  52 53 54 55 56 57 58 59 60 61 62 63 64
+== 
+== 65 66 67  68 69 70 71 72 73 74 75 76 77 78 79 80
+== 81 82 83  84 85 86 87 88 89 90 91 92 93 94 95 96
+== 97 98 99 100  1  2  3  4  5  6  7  8  9 10 11 12
+== 13 14 15  16 17 18 19 20 21 22 23 24 25 26 27 28
+== 
+== 29 30 31  32 33 34 35 36 37 38 39 40 41 42 43 44
+== 45 46 47  48 49 50 51 52 53 54 55 56 57 58 59 60
+== 61 62 63  64 65 66 67 68 69 70 71 72 73 74 75 76
+== 77 78 79  80 81 82 83 84 85 86 87 88 89 90 91 92
+----> 
+---->       ⍴⍕R
+== 3 4 48
+----> 
+
+)SI not cleared at the end of testcases/Format.tc:
+⋆  FMT FIO∆sscanf DATA
+   ^
+⋆  FIO∆fclose Handle ⍝ close file
+   ^
+⋆  DATA FIO∆fwrite_utf8 Handle
+   ^
+⋆  ⎕←Handle←'w' FIO∆fopen Filename← 'FILE_IO.test3'
+   ^
+⋆  ⎕UCS 200 FIO∆recv Handle2
+   ^
+⋆  'World!' FIO∆send_utf8 Handle1
+   ^
+⋆  ⎕UCS 200 FIO∆recv Handle1
+   ^
+⋆  'Hello' FIO∆send_utf8 Handle2
+   ^
+⋆  Handle2 ← ↑ FIO∆accept Handle
+   ^
+⋆  Server FIO∆connect Handle1
+   ^
+⋆  4 ≤ Handle1←FIO∆socket AF_INET, SOCK_STREAM, IPPROTO_IP
+   ^
+⋆  10 FIO∆listen Handle
+   ^
+⋆  Server FIO∆bind Handle
+   ^
+⋆  (SOL_SOCKET, SO_REUSEADDR, 1) FIO∆setsockopt Handle
+   ^
+⋆  3 ≤ Handle←FIO∆socket AF_INET, SOCK_STREAM, IPPROTO_IP
+   ^
+⋆  ⎕UCS FIO∆read_file Filename
+   ^
+⋆  FIO∆pclose Handle ⍝ close command (returning its exit code)
+   ^
+⋆  Handle← FIO∆popen_ro Command
+   ^
+⋆  HELLO ⍋ ⌽ ⍒ ⍴ ⍵
+   ^
+⋆  FIO∆fclose Handle ⍝ close file
+   ^
+⋆  ⎕←Handle←'w' FIO∆fopen Filename← 'FILE_IO.test2'
+   ^
+⋆  FIO∆printf FORMAT, 42 (○1) 'Hello'
+   ^
+⋆  Error←-FIO∆unlink Filename
+   ^
+⋆  FIO∆unlink Filename
+   ^
+⋆  FIO∆fclose Handle
+   ^
+⋆  ⎕←FSTAT←FIO∆fstat Handle
+   ^
+⋆  FIO∆feof Handle
+   ^
+⋆  Z←200 FIO∆fread Handle
+   ^
+⋆  FIO∆feof Handle
+   ^
+⋆  Z←200 FIO∆fgets Handle
+   ^
+⋆  Z←FIO∆fgets Handle
+   ^
+⋆  ⎕←Handle← FIO∆fopen_ro Filename
+   ^
+⋆  FIO∆fclose Handle
+   ^
+⋆  ⎕←(⎕UCS "Hello\n") FIO∆fwrite Handle
+   ^
+⋆  ⎕←Handle←'w' FIO∆fopen Filename← 'FILE_IO.test1'
+   ^
+⋆  ⎕←FIO∆fclose Handle
+   ^
+⋆  ⎕←FIO∆fstat Handle
+   ^
+⋆  ⎕←Handle←FIO∆fopen_ro Filename←'testcases/File_IO.tc'
+   ^
+
+print_stale_info():   alloc(/Users/sparrevo/projects/apl-svn/trunk/src/Parser.cc:1266) flags(3072)
+value history disabled
+
+addr=0x8c30a9200 ≡2 ⍴⊏⊐ flags: 0x0C00   3072 /Users/sparrevo/projects/apl-svn/trunk/src/Parser.cc:1266
+    [0] addr=0x8c30ec400 ≡1 ⍴⊏31⊐ flags: 0x0400   1024 /Users/sparrevo/projects/apl-svn/trunk/src/Tokenizer.cc:741
+┌→──────────────────────────────┐
+│⎕everything %d Pi %e String %s␊│
+└───────────────────────────────┘
+
+
+print_stale_info():   alloc(/Users/sparrevo/projects/apl-svn/trunk/src/Parser.cc:1950) flags(3072)
+value history disabled
+
+addr=0x8c30ee000 ≡0 ⍴⊏⊐ flags: 0x0C00   3072 /Users/sparrevo/projects/apl-svn/trunk/src/Parser.cc:1950
+2
+
+
+ (automatic check for stale values failed, offending Value erased).

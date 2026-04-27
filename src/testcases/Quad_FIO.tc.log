@@ -1,0 +1,815 @@
+----> ⍝ Quad_FIO.tc
+----> ⍝ ----------------------------------
+----> 
+---->       ⍝ same as File_IO_1.tc but using FILE_IO.apl library
+---->       ⍝ This is the recommeded way to use file_io.so
+---->       ⍝
+---->       ⍝ This file demonstrates the use of the FILE_IO.apl library
+---->       ⍝ and checks that the wrapper functions in FILE_IO.apl are working
+---->       ⍝
+----> 
+---->       ⍝⍝⍝
+---->       ⍝⍝⍝ If this segfaults then re-install GNU APL !!!
+---->       ⍝⍝⍝
+---->       )COPY 5 FILE_IO.apl
+----> DUMPED ³
+apl: ⋅⋅⋅Unknown APL character: ³ (U+00B3)⋅⋅⋅
+ref: ⋅⋅⋅⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅Non-APL character+⋅⋅⋅
+ref: ⋅⋅⋅      ⍝ fopen this file readonly⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+---->       ⍝
+---->       Filename←'testcases/File_IO_1.tc'
+---->       ⎕←Handle←FIO∆fopen_ro Filename
+apl: ⋅⋅⋅VALUE ERROR+⋅⋅⋅
+ref: ⋅⋅⋅⁰⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅      ⎕←Handle←FIO∆fopen_ro Filename⋅⋅⋅
+ref: ⋅⋅⋅⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅                            ^⋅⋅⋅
+ref: ⋅⋅⋅      ⍝ get statistics⋅⋅⋅
+ ∆ : ⋅⋅⋅      ^
+---->       ⍝
+---->       ⎕←FIO∆fstat Handle
+apl: ⋅⋅⋅VALUE ERROR+⋅⋅⋅
+ref: ⋅⋅⋅⁰ ⁰ ⁰ ⁰ ⁰ ⁰ ⁰ ⁰ ⁰ ⁰ ⁰ ⁰ ⁰⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅      ⎕←FIO∆fstat Handle⋅⋅⋅
+ref: ⋅⋅⋅⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅                  ^⋅⋅⋅
+ref: ⋅⋅⋅      ⍝ close this file⋅⋅⋅
+ ∆ : ⋅⋅⋅      ^
+---->       ⍝
+---->       ⎕←FIO∆fclose Handle
+apl: ⋅⋅⋅VALUE ERROR+⋅⋅⋅
+ref: ⋅⋅⋅0⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅      ⎕←FIO∆fclose Handle⋅⋅⋅
+ref: ⋅⋅⋅⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅                   ^⋅⋅⋅
+ref: ⋅⋅⋅      ⍝ close this file again (which is an error)⋅⋅⋅
+ ∆ : ⋅⋅⋅      ^
+---->       ⍝
+---->       FIO∆fclose Handle
+apl: ⋅⋅⋅VALUE ERROR+⋅⋅⋅
+ref: ⋅⋅⋅DOMAIN ERROR+⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅      FIO∆fclose Handle⋅⋅⋅
+ref: ⋅⋅⋅FIO∆fclose[2]  Ze←⎕FIO[4]Bh⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅                 ^⋅⋅⋅
+ref: ⋅⋅⋅                  ^      ^⋅⋅⋅
+ ∆ : ⋅⋅⋅                 ^
+---->       →
+----> 
+---->       ⍝ create new file
+---->       ⍝
+---->       Filename← "FILE_IO.test"
+---->       ⎕←Handle←'w' FIO∆fopen Filename
+apl: ⋅⋅⋅VALUE ERROR+⋅⋅⋅
+ref: ⋅⋅⋅⁰⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅      ⎕←Handle←'w' FIO∆fopen Filename⋅⋅⋅
+ref: ⋅⋅⋅      FIO∆errno⋅⋅⋅
+ ∆ : ⋅⋅⋅      ^
+apl: ⋅⋅⋅                             ^⋅⋅⋅
+ref: ⋅⋅⋅0⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+---->       FIO∆strerror FIO∆errno
+apl: ⋅⋅⋅VALUE ERROR+⋅⋅⋅
+ref: ⋅⋅⋅Success⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅      FIO∆strerror FIO∆errno⋅⋅⋅
+ref: ⋅⋅⋅⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅                   ^⋅⋅⋅
+ref: ⋅⋅⋅      ⍝ write 3 lines⋅⋅⋅
+ ∆ : ⋅⋅⋅      ^
+---->       ⍝
+---->       ⎕←(⎕UCS "Hello\n") FIO∆fwrite Handle
+apl: ⋅⋅⋅VALUE ERROR+⋅⋅⋅
+ref: ⋅⋅⋅6⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅      ⎕←(⎕UCS 'Hello⋅⋅⋅
+ref: ⋅⋅⋅      ⎕←(⎕UCS "World\n") FIO∆fwrite Handle⋅⋅⋅
+ ∆ : ⋅⋅⋅              ^
+apl: ⋅⋅⋅')FIO∆fwrite Handle⋅⋅⋅
+ref: ⋅⋅⋅6⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅                                  ^⋅⋅⋅
+ref: ⋅⋅⋅      ⎕←(⎕UCS "Line 3...\n") FIO∆fwrite Handle⋅⋅⋅
+ ∆ : ⋅⋅⋅      ^
+----> 10
+apl: ⋅⋅⋅10⋅⋅⋅
+ref: ⋅⋅⋅⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+---->       ⍝ close the file
+---->       ⍝
+---->       FIO∆fclose Handle
+apl: ⋅⋅⋅VALUE ERROR+⋅⋅⋅
+ref: ⋅⋅⋅0⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅      FIO∆fclose Handle⋅⋅⋅
+ref: ⋅⋅⋅⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅                 ^⋅⋅⋅
+ref: ⋅⋅⋅      ⍝ print the file⋅⋅⋅
+ ∆ : ⋅⋅⋅      ^
+---->       ⍝
+---->       )HOST cat FILE_IO.test
+apl: ⋅⋅⋅⋅⋅⋅
+ref: ⋅⋅⋅Hello⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅256 ⋅⋅⋅
+ref: ⋅⋅⋅World⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+----> Line 3...
+apl: ⋅⋅⋅Bad number+⋅⋅⋅
+ref: ⋅⋅⋅⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+----> 0 
+apl: ⋅⋅⋅0⋅⋅⋅
+ref: ⋅⋅⋅⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+---->       ⍝ open file again for reading
+---->       ⍝
+---->       ⎕←Handle← FIO∆fopen_ro Filename
+apl: ⋅⋅⋅VALUE ERROR+⋅⋅⋅
+ref: ⋅⋅⋅⁰⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅      ⎕←Handle←FIO∆fopen_ro Filename⋅⋅⋅
+ref: ⋅⋅⋅⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅                            ^⋅⋅⋅
+ref: ⋅⋅⋅      ⍝ read one line (default max_len)⋅⋅⋅
+ ∆ : ⋅⋅⋅      ^
+---->       ⍝
+---->       Z← FIO∆fgets Handle
+apl: ⋅⋅⋅VALUE ERROR+⋅⋅⋅
+ref: ⋅⋅⋅      ⎕UCS Z⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅      Z←FIO∆fgets Handle⋅⋅⋅
+ref: ⋅⋅⋅Hello⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅                  ^⋅⋅⋅
+ref: ⋅⋅⋅⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+---->       ⍝ read another line (max_len 200)
+---->       ⍝
+---->       Z←200 FIO∆fgets Handle
+apl: ⋅⋅⋅VALUE ERROR+⋅⋅⋅
+ref: ⋅⋅⋅      ⎕UCS Z⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅      Z←200 FIO∆fgets Handle⋅⋅⋅
+ref: ⋅⋅⋅World⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅                      ^⋅⋅⋅
+ref: ⋅⋅⋅⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+---->       ⍴Z
+apl: ⋅⋅⋅⋅⋅⋅
+ref: ⋅⋅⋅6⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+----> 
+---->       ⍝ end of file ? (no)
+---->       ⍝
+---->       FIO∆feof Handle
+apl: ⋅⋅⋅VALUE ERROR+⋅⋅⋅
+ref: ⋅⋅⋅0⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅      FIO∆feof Handle⋅⋅⋅
+ref: ⋅⋅⋅⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅               ^⋅⋅⋅
+ref: ⋅⋅⋅      ⍝ read more bytes⋅⋅⋅
+ ∆ : ⋅⋅⋅      ^
+---->       ⍝
+---->       Z←200 FIO∆fread Handle
+apl: ⋅⋅⋅VALUE ERROR+⋅⋅⋅
+ref: ⋅⋅⋅      ⍴Z⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅      Z←200 FIO∆fread Handle⋅⋅⋅
+ref: ⋅⋅⋅10⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅                      ^⋅⋅⋅
+ref: ⋅⋅⋅⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+---->       ⍝ end of file ? (yes)
+---->       ⍝
+---->       FIO∆feof Handle
+apl: ⋅⋅⋅VALUE ERROR+⋅⋅⋅
+ref: ⋅⋅⋅1⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅      FIO∆feof Handle⋅⋅⋅
+ref: ⋅⋅⋅⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅               ^⋅⋅⋅
+ref: ⋅⋅⋅      ⍝ get statistics⋅⋅⋅
+ ∆ : ⋅⋅⋅      ^
+---->       ⍝
+---->       ⎕←FSTAT←FIO∆fstat Handle ◊ 0 8 8 8 ⊤ FSTAT[3]
+apl: ⋅⋅⋅VALUE ERROR+⋅⋅⋅
+ref: ⋅⋅⋅⁰ ⁰ ⁰ 1 ⁰ ⁰ 0 22 ⁰ ⁰ ⁰ ⁰ ⁰⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅      ⎕←FSTAT←FIO∆fstat Handle⋅⋅⋅
+ref: ⋅⋅⋅64 6 ⁰ ⁰⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅                        ^⋅⋅⋅
+ref: ⋅⋅⋅⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+---->       ⍝ close the file
+---->       ⍝
+---->       FIO∆fclose Handle
+apl: ⋅⋅⋅VALUE ERROR+⋅⋅⋅
+ref: ⋅⋅⋅0⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅      FIO∆fclose Handle⋅⋅⋅
+ref: ⋅⋅⋅⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅                 ^⋅⋅⋅
+ref: ⋅⋅⋅      ⍝ delete the file⋅⋅⋅
+ ∆ : ⋅⋅⋅      ^
+---->       ⍝
+---->       FIO∆unlink Filename
+apl: ⋅⋅⋅VALUE ERROR+⋅⋅⋅
+ref: ⋅⋅⋅0⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅      FIO∆unlink Filename⋅⋅⋅
+ref: ⋅⋅⋅⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅                 ^⋅⋅⋅
+ref: ⋅⋅⋅      ⍝ delete the file again (should fail)⋅⋅⋅
+ ∆ : ⋅⋅⋅      ^
+---->       ⍝
+---->       Error←-FIO∆unlink Filename
+apl: ⋅⋅⋅VALUE ERROR+⋅⋅⋅
+ref: ⋅⋅⋅      FIO∆strerror Error⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅      Error←-FIO∆unlink Filename⋅⋅⋅
+ref: ⋅⋅⋅No such file or directory⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅                        ^⋅⋅⋅
+ref: ⋅⋅⋅⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+---->       ⎕FIO['strerror'] Error   ⍝ monadic with axis string
+apl: ⋅⋅⋅VALUE ERROR+⋅⋅⋅
+ref: ⋅⋅⋅No such file or directory⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅      ⎕FIO['strerror']Error⋅⋅⋅
+ref: ⋅⋅⋅⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅                      ^⋅⋅⋅
+ref: ⋅⋅⋅⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+---->       ⍝ printf
+---->       ⍝
+---->       )ERASE FORMAT
+---->       FORMAT←⊂"⎕everything %d Pi %e String %s\n" 
+---->       FIO∆printf FORMAT, 42 (○1) 'Hello'
+apl: ⋅⋅⋅VALUE ERROR+⋅⋅⋅
+ref: ⋅⋅⋅44⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅      FIO∆printf FORMAT,42(○1)'Hello'⋅⋅⋅
+ref: ⋅⋅⋅⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅                 ^⋅⋅⋅
+ref: ⋅⋅⋅      ⍝ fwrite with UCS in UTF8 out⋅⋅⋅
+ ∆ : ⋅⋅⋅      ^
+---->       ⍝
+---->       Filename← 'FILE_IO.test1'
+---->       ⎕←Handle←'w' FIO∆fopen Filename
+apl: ⋅⋅⋅VALUE ERROR+⋅⋅⋅
+ref: ⋅⋅⋅⁰⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅      ⎕←Handle←'w' FIO∆fopen Filename⋅⋅⋅
+ref: ⋅⋅⋅      'HELLO ⍋ ⌽ ⍒ ⍴ ⍵' FIO∆fwrite_utf8 Handle⋅⋅⋅
+ ∆ : ⋅⋅⋅      ^
+apl: ⋅⋅⋅                             ^⋅⋅⋅
+ref: ⋅⋅⋅25⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+----> 
+---->       FIO∆fclose Handle ⍝ close file
+apl: ⋅⋅⋅VALUE ERROR+⋅⋅⋅
+ref: ⋅⋅⋅0⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅      FIO∆fclose Handle⋅⋅⋅
+ref: ⋅⋅⋅⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅                 ^⋅⋅⋅
+ref: ⋅⋅⋅      )HOST cat FILE_IO.test1 ⋅⋅⋅
+ ∆ : ⋅⋅⋅      ^
+----> HELLO ⍋ ⌽ ⍒ ⍴ ⍵
+apl: ⋅⋅⋅VALUE ERROR+⋅⋅⋅
+ref: ⋅⋅⋅0 ⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅      HELLO⍋⌽⍒⍴⍵⋅⋅⋅
+ref: ⋅⋅⋅⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅               ^⋅⋅⋅
+ref: ⋅⋅⋅      ⍝ popen "r"⋅⋅⋅
+ ∆ : ⋅⋅⋅      ^
+---->       ⍝
+---->       Command←'ls FILE_IO*'
+---->       Handle← FIO∆popen_ro Command
+apl: ⋅⋅⋅VALUE ERROR+⋅⋅⋅
+ref: ⋅⋅⋅      Z←20000 FIO∆fread Handle⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅      Handle←FIO∆popen_ro Command⋅⋅⋅
+ref: ⋅⋅⋅      ⍴Z⋅⋅⋅
+ ∆ : ⋅⋅⋅      ^
+apl: ⋅⋅⋅                          ^⋅⋅⋅
+ref: ⋅⋅⋅⁰⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+---->       FIO∆pclose Handle ⍝ close command (returning its exit code)
+apl: ⋅⋅⋅VALUE ERROR+⋅⋅⋅
+ref: ⋅⋅⋅0⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅      FIO∆pclose Handle⋅⋅⋅
+ref: ⋅⋅⋅⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅                 ^⋅⋅⋅
+ref: ⋅⋅⋅      ⍝ read entire file⋅⋅⋅
+ ∆ : ⋅⋅⋅      ^
+---->       ⍝
+---->       ⎕UCS FIO∆read_file 'FILE_IO.test1'
+apl: ⋅⋅⋅VALUE ERROR+⋅⋅⋅
+ref: ⋅⋅⋅72 69 76 76 79 32 226 141 139 32 226 140 189 32 226 141 146 32 226 141 180 32⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅      ⎕UCS FIO∆read_file 'FILE_IO.test1'⋅⋅⋅
+ref: ⋅⋅⋅      226 141 181⋅⋅⋅
+ ∆ : ⋅⋅⋅      ^
+apl: ⋅⋅⋅                         ^⋅⋅⋅
+ref: ⋅⋅⋅⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+----> 
+---->       ⍝ socket communication: send 'Hello' from one socket to another socket
+---->       ⍝ and send 'World!' back.
+---->       ⍝
+---->       AF_INET     ← 2           ⍝ see /usr/include/.../bits/socket.h
+---->       SOCK_STREAM ← 1           ⍝ see /usr/include/.../bits/socket_type.h
+---->       IPPROTO_IP       ← 0      ⍝ see /usr/include/netinet/in.h
+---->       LOCALHOST←256⊥127 0 0 1   ⍝ 127.0.0.1 in host byte order
+---->       Port ← 22222
+---->       Server←AF_INET, LOCALHOST, Port
+----> 
+---->       ⍝ socket(AF_INET, SOCK_STREAM, IPPROTO_IP)
+---->       ⍝
+---->       3 ≤ Handle←FIO∆socket AF_INET, SOCK_STREAM, IPPROTO_IP
+apl: ⋅⋅⋅VALUE ERROR+⋅⋅⋅
+ref: ⋅⋅⋅1⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅      3≤Handle←FIO∆socket AF_INET,SOCK_STREAM,IPPROTO_IP⋅⋅⋅
+ref: ⋅⋅⋅⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅                          ^⋅⋅⋅
+ref: ⋅⋅⋅      ⍝ setsockopt(Handle, SOL_SOCKET, SO_REUSEADDR, 1)⋅⋅⋅
+ ∆ : ⋅⋅⋅      ^
+---->       ⍝
+---->       SOL_SOCKET←1              ⍝ see /usr/include/asm-generic/socket.h
+---->       SO_REUSEADDR←2            ⍝ see /usr/include/asm-generic/socket.h
+---->       (SOL_SOCKET, SO_REUSEADDR, 1) FIO∆setsockopt Handle
+apl: ⋅⋅⋅VALUE ERROR+⋅⋅⋅
+ref: ⋅⋅⋅0⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅      (SOL_SOCKET,SO_REUSEADDR,1)FIO∆setsockopt Handle⋅⋅⋅
+ref: ⋅⋅⋅⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅                                                ^⋅⋅⋅
+ref: ⋅⋅⋅      ⍝ bind(AF_INET, LOCALHOST, Port)⋅⋅⋅
+ ∆ : ⋅⋅⋅      ^
+---->       ⍝
+---->       Server FIO∆bind Handle
+apl: ⋅⋅⋅VALUE ERROR+⋅⋅⋅
+ref: ⋅⋅⋅0⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅      Server FIO∆bind Handle⋅⋅⋅
+ref: ⋅⋅⋅⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅                      ^⋅⋅⋅
+ref: ⋅⋅⋅      ⍝ listen(10)⋅⋅⋅
+ ∆ : ⋅⋅⋅      ^
+---->       ⍝
+---->       10 FIO∆listen Handle
+apl: ⋅⋅⋅VALUE ERROR+⋅⋅⋅
+ref: ⋅⋅⋅0⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅      10 FIO∆listen Handle⋅⋅⋅
+ref: ⋅⋅⋅⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅                    ^⋅⋅⋅
+ref: ⋅⋅⋅      ⍝ socket(AF_INET, SOCK_STREAM, IPPROTO_IP)⋅⋅⋅
+ ∆ : ⋅⋅⋅      ^
+---->       ⍝
+---->       4 ≤ Handle1←FIO∆socket AF_INET, SOCK_STREAM, IPPROTO_IP
+apl: ⋅⋅⋅VALUE ERROR+⋅⋅⋅
+ref: ⋅⋅⋅1⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅      4≤Handle1←FIO∆socket AF_INET,SOCK_STREAM,IPPROTO_IP⋅⋅⋅
+ref: ⋅⋅⋅⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅                           ^⋅⋅⋅
+ref: ⋅⋅⋅      ⍝ connect() Handle1 to Handle⋅⋅⋅
+ ∆ : ⋅⋅⋅      ^
+---->       ⍝
+---->       Server FIO∆connect Handle1
+apl: ⋅⋅⋅VALUE ERROR+⋅⋅⋅
+ref: ⋅⋅⋅0⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅      Server FIO∆connect Handle1⋅⋅⋅
+ref: ⋅⋅⋅⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅                         ^⋅⋅⋅
+ref: ⋅⋅⋅      ⍝ accept() returns Handle, remote address⋅⋅⋅
+ ∆ : ⋅⋅⋅      ^
+---->       ⍝
+---->       Handle2 ← ↑ FIO∆accept Handle
+apl: ⋅⋅⋅VALUE ERROR+⋅⋅⋅
+ref: ⋅⋅⋅⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅      Handle2←↑FIO∆accept Handle⋅⋅⋅
+ref: ⋅⋅⋅      ⍝ send("Hello")⋅⋅⋅
+ ∆ : ⋅⋅⋅      ^
+apl: ⋅⋅⋅                          ^⋅⋅⋅
+ref: ⋅⋅⋅      ⍝⋅⋅⋅
+ ∆ : ⋅⋅⋅      ^
+---->       'Hello' FIO∆send_utf8 Handle2
+apl: ⋅⋅⋅VALUE ERROR+⋅⋅⋅
+ref: ⋅⋅⋅5⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅      'Hello' FIO∆send_utf8 Handle2⋅⋅⋅
+ref: ⋅⋅⋅⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅                            ^⋅⋅⋅
+ref: ⋅⋅⋅      ⍝ recv()⋅⋅⋅
+ ∆ : ⋅⋅⋅      ^
+---->       ⍝
+---->       ⎕UCS 200 FIO∆recv Handle1
+apl: ⋅⋅⋅VALUE ERROR+⋅⋅⋅
+ref: ⋅⋅⋅Hello⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅      ⎕UCS 200 FIO∆recv Handle1⋅⋅⋅
+ref: ⋅⋅⋅⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅                        ^⋅⋅⋅
+ref: ⋅⋅⋅      ⍝ send("World!")⋅⋅⋅
+ ∆ : ⋅⋅⋅      ^
+---->       ⍝
+---->       'World!' FIO∆send_utf8 Handle1
+apl: ⋅⋅⋅VALUE ERROR+⋅⋅⋅
+ref: ⋅⋅⋅6⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅      'World!' FIO∆send_utf8 Handle1⋅⋅⋅
+ref: ⋅⋅⋅⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅                             ^⋅⋅⋅
+ref: ⋅⋅⋅      ⍝ recv()⋅⋅⋅
+ ∆ : ⋅⋅⋅      ^
+---->       ⍝
+---->       ⎕UCS 200 FIO∆recv Handle2
+apl: ⋅⋅⋅VALUE ERROR+⋅⋅⋅
+ref: ⋅⋅⋅World!⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅      ⎕UCS 200 FIO∆recv Handle2⋅⋅⋅
+ref: ⋅⋅⋅⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅                        ^⋅⋅⋅
+ref: ⋅⋅⋅      ⎕←FIO∆fclose Handle2⋅⋅⋅
+ ∆ : ⋅⋅⋅      ^
+----> 0
+apl: ⋅⋅⋅0⋅⋅⋅
+ref: ⋅⋅⋅      ⎕←FIO∆fclose Handle1⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+----> 0
+apl: ⋅⋅⋅0⋅⋅⋅
+ref: ⋅⋅⋅      ⎕←FIO∆fclose Handle⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+----> 0
+apl: ⋅⋅⋅0⋅⋅⋅
+ref: ⋅⋅⋅⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+---->       ⍝ fscanf
+---->       ⍝
+---->       Filename← 'FILE_IO.test1'
+---->       ⎕←Handle←'w' FIO∆fopen Filename
+apl: ⋅⋅⋅VALUE ERROR+⋅⋅⋅
+ref: ⋅⋅⋅⁰⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅      ⎕←Handle←'w' FIO∆fopen Filename⋅⋅⋅
+ref: ⋅⋅⋅      ⍴DATA←'int 22 perc % doub 3.14 char C chars DEFGH qqq str st⍴ing'⋅⋅⋅
+ ∆ : ⋅⋅⋅      ^
+apl: ⋅⋅⋅                             ^⋅⋅⋅
+ref: ⋅⋅⋅57⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+---->       FMT←'int %d perc %% doub %f char %c chars %5c qqq str %s %n'
+---->       DATA FIO∆fwrite_utf8 Handle
+apl: ⋅⋅⋅VALUE ERROR+⋅⋅⋅
+ref: ⋅⋅⋅59⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅      DATA FIO∆fwrite_utf8 Handle⋅⋅⋅
+ref: ⋅⋅⋅⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅                           ^⋅⋅⋅
+ref: ⋅⋅⋅      FIO∆fclose Handle ⍝ close file⋅⋅⋅
+ ∆ : ⋅⋅⋅      ^
+----> 0
+apl: ⋅⋅⋅0⋅⋅⋅
+ref: ⋅⋅⋅      ⎕←Handle←'r' FIO∆fopen Filename⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+----> ⁰
+apl: ⋅⋅⋅Unknown APL character: ⁰ (U+2070)⋅⋅⋅
+ref: ⋅⋅⋅      FMT FIO∆fscanf Handle⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅Non-APL character+⋅⋅⋅
+ref: ⋅⋅⋅ 22 3.14 C DEFGH st⍴ing 59 ⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+----> 
+---->       FIO∆fclose Handle ⍝ close file
+apl: ⋅⋅⋅VALUE ERROR+⋅⋅⋅
+ref: ⋅⋅⋅0⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅      FIO∆fclose Handle⋅⋅⋅
+ref: ⋅⋅⋅⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅                 ^⋅⋅⋅
+ref: ⋅⋅⋅      ⍝ sscanf⋅⋅⋅
+ ∆ : ⋅⋅⋅      ^
+---->       ⍝
+---->       ⍴DATA←'int 22 perc % doub 3.14 char C chars DEFGH qqq str st⍴ing'
+== 57
+---->       FMT←'int %d perc %% doub %f char %c chars %5c qqq str %s %n'
+---->       FMT FIO∆sscanf DATA
+apl: ⋅⋅⋅VALUE ERROR+⋅⋅⋅
+ref: ⋅⋅⋅ 22 3.14 C DEFGH st⍴ing 57 ⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅      FMT FIO∆sscanf DATA⋅⋅⋅
+ref: ⋅⋅⋅⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅                     ^⋅⋅⋅
+ref: ⋅⋅⋅      FMT ⎕FIO['sscanf'] DATA   ⍝ dyadic with axis string⋅⋅⋅
+ ∆ : ⋅⋅⋅      ^
+---->  22 3.14 C DEFGH st⍴ing 57 
+apl: ⋅⋅⋅VALUE ERROR+⋅⋅⋅
+ref: ⋅⋅⋅⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅      22 3.14 C DEFGH st⍴ing 57⋅⋅⋅
+ref: ⋅⋅⋅      FMT←"Hello %[Hal]" ◊ DATA←"Hello Halloween"⋅⋅⋅
+ ∆ : ⋅⋅⋅      ^
+apl: ⋅⋅⋅                             ^⋅⋅⋅
+ref: ⋅⋅⋅      FMT ⎕FIO['sscanf'] DATA⋅⋅⋅
+ ∆ : ⋅⋅⋅      ^
+---->  Hall 
+apl: ⋅⋅⋅VALUE ERROR+⋅⋅⋅
+ref: ⋅⋅⋅      FMT←"Hello %[^wen]" ◊ DATA←"Hello Halloween"⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅      Hall⋅⋅⋅
+ref: ⋅⋅⋅      FMT ⎕FIO['sscanf'] DATA⋅⋅⋅
+ ∆ : ⋅⋅⋅      ^
+apl: ⋅⋅⋅      ^⋅⋅⋅
+ref: ⋅⋅⋅ Hallo ⋅⋅⋅
+ ∆ : ⋅⋅⋅ ^
+----> 
+---->       ⍝ execve
+---->       ⍝
+---->       ⍝Filename←'/usr/local/lib/apl/TLV_server'  ⍝ whereever TLV_server lives
+---->       Filename←'../tools/TLV_server'
+---->       Handle ← FIO∆execve Filename        ⍝ start & connect TLV_server
+apl: ⋅⋅⋅VALUE ERROR+⋅⋅⋅
+ref: ⋅⋅⋅      TLV ← 33 ⎕CR 42,'Forty-Two'         ⍝ encode a TLV buffer, Tag 42⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅      Handle←FIO∆execve Filename⋅⋅⋅
+ref: ⋅⋅⋅      ⊣TLV ⎕FIO[43] Handle                ⍝ send TLV buffer to TLV_server⋅⋅⋅
+ ∆ : ⋅⋅⋅      ^
+apl: ⋅⋅⋅                        ^⋅⋅⋅
+ref: ⋅⋅⋅      TL ← 8 ⎕FIO[6] Handle               ⍝ read tag/lenght from TLV_server⋅⋅⋅
+ ∆ : ⋅⋅⋅      ^
+---->       Value ← (256⊥4↓TL) ⎕FIO[6] Handle   ⍝ read value  from TLV_server
+apl: ⋅⋅⋅VALUE ERROR+⋅⋅⋅
+ref: ⋅⋅⋅      34 ⎕CR TL,Value                     ⍝ display response tag and value⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅      Value←(256⊥4↓TL)⎕FIO[6]Handle⋅⋅⋅
+ref: ⋅⋅⋅¯42 owT-ytroF⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅                             ^⋅⋅⋅
+ref: ⋅⋅⋅      TLV ← 33 ⎕CR 99,'quit'              ⍝ encode stop command, Tag 99⋅⋅⋅
+ ∆ : ⋅⋅⋅      ^
+---->       ⊣TLV ⎕FIO[43] Handle                ⍝ send TLV buffer to TLV_server
+apl: ⋅⋅⋅VALUE ERROR+⋅⋅⋅
+ref: ⋅⋅⋅      ⊣(⎕FIO[4] Handle)                   ⍝ close connection (stops TLV_server)⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅      ⊣TLV ⎕FIO[43]Handle⋅⋅⋅
+ref: ⋅⋅⋅⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅                   ^⋅⋅⋅
+ref: ⋅⋅⋅      FIO∆mkdir_777 FIO∆getcwd,'/test_data'⋅⋅⋅
+ ∆ : ⋅⋅⋅      ^
+----> 0
+apl: ⋅⋅⋅0⋅⋅⋅
+ref: ⋅⋅⋅      DATA←'Kiss,n. A word invented by poets as a rhyme for bliss.'⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+---->       DATA FIO∆pipeto 'wc>test_data/wc.txt'
+apl: ⋅⋅⋅VALUE ERROR+⋅⋅⋅
+ref: ⋅⋅⋅0⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅      DATA FIO∆pipeto 'wc>test_data/wc.txt'⋅⋅⋅
+ref: ⋅⋅⋅      FIO∆read_file 'test_data/wc.txt'⋅⋅⋅
+ ∆ : ⋅⋅⋅      ^
+apl: ⋅⋅⋅                      ^⋅⋅⋅
+ref: ⋅⋅⋅      0      11      54⋅⋅⋅
+ ∆ : ⋅⋅⋅      ^
+----> 
+---->       FIO∆pipefrom 'ls test_data'
+apl: ⋅⋅⋅VALUE ERROR+⋅⋅⋅
+ref: ⋅⋅⋅wc.txt⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅      FIO∆pipefrom 'ls test_data'⋅⋅⋅
+ref: ⋅⋅⋅⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅                   ^⋅⋅⋅
+ref: ⋅⋅⋅      FIO∆unlink 'test_data/wc.txt'⋅⋅⋅
+ ∆ : ⋅⋅⋅      ^
+----> 0
+apl: ⋅⋅⋅0⋅⋅⋅
+ref: ⋅⋅⋅      FIO∆rmdir 'test_data'⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+----> 0
+apl: ⋅⋅⋅0⋅⋅⋅
+ref: ⋅⋅⋅⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+---->       )ERASE FORMAT Handle Handle1 Handle2 Command AF_INET SOCK_STREAM
+---->       )ERASE Error FSTAT Filename LOCALHOST Port Z Server IPPROTO_IP
+---->       )ERASE FMT DATA TL TLV Value
+----> 
+---->       ⍝ regression
+----> 
+---->       ⍝ ' flag
+---->       ⍝
+---->       "Hello %'d world" ⎕FIO.sprintf 123456
+== Hello 123,456 world
+---->       "Hello %'d world" ⎕FIO.sprintf 12345
+== Hello 12,345 world
+---->       "Hello %'d world" ⎕FIO.sprintf 1234
+== Hello 1,234 world
+---->       "Hello %'d world" ⎕FIO.sprintf 123
+== Hello 123 world
+---->       "Hello %'d world" ⎕FIO.sprintf 12
+== Hello 12 world
+---->       "Hello %'d world" ⎕FIO.sprintf 1
+== Hello 1 world
+----> 
+---->       "Hello %'d world" ⎕FIO.sprintf 0
+== Hello 0 world
+----> 
+---->       "Hello %'d world" ⎕FIO.sprintf ¯1
+== Hello -1 world
+---->       "Hello %'d world" ⎕FIO.sprintf ¯12
+== Hello -12 world
+---->       "Hello %'d world" ⎕FIO.sprintf ¯123
+== Hello -123 world
+---->       "Hello %'d world" ⎕FIO.sprintf ¯1234
+== Hello -1,234 world
+---->       "Hello %'d world" ⎕FIO.sprintf ¯12345
+== Hello -12,345 world
+---->       "Hello %'d world" ⎕FIO.sprintf ¯123456
+== Hello -123,456 world
+----> 
+---->       "Hello %'.2f world" ⎕FIO.sprintf 123456.77
+== Hello 123,456.77 world
+---->       "Hello %'.2f world" ⎕FIO.sprintf 12345.77
+== Hello 12,345.77 world
+---->       "Hello %'.2f world" ⎕FIO.sprintf 1234.77
+== Hello 1,234.77 world
+---->       "Hello %'.2f world" ⎕FIO.sprintf 123.77
+== Hello 123.77 world
+----> 
+---->       "Hello %'.2f world" ⎕FIO.sprintf ¯123456.77
+== Hello -123,456.77 world
+---->       "Hello %'.2f world" ⎕FIO.sprintf ¯12345.77
+== Hello -12,345.77 world
+---->       "Hello %'.2f world" ⎕FIO.sprintf ¯1234.77
+== Hello -1,234.77 world
+---->       "Hello %'.2f world" ⎕FIO.sprintf ¯123.77
+== Hello -123.77 world
+----> 
+----> ⍝     )VARS
+----> 
+----> ⍝ ==================================
+----> 
+
+)SI not cleared at the end of testcases/Quad_FIO.tc:
+⋆  FIO∆pipefrom 'ls test_data'
+   ^
+⋆  DATA FIO∆pipeto 'wc>test_data/wc.txt'
+   ^
+⋆  ⊣TLV ⎕FIO[43] Handle                ⍝ send TLV buffer to TLV_server
+   ^
+⋆  Value ← (256⊥4↓TL) ⎕FIO[6] Handle   ⍝ read value  from TLV_server
+   ^
+⋆  Handle ← FIO∆execve Filename        ⍝ start & connect TLV_server
+   ^
+⋆  Hall
+   ^
+⋆  22 3.14 C DEFGH st⍴ing 57
+   ^
+⋆  FMT FIO∆sscanf DATA
+   ^
+⋆  FIO∆fclose Handle ⍝ close file
+   ^
+⋆  DATA FIO∆fwrite_utf8 Handle
+   ^
+⋆  ⎕←Handle←'w' FIO∆fopen Filename
+   ^
+⋆  ⎕UCS 200 FIO∆recv Handle2
+   ^
+⋆  'World!' FIO∆send_utf8 Handle1
+   ^
+⋆  ⎕UCS 200 FIO∆recv Handle1
+   ^
+⋆  'Hello' FIO∆send_utf8 Handle2
+   ^
+⋆  Handle2 ← ↑ FIO∆accept Handle
+   ^
+⋆  Server FIO∆connect Handle1
+   ^
+⋆  4 ≤ Handle1←FIO∆socket AF_INET, SOCK_STREAM, IPPROTO_IP
+   ^
+⋆  10 FIO∆listen Handle
+   ^
+⋆  Server FIO∆bind Handle
+   ^
+⋆  (SOL_SOCKET, SO_REUSEADDR, 1) FIO∆setsockopt Handle
+   ^
+⋆  3 ≤ Handle←FIO∆socket AF_INET, SOCK_STREAM, IPPROTO_IP
+   ^
+⋆  ⎕UCS FIO∆read_file 'FILE_IO.test1'
+   ^
+⋆  FIO∆pclose Handle ⍝ close command (returning its exit code)
+   ^
+⋆  Handle← FIO∆popen_ro Command
+   ^
+⋆  HELLO ⍋ ⌽ ⍒ ⍴ ⍵
+   ^
+⋆  FIO∆fclose Handle ⍝ close file
+   ^
+⋆  ⎕←Handle←'w' FIO∆fopen Filename
+   ^
+⋆  FIO∆printf FORMAT, 42 (○1) 'Hello'
+   ^
+⋆  ⎕FIO['strerror'] Error   ⍝ monadic with axis string
+   ^
+⋆  Error←-FIO∆unlink Filename
+   ^
+⋆  FIO∆unlink Filename
+   ^
+⋆  FIO∆fclose Handle
+   ^
+⋆  ⎕←FSTAT←FIO∆fstat Handle
+   ^
+⋆  FIO∆feof Handle
+   ^
+⋆  Z←200 FIO∆fread Handle
+   ^
+⋆  FIO∆feof Handle
+   ^
+⋆  Z←200 FIO∆fgets Handle
+   ^
+⋆  Z← FIO∆fgets Handle
+   ^
+⋆  ⎕←Handle← FIO∆fopen_ro Filename
+   ^
+⋆  FIO∆fclose Handle
+   ^
+⋆  ⎕←(⎕UCS "Hello\n") FIO∆fwrite Handle
+   ^
+⋆  FIO∆strerror FIO∆errno
+   ^
+⋆  ⎕←Handle←'w' FIO∆fopen Filename
+   ^
+⋆  ⎕←FIO∆fclose Handle
+   ^
+⋆  ⎕←FIO∆fstat Handle
+   ^
+⋆  ⎕←Handle←FIO∆fopen_ro Filename
+   ^
+
+print_stale_info():   alloc(/Users/sparrevo/projects/apl-svn/trunk/src/Parser.cc:1266) flags(3072)
+value history disabled
+
+addr=0x8c32ca400 ≡2 ⍴⊏⊐ flags: 0x0C00   3072 /Users/sparrevo/projects/apl-svn/trunk/src/Parser.cc:1266
+    [0] addr=0x8c32c8400 ≡1 ⍴⊏31⊐ flags: 0x0400   1024 /Users/sparrevo/projects/apl-svn/trunk/src/Tokenizer.cc:741
+┌→──────────────────────────────┐
+│⎕everything %d Pi %e String %s␊│
+└───────────────────────────────┘
+
+
+print_stale_info():   alloc(/Users/sparrevo/projects/apl-svn/trunk/src/Parser.cc:1950) flags(3072)
+value history disabled
+
+addr=0x8c32cce00 ≡0 ⍴⊏⊐ flags: 0x0C00   3072 /Users/sparrevo/projects/apl-svn/trunk/src/Parser.cc:1950
+2
+
+
+ (automatic check for stale values failed, offending Value erased).

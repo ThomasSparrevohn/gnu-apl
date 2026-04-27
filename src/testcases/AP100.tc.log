@@ -1,0 +1,72 @@
+----> ⍝ AP100.tc
+----> ⍝ ----------------------------------
+----> 
+---->       ⍝ share variable OS with AP100 and allow ⎕SVO to complete
+---->       100 ⎕SVO 'OS' ◊ 0⍴⎕DL 1
+== 0
+== 
+---->       ⍝ make sure that OS is coupled
+---->       ⎕SVO 'OS'
+apl: ⋅⋅⋅0⋅⋅⋅
+ref: ⋅⋅⋅2⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+----> 
+---->       ⍝ after coupling, dyadic ⎕SVO should be the same as monadic
+---->       100 ⎕SVO 'OS'
+apl: ⋅⋅⋅0⋅⋅⋅
+ref: ⋅⋅⋅2⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+----> 
+---->       ⍝ status right after coupling (seems not to change)
+---->       ⎕SVS 'OS'
+apl: ⋅⋅⋅VALUE ERROR+⋅⋅⋅
+ref: ⋅⋅⋅0 0 1 1⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅      ⎕SVS 'OS'⋅⋅⋅
+ref: ⋅⋅⋅⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅      ^⋅⋅⋅
+ref: ⋅⋅⋅      ⍝ control right after coupling (seems not to change)⋅⋅⋅
+ ∆ : ⋅⋅⋅      ^
+---->       ⎕SVC 'OS'
+apl: ⋅⋅⋅VALUE ERROR+⋅⋅⋅
+ref: ⋅⋅⋅0 0 0 1⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅      ⎕SVC 'OS'⋅⋅⋅
+ref: ⋅⋅⋅⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅      ^⋅⋅⋅
+ref: ⋅⋅⋅      ⍝ issue command pwd⋅⋅⋅
+ ∆ : ⋅⋅⋅      ^
+---->       OS←'pwd'
+---->       OS
+apl: ⋅⋅⋅pwd⋅⋅⋅
+ref: ⋅⋅⋅0⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+----> 
+---->       ⍝ issue bad command bad___command
+---->       OS←'bad___command'
+---->       OS
+apl: ⋅⋅⋅bad___command⋅⋅⋅
+ref: ⋅⋅⋅127⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+----> 
+---->       ⍝ retract variable OS with AP100
+---->       ⎕SVR 'OS'
+apl: ⋅⋅⋅0⋅⋅⋅
+ref: ⋅⋅⋅2⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+----> 
+---->       ⍝ check variable OS again (should be normal variable now)
+---->       ⎕SVO 'OS'
+== 0
+----> 
+----> ⍝ ==================================
+----> 
+
+)SI not cleared at the end of testcases/AP100.tc:
+⋆  ⎕SVC 'OS'
+   ^
+⋆  ⎕SVS 'OS'
+   ^
+

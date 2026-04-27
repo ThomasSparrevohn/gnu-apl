@@ -1,4 +1,4 @@
-This is libapl.info, produced by makeinfo version 6.8 from libapl.texi.
+This is libapl.info, produced by makeinfo version 7.3 from libapl.texi.
 
 INFO-DIR-SECTION GNU programming tools
 START-INFO-DIR-ENTRY
@@ -413,7 +413,7 @@ value was stored to a variable.  Your return value is a C boolean
 telling whether the value should be printed by the APL interpreter.
 
 The value ‘*apl’ (which the API cannot see) will be scheduled for
-destruction as soon as you exit ‘res_callback’.  Don’t release it
+destruction as soon as you exit ‘res_callback’.  Don't release it
 yourself.
 
 
@@ -661,7 +661,6 @@ and the following rules apply:
    • Errors detected by the APL core are NOT set in *error; the caller
      may decode output_buffer in order to detect them.
 
-
 
 Tag Table:
 Node: Top215
@@ -681,16 +680,16 @@ Node: Write access to cells15403
 Ref: #write-access-to-cells15601
 Node: Interface to APL interpreter15933
 Ref: #interface-to-apl-interpreter16143
-Node: Destructor function17515
-Ref: #destructor-function17699
-Node: Print support17838
-Ref: #print-support17973
-Node: Programming notes18371
-Ref: #programming-notes18498
-Node: The loc parameter and LOC macro18848
-Ref: #the-loc-parameter-and-loc-macro19052
-Node: Non-atomic Operations19430
-Ref: #non-atomic-operations19598
+Node: Destructor function17513
+Ref: #destructor-function17697
+Node: Print support17836
+Ref: #print-support17971
+Node: Programming notes18369
+Ref: #programming-notes18496
+Node: The loc parameter and LOC macro18846
+Ref: #the-loc-parameter-and-loc-macro19050
+Node: Non-atomic Operations19428
+Ref: #non-atomic-operations19596
 
 End Tag Table
 

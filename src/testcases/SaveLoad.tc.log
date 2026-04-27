@@ -1,0 +1,122 @@
+----> ⍝ SaveLoad
+----> ⍝ ----------------------------------
+----> 
+---->       )CLEAR
+== CLEAR WS
+----> 
+---->       +
+== VALENCE ERROR+
+==       +
+==       ^
+----> 
+---->       )DROP save_load_SI.xml
+== 2026-04-27  08:35:06 (GMT-1) 
+----> 
+---->       )SAVE save_load_SI
+== 2026-04-27  08:35:06 (GMT-1) 
+----> 
+---->       )LOAD save_load_SI.xml
+== SAVED 2026-40-27 80:35:60 (GMT-1)
+----> 
+---->       )SI
+== ⋆
+----> 
+---->       )SIC
+----> 
+---->       ⍝ regression tests
+---->       ⍝
+---->       )CLEAR
+== CLEAR WS
+----> 
+---->       )DROP test.xml
+== 2026-04-27  08:35:06 (GMT-1) 
+----> 
+---->       )WSID test
+== WAS CLEAR WS
+----> 
+---->       cmp_a←{{⍵[⍋⍵]} (∨/[1] ⍺∘.= ⍵) / ⍵}
+---->       cmp_b←{{⍵[⍋⍵]} (∨⌿ ⍺∘.= ⍵) / ⍵}
+----> 
+---->       )save
+== 2026-04-27  08:35:06 (GMT-1)  test
+----> 
+---->       )load test.xml
+== SAVED 2026-40-27 80:35:60 (GMT-1)
+----> 
+---->       )save
+== 2026-04-27  08:35:06 (GMT-1)  test
+----> 
+---->       ⎕CR 'cmp_a'
+== λ←⍺ λ0 ⍵                    
+== λ←{⍵[⍋⍵]} (∨/[1] ⍺∘.= ⍵) / ⍵
+----> 
+---->       ⎕CR 'cmp_b'
+== λ←⍺ λ0 ⍵                 
+== λ←{⍵[⍋⍵]} (∨⌿ ⍺∘.= ⍵) / ⍵
+----> 
+----> 
+---->       )CLEAR
+== CLEAR WS
+----> 
+---->       )DROP test.xml
+== 2026-04-27  08:35:06 (GMT-1) 
+----> 
+---->       )WSID test
+== WAS CLEAR WS
+----> 
+---->       'lib_template_F0' ⎕FX 'TEST0'
+apl: ⋅⋅⋅0⋅⋅⋅
+ref: ⋅⋅⋅TEST0⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+----> 
+---->       )SAVE
+== 2026-04-27  08:35:06 (GMT-1)  test
+----> 
+---->       )LOAD test.xml
+== SAVED 2026-40-27 80:35:60 (GMT-1)
+----> 
+---->       )DROP test.xml
+== 2026-04-27  08:35:06 (GMT-1) 
+----> 
+----> ⍝ Davd Alden 8. Nov. 2025 bugapl@gnu.org
+----> 
+---->       )CLEAR
+== CLEAR WS
+----> 
+---->       ⍝ Note that { ... } notation does not allow s this
+----> 
+---->       ⎕FX'λ←Test ⍵ ;C;D ⍝⍝ π times Ʃ⍵' 'λ←○+/⍵'
+== DEFN ERROR+
+==       ⎕FX 'λ←Test ⍵ ;C;D ⍝⍝ π times Ʃ⍵' 'λ←○+/⍵'
+==       ^
+----> 
+---->       )MORE
+== Attempt (of ⎕FX) to create or edit a lambda. Use { ... } instead.
+----> 
+---->       ⍝ Test was created despite of the DEFN ERROR
+---->       ⍝
+---->       ⎕CR 'Test'
+== λ←Test ⍵ ;C;D ⍝⍝ π times Ʃ⍵
+== λ←○+/⍵                     
+----> 
+---->       )DROP test.xml
+== test.xml NOT DROPPED: No such file or directory+
+---->       )SAVE test
+== 2026-04-27  08:35:06 (GMT-1) 
+----> 
+---->       )SIC   ⍝⍝ due to DEFN ERROR
+----> 
+---->       )LOAD test.xml
+== SAVED 2026-40-27 80:35:60 (GMT-1)
+----> 
+---->       ⎕CR 'Test'
+== λ←λ0 ⍵;C;D          
+== λ←○+/⍵ ⍝⍝ π times Ʃ⍵
+----> 
+---->       ⎕EX 'Test'
+== 1
+----> 
+---->       )CHECK BRIEF
+----> 
+----> ⍝ ==================================
+----> 
