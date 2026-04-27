@@ -1,0 +1,196 @@
+----> ⍝ Binding.tc
+----> ⍝ ----------------------------------
+----> 
+---->       ⍝ Vector notation vs. left function arg
+---->       ⍝
+---->       A←1 2 3
+---->       A 4 + 10
+==  11 12 13  14 
+---->       (A 4) + 10
+==  11 12 13  14 
+---->       A (4 + 10)
+==  1 2 3  14 
+----> 
+---->       A←B←C←1 2 3
+---->       A
+== 1 2 3
+---->       B
+== 1 2 3
+---->       C
+== 1 2 3
+----> 
+----> ⍝ dyadic operator ----------------------------------
+----> 
+----> ∇z←(f glue l) r
+---->  ⍝ From Intro to APL2, p72
+---->  z←l f r
+----> ∇
+----> 
+----> ∇z←(f AND g) r
+---->  ⍝From Intro to APL p72
+---->  z←(f r)(g r)
+----> ∇
+----> 
+---->       (*glue 2) AND+ 0 1 2
+==  1 2 4  0 1 2 
+----> 
+---->       *glue 2 AND+ 0 1 2
+==  1 2 4  0 1 2 
+----> 
+---->       )ERASE glue AND
+----> 
+----> ⍝ bracked index and function axis
+----> 
+----> ∇Z←A DyMon B
+----> ⊃('Monadic' 'Dyadic')[Z←,1+0≠⎕NC 'A']
+----> ∇
+----> 
+---->       +/ DyMon 1
+== Monadic
+== 1
+----> 
+---->       +/[1] DyMon 1
+== Monadic
+== 1
+----> 
+---->       (+/[1]) DyMon 1
+== Monadic
+== 1
+----> 
+---->       (1 2 3)[1] DyMon 1
+== Dyadic
+== 2
+----> 
+----> ⍝ selective spec ----------------------------------
+----> 
+---->       D←(A B C)←4 5 6
+---->       A
+== 4
+---->       B
+== 5
+---->       C
+== 6
+---->       D
+== 4 5 6
+----> 
+---->       D←(A B C)←⊂4 5 6
+---->       A
+== 4 5 6
+---->       B
+== 4 5 6
+---->       C
+== 4 5 6
+---->       D
+==  4 5 6 
+----> 
+----> ⍝ IBM APL2 compatibility ----------------------------------
+----> 
+---->       ∇Z←SHOW_NC B¯B;N
+---->        N←8↑B,':'
+---->        →(¯1 0 1 2 3 4 = ⎕NC B¯B)/I U L V F O ◊ ++
+---->       I: →0, Z←(8↑B), ': Invalid Name'
+---->       U: →0, Z←(8↑B), ': Unused Name'
+---->       L: →0, Z←(8↑B), ': Label'
+---->       V: →0, Z←(8↑B), ': Value', ⍎B¯B
+---->       F: →0, Z←(8↑B), ': Function'
+---->       O: →0, Z←(8↑B), ': Operator'
+---->       ∇
+----> 
+---->       ∇Z←A (LO OPER1) B
+---->        SHOW_NC 'A'
+---->        SHOW_NC 'LO'
+---->        SHOW_NC 'OPER1'
+---->        SHOW_NC 'B'
+---->       ∇
+----> 
+---->       ∇Z←A (LO OPER2 RO) B
+---->        SHOW_NC 'A'
+---->        SHOW_NC 'LO'
+---->        SHOW_NC 'OPER1'
+---->        SHOW_NC 'RO'
+---->        SHOW_NC 'B'
+---->       ∇
+----> 
+---->       ⊣««« ⍝ NOTE: IBM APL2 gives:
+----> 
+---->       ⍝ binding of bracket index
+---->       ⍝
+---->       1 2 3[2]
+----> RANK ERROR
+----> 
+---->       ⍝ binding of left operand (literal)
+---->       ⍝
+---->       11 22 33 OPER1 1 2 3
+----> A       : Unused Name
+----> LO      : Value  11 22 33
+----> OPER1   : Operator
+----> B       : Value  1 2 3
+----> 
+---->       ⍝ binding of left operand (parser)
+---->       ⍝
+---->       (UU VV WW)←11 22 33
+----> A       : Unused Name
+----> LO      : Value  11 22 33
+----> OPER1   : Operator
+----> B       : Value  1 2 3
+----> 
+---->       ⍝ binding of left operand (in parentheses)
+---->       ⍝
+---->       11 22 (33 OPER1) 1 2 3
+----> A       : 11
+----> LO      : Value  22 33
+----> OPER1   : Operator
+----> B       : Value  1 2 3
+----> 
+---->       ⍝ binding of left and right operands (literal)
+---->       ⍝
+---->       11 22 33 'lop' OPER2 'rop' 1 2 3
+----> A:      Value Unused Name
+----> LO:     Value lop
+----> OPER1:  Operator
+----> RO:     Value rop
+----> B:      Value 1 2 3
+---->        »»»
+----> 
+----> 
+---->       ⍝ regression
+---->       ⍝ 
+---->       ≡⊂⍣4⍣6⊢'hello'
+== 25
+---->       ≡(⊂⍣4)⍣6⊢'hello'
+== 25
+---->       ≡⊂⍣(4⍣6)⊢'hello'
+== SYNTAX ERROR+
+==       ≡⊂⍣(4⍣6)⊢'hello'
+==           ^^
+----> 
+---->       →
+---->       )CHECK
+== OK      - no stale functions
+== OK      - no stale values
+== OK      - no stale indices
+== OK      - no duplicate parents
+----> 
+---->       ⎕FX'R←(F L G)Y' 'R←F Y'
+== L
+---->       ⎕FX'R←(F R G)Y' 'R←G Y'
+== R
+---->       + L × R - 33
+== ¯33
+---->       (+ L ×) R - 33
+== ¯33
+---->       + L (× R -) 33
+== 33
+----> 
+---->       )ERASE L R
+----> 
+----> ⍝ ==================================
+----> 
+---->       )ERASE A B C D
+----> 
+---->       )CHECK
+== OK      - no stale functions
+== OK      - no stale values
+== OK      - no stale indices
+== OK      - no duplicate parents
+----> 

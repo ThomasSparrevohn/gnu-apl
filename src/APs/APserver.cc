@@ -1224,130 +1224,77 @@ const int listen_sock = got_path ? open_UNIX_socket(listen_name)
 
 #else // use select()
 
-        size_t janitor = 0;
-        int max_fd = listen_sock;
-        char dummy;
+            size_t janitor = 0;
+            int max_fd = listen_sock;
 
-        if (0 != read(listen_sock, &dummy, 0))
-           cerr << prog << ": listen socket has died unexpectedly" << endl;
+            FD_SET(listen_sock, &read_fds);
+            for (size_t j = 0; j < connected_procs.size(); ++j)
+                {
+                  const TCP_socket fd = connected_procs[j].fd;
+                  if (fd != NO_TCP_SOCKET)
+                     {
+                       if (max_fd < fd)   max_fd = fd;
+                       FD_SET(fd, &read_fds);
+                     }
 
-        FD_SET(listen_sock, &read_fds);
-        for (size_t j = 0; j < connected_procs.size(); ++j)
-            {
-              {
-              const TCP_socket fd = connected_procs[j].fd;
-              if (fd != NO_TCP_SOCKET)
+                  const TCP_socket fd2 = connected_procs[j].fd2;
+                  if (fd2 != NO_TCP_SOCKET)
+                     {
+                       if (max_fd < fd2)   max_fd = fd2;
+                       FD_SET(fd2, &read_fds);
+                     }
+                }
+
+            timeval timeout = { 1, 0 };   // one second
+
+            const int count = select(max_fd + 1, &read_fds, 0, 0, &timeout);
+            if (count < 0)
+               {
+                 if (errno == EINTR)   continue;
+
+                 cerr << prog << ": count <= 0 in select(): "
+                      << strerror(errno) << endl;
+                 return 3;
+               }
+
+            if (count == 0)   // timeout
+               {
+                 continue;
+               }
+
+    #endif // USE_POLL
+            // something happened, check listen_sock first for new connections
+            //
+            if (FD_ISSET(listen_sock, &read_fds))
+               {
+                 struct sockaddr_in from;
+                 socklen_t from_len = sizeof(sockaddr_in);
+                 const int new_fd = ::accept(listen_sock,
+                                             reinterpret_cast<sockaddr *>(&from),
+                                             &from_len);
+
+                 if (new_fd == -1)
+                    {
+                      if (errno == EINTR || errno == EAGAIN || errno == EWOULDBLOCK)
+                         {
+                           continue;
+                         }
+
+                      cerr << prog << ": ::accept() failed: "
+                           << strerror(errno) << endl;
+                      continue;
+                    }
+
+                 // disable nagle
                  {
-                   if (0 != read(fd, &dummy, 0))
-                      {
-                        cerr << prog << ": socket fd[" << j
-                             << "] has died unexpectedly" << endl;
-                        close_fd(fd);
-                      }
-                   else
-                      {
-                        if (max_fd < fd)   max_fd = fd;
-                        FD_SET(fd, &read_fds);
-                      }
+                   const int ndelay = 1;
+                   setsockopt(new_fd, 6, TCP_NODELAY,
+                              reinterpret_cast<const char *>(&ndelay), sizeof(int));
                  }
-              }
 
-              {
-                const TCP_socket fd2 = connected_procs[j].fd2;
-                if (fd2 != NO_TCP_SOCKET)
-                   {
-                     if (0 != read(fd2, &dummy, 0))
-                        {
-                          cerr << prog << ": socket fd2[" << j
-                               << "] has died unexpectedly" << endl;
-                          close_fd(fd2);
-                        }
-                     else
-                        {
-                          if (max_fd < fd2)   max_fd = fd2;
-                          FD_SET(fd2, &read_fds);
-                        }
-                   }
-              }
-            }
-
-        timeval timeout = { 1, 0 };   // one second
-
-        const int count = select(max_fd + 1, &read_fds, 0, 0, &timeout);
-        if (count < 0)
-           {
-             if (errno == EINTR)   continue;
-
-             cerr << prog << ": count <= 0 in select(): "
-                  << strerror(errno) << endl;
-             return 3;
-           }
-
-        if (count == 0)   // timeout
-           {
-             continue;   // until we find a method to detect a closed socket
-
-             if (connected_procs.size() == 0)   continue;
-             ++janitor;
-             if (janitor >= connected_procs.size())   janitor = 0;
-
-             int jfd = connected_procs[janitor].fd;
-             if (jfd != NO_TCP_SOCKET)
-                {
-#if MINGW_SRC
-                  u_long iMode = 1;
-                  ioctlsocket(jfd, FIONBIO, &iMode);
-                  ::recv(jfd, 0, 0, 0);
-#else // ! MINGW_SRC
-                  ::recv(jfd, 0, 0, MSG_DONTWAIT);
-#endif
-                  cerr << "janitor got " << errno << " on fd " << jfd << endl;
-                }
-
-             jfd = connected_procs[janitor].fd2;
-             if (jfd != NO_TCP_SOCKET)
-                {
-#if MINGW_SRC
-                  u_long iMode = 1;
-                  ioctlsocket(jfd, FIONBIO, &iMode);
-                  ::recv(jfd, 0, 0, 0);
-#else // ! MINGW_SRC
-                  ::recv(jfd, 0, 0, MSG_DONTWAIT);
-#endif
-                  cerr << "janitor got " << errno << " on fd " << jfd << endl;
-                }
-
-             continue;
-           }
-#endif
-        // something happened, check listen_sock first for new connections
-        //
-        if (FD_ISSET(listen_sock, &read_fds))
-           {
-             struct sockaddr_in from;
-             socklen_t from_len = sizeof(sockaddr_in);
-             const int new_fd = ::accept(listen_sock,
-                                         reinterpret_cast<sockaddr *>(&from),
-                                         &from_len);
-
-             // disable nagle
-             {
-               const int ndelay = 1;
-               setsockopt(new_fd, 6, TCP_NODELAY,
-                          reinterpret_cast<const char *>(&ndelay), sizeof(int));
-             }
-
-             if (new_fd == -1)
-                {
-                  cerr << prog << ": ::accept() failed: "
-                       << strerror(errno) << endl;
-                  exit(1);
-                  continue;
-                }
-
-             new_connection(static_cast<TCP_socket>(new_fd));
-             continue;
-           }
+                 new_connection(static_cast<TCP_socket>(new_fd));
+                 continue;
+               }
 
         // connections readable
         //

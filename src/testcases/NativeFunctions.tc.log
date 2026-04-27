@@ -1,0 +1,151 @@
+----> ⍝ NativeFunctions.tc
+----> ⍝ ----------------------------------
+----> 
+---->       A←B←X←1
+----> 
+---->       ⍝ category F0 ----------------------------------------
+---->       ⍝
+---->       'lib_template_F0.so' ⎕FX 'NATIVE_F0'
+apl: ⋅⋅⋅0⋅⋅⋅
+ref: ⋅⋅⋅NATIVE_F0⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+----> 
+---->         NATIVE_F0
+apl: ⋅⋅⋅VALUE ERROR+⋅⋅⋅
+ref: ⋅⋅⋅eval_() called⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅      NATIVE_F0⋅⋅⋅
+ref: ⋅⋅⋅⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅      ^⋅⋅⋅
+ref: ⋅⋅⋅⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+---->       ⍝ category F12 ---------------------------------------
+---->       ⍝
+---->       'lib_template_F12.so' ⎕FX 'NATIVE_F12'
+apl: ⋅⋅⋅0⋅⋅⋅
+ref: ⋅⋅⋅NATIVE_F12⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+----> 
+---->         NATIVE_F12   B
+apl: ⋅⋅⋅VALUE ERROR+⋅⋅⋅
+ref: ⋅⋅⋅eval_B() called⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅      NATIVE_F12 B⋅⋅⋅
+ref: ⋅⋅⋅⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅                 ^⋅⋅⋅
+ref: ⋅⋅⋅      A NATIVE_F12   B⋅⋅⋅
+ ∆ : ⋅⋅⋅      ^
+----> eval_AB() called
+apl: ⋅⋅⋅SYNTAX ERROR⋅⋅⋅
+ref: ⋅⋅⋅⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅      NATIVE_F12 B⋅⋅⋅
+ref: ⋅⋅⋅        NATIVE_F12[X]   B⋅⋅⋅
+ ∆ : ⋅⋅⋅      ^
+apl: ⋅⋅⋅                 ^⋅⋅⋅
+ref: ⋅⋅⋅eval_XB() called⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅SYNTAX ERROR⋅⋅⋅
+ref: ⋅⋅⋅⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅            NATIVE_F12 B⋅⋅⋅
+ref: ⋅⋅⋅      A NATIVE_F12[X]   B⋅⋅⋅
+ ∆ : ⋅⋅⋅      ^
+apl: ⋅⋅⋅                       ^⋅⋅⋅
+ref: ⋅⋅⋅eval_AXB() called⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+----> 
+----> 
+---->       ⍝ category OP1 ---------------------------------------
+---->       ⍝
+---->       'lib_template_OP1.so' ⎕FX 'NATIVE_OP1'
+apl: ⋅⋅⋅0⋅⋅⋅
+ref: ⋅⋅⋅NATIVE_OP1⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+----> 
+---->       + NATIVE_OP1   B
+apl: ⋅⋅⋅VALUE ERROR+⋅⋅⋅
+ref: ⋅⋅⋅eval_LB() called⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅      +NATIVE_OP1 B⋅⋅⋅
+ref: ⋅⋅⋅⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅                  ^⋅⋅⋅
+ref: ⋅⋅⋅      A + NATIVE_OP1   B⋅⋅⋅
+ ∆ : ⋅⋅⋅      ^
+----> eval_ALB() called
+apl: ⋅⋅⋅SYNTAX ERROR⋅⋅⋅
+ref: ⋅⋅⋅⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅      +NATIVE_OP1 B⋅⋅⋅
+ref: ⋅⋅⋅      + NATIVE_OP1[X]   B⋅⋅⋅
+ ∆ : ⋅⋅⋅       ^
+apl: ⋅⋅⋅                  ^⋅⋅⋅
+ref: ⋅⋅⋅eval_LXB() called⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅SYNTAX ERROR⋅⋅⋅
+ref: ⋅⋅⋅⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅            +NATIVE_OP1 B⋅⋅⋅
+ref: ⋅⋅⋅      A + NATIVE_OP1[X]   B⋅⋅⋅
+ ∆ : ⋅⋅⋅      ^
+apl: ⋅⋅⋅                        ^⋅⋅⋅
+ref: ⋅⋅⋅eval_ALXB() called⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+----> 
+----> 
+---->       ⍝ category OP2 ---------------------------------------
+---->       ⍝
+---->       'lib_template_OP2.so' ⎕FX 'NATIVE_OP2'
+apl: ⋅⋅⋅0⋅⋅⋅
+ref: ⋅⋅⋅NATIVE_OP2⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+----> 
+---->       + NATIVE_OP2 × B
+apl: ⋅⋅⋅VALUE ERROR+⋅⋅⋅
+ref: ⋅⋅⋅eval_LRB() called⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅      +NATIVE_OP2×B⋅⋅⋅
+ref: ⋅⋅⋅⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅                 ^⋅⋅⋅
+ref: ⋅⋅⋅      A + NATIVE_OP2 × B⋅⋅⋅
+ ∆ : ⋅⋅⋅      ^
+----> eval_ALRB() called
+apl: ⋅⋅⋅SYNTAX ERROR⋅⋅⋅
+ref: ⋅⋅⋅⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅      +NATIVE_OP2×B⋅⋅⋅
+ref: ⋅⋅⋅      + NATIVE_OP2 × [X] B⋅⋅⋅
+ ∆ : ⋅⋅⋅       ^
+apl: ⋅⋅⋅                 ^^⋅⋅⋅
+ref: ⋅⋅⋅eval_LRXB() called⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅SYNTAX ERROR⋅⋅⋅
+ref: ⋅⋅⋅⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅            +NATIVE_OP2×B⋅⋅⋅
+ref: ⋅⋅⋅      A + NATIVE_OP2 × [X] B⋅⋅⋅
+ ∆ : ⋅⋅⋅      ^
+apl: ⋅⋅⋅                       ^^⋅⋅⋅
+ref: ⋅⋅⋅eval_ALRXB() called⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+----> 
+----> 
+----> ⍝ ==================================
+----> 
+----> ⍝ selective spec ----------------------------------
+----> 
+
+)SI not cleared at the end of testcases/NativeFunctions.tc:
+⋆  + NATIVE_OP2 × B
+   ^
+⋆  + NATIVE_OP1   B
+   ^
+⋆  NATIVE_F12   B
+   ^
+⋆  NATIVE_F0
+   ^
+

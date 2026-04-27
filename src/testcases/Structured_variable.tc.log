@@ -1,0 +1,165 @@
+----> ⍝ Structured_variable.tc
+----> 
+---->       PERSON.firstname ← 'Jane'   ⍝ creates PERSON with member 'firstname'
+---->       PERSON.lastname  ← 'Doe'    ⍝ add a second member 'lastname' to PERSON
+----> 
+---->       PERSON.address.city   ←  'Berkeley 94704'     ⍝ also does PERSON.address
+---->       PERSON.address.street ←  '42 Shattuck Ave.'   ⍝ also does PERSON.address
+----> 
+---->       )ERASE PERSON.address
+----> 
+---->       PERSON.address.city   ←  'Berkeley 94704'     ⍝ refresh
+---->       PERSON.address.street ←  '42 Shattuck Ave.'   ⍝ refresh
+---->       PERSON.address.street ←  '44 Shattuck Ave.'   ⍝ override
+----> 
+---->       PERSON.address.street
+== 44 Shattuck Ave.
+----> 
+---->       PERSON
+== .address:   □
+== .address.city:   ┌→─────────────┐
+==                  │Berkeley 94704│
+==                  └──────────────┘
+== 
+== .address.street: ┌→───────────────┐
+==                  │44 Shattuck Ave.│
+==                  └────────────────┘
+== 
+== .firstname: ┌→───┐
+==             │Jane│
+==             └────┘
+== 
+== .lastname:  ┌→──┐
+==             │Doe│
+==             └───┘
+== 
+---->       ⍝ bracket index
+---->       ⍝
+---->       ⊃PERSON[;1]   ⍝ members
+== address  
+== firstname
+== lastname 
+----> 
+---->       PERSON["firstname"]
+== Jane
+---->       PERSON["lastname"]
+== Doe
+---->       PERSON["address"]
+== .city:   ┌→─────────────┐
+==          │Berkeley 94704│
+==          └──────────────┘
+== 
+== .street: ┌→───────────────┐
+==          │44 Shattuck Ave.│
+==          └────────────────┘
+== 
+---->       PERSON["address"]["street"]
+== 44 Shattuck Ave.
+----> 
+---->       PERSON.address.street ≡ PERSON["address"]["street"]
+== 1
+----> 
+---->       )ERASE PERSON
+----> 
+---->       )ERASE A C
+---->       A.b.c←'leaf-Abc'        ⍝ OK, since a.b.c will be a leaf
+---->       A.b←42                  ⍝ will fail since a.b is not a leaf
+== DOMAIN ERROR+
+==       A.b←42
+==        ^ ^
+---->       )MORE
+== member access: cannot override non-leaf member A.b
+==       )ERASE or ⎕EX that member first.
+----> 
+---->       )ERASE A.b
+---->       A.b ← 'leaf-Ab'         ⍝ now OK, since A.b will now be a leaf
+----> 
+---->       )SIC
+---->       )ERASE A
+---->       A.b.c ← 'leaf-Abc'      ⍝ variable A with leaf A.b.C
+---->       C.d.e ← 'leaf-Cde'      ⍝ variable C with leaf C.d.e
+---->       A.b.c ← C               ⍝ override A.b.c
+---->       A.b.c.d.e
+== leaf-Cde
+----> 
+---->       (↑A.b)←2
+== DOMAIN ERROR+
+==       (↑A.b)←2
+==          ^  ^
+---->       )more
+== member access: cannot use non-leaf member A.b in selective specification.
+==       )ERASE or ⎕EX that member first.
+---->       )SIC
+----> 
+---->       ⍝ Bracket index...
+---->       ⍝
+---->       )ERASE A
+---->       A.b.c←1
+---->       A['d']←"ddd"
+---->       A
+== .d: ┌→──┐
+==     │ddd│
+==     └───┘
+== 
+== .b: □
+== .b.c: 1
+== 
+---->       A['d']←"def"
+---->       A
+== .d: ┌→──┐
+==     │def│
+==     └───┘
+== 
+== .b: □
+== .b.c: 1
+== 
+----> 
+---->       Q←2 2⍴'a' 'leaf-a' 'bb' 'leaf-bb'
+---->       Q
+==  a  leaf-a  
+==  bb leaf-bb 
+----> 
+---->       W←38 ⎕CR Q   ⍝ member names in Q are sorted, but 38 ⎕CR hashes them
+---->       W
+== .bb: ┌→──────┐
+==      │leaf-bb│
+==      └───────┘
+== 
+== .a:  ┌→─────┐
+==      │leaf-a│
+==      └──────┘
+== 
+---->       R←39 ⎕CR W
+----> R
+==  bb leaf-bb 
+==  a  leaf-a  
+----> 
+---->       ⍝ 38 ⎕CR turns scalar chars in Q into 1-element vector chars in W
+---->       R1←R[⍋R[;1];]   ⍝ R1 is R with member names sorted
+---->       R1 ≡ (,¨Q)
+== 1
+----> 
+---->       )ERASE A
+----> 
+---->       ⍝ Regression 2024-08-25, Hans Peter Sorge)
+---->       ⍝
+---->       CTX.column_names ← 1 2 3
+---->       ((⎕IO+0)⊃CTX.column_names)←'NAME'
+---->       CTX
+== .column_names: ┌→─────────┐
+==                │┌→───┐ 2 3│
+==                ││NAME│    │
+==                │└────┘    │
+==                └ϵ─────────┘
+== 
+----> 
+---->       )ERASE CTX
+----> 
+---->       )CHECK
+== OK      - no stale functions
+== OK      - no stale values
+== OK      - no stale indices
+== OK      - no duplicate parents
+----> 
+---->       )ERASE A C
+----> 
