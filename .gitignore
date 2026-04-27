@@ -99,6 +99,7 @@ autom4te.cache/
 .idea/shelf/
 .idea/tasks.xml
 .idea/usage.statistics.xml
+.idea/*
 
 # macOS
 .DS_Store
