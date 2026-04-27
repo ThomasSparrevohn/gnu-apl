@@ -1,0 +1,173 @@
+----> ⍝ Find.tc
+----> ⍝ ----------------------------------
+----> 
+---->    ⍝ character compatibility
+----> 
+---->       1 ⋸ 1 2 3
+== 1 0 0
+---->       1 ⍷1 2 3
+== 1 0 0
+----> 
+---->       'AB'⍷'ABABABABA'
+== 1 0 1 0 1 0 1 0 0
+----> 
+---->       1 2 3⍷1 2 3 4 1 2 3
+== 1 0 0 0 1 0 0
+----> 
+---->       H←4 5ρ'ABCABA'
+---->       H
+== ABCAB
+== AABCA
+== BAABC
+== ABAAB
+----> 
+---->       K←2 3ρ'BCAABC'
+---->       K
+== BCA
+== ABC
+----> 
+---->       K⍷H
+== 0 1 0 0 0
+== 0 0 1 0 0
+== 0 0 0 0 0
+== 0 0 0 0 0
+----> 
+---->       ⍝ rank of A smaller than rank of B ----------------------------------
+----> 
+---->       'BA'⍷H
+== 0 0 0 0 0
+== 0 0 0 0 0
+== 1 0 0 0 0
+== 0 1 0 0 0
+----> 
+---->       ⍝ rank of A greater than rank of B ----------------------------------
+----> 
+---->       Q←2 3ρ'ABCABB'
+---->       Q
+== ABC
+== ABB
+----> 
+---->       Q⍷'ABCABB'
+== 0 0 0 0 0 0
+----> 
+---->       ⍝ nested arrays ----------------------------------
+----> 
+---->       S←'GO' 'ON' 'GO' 'TO'
+---->       S
+==  GO ON GO TO 
+---->       ρS
+== 4
+---->       ≡S
+== 2
+---->       'GO' 'TO'⍷S
+== 0 0 1 0
+---->       'GOTO'⍷S
+== 0 0 0 0
+----> 
+---->       ⍝ ⍷ instead of ⍷ ----------------------------------
+---->       'GO' 'TO'⍷S
+== 0 0 1 0
+----> 
+---->       ⍝ deleting multiple blanks ----------------------------------
+----> 
+---->       S←'AB    DEF'
+---->       (∼'  '⍷S)/S
+== AB DEF
+----> 
+
+)SI not cleared at the end of testcases/Find.tc:
+⋆  FMT FIO∆sscanf DATA
+   ^
+⋆  FIO∆fclose Handle ⍝ close file
+   ^
+⋆  DATA FIO∆fwrite_utf8 Handle
+   ^
+⋆  ⎕←Handle←'w' FIO∆fopen Filename← 'FILE_IO.test3'
+   ^
+⋆  ⎕UCS 200 FIO∆recv Handle2
+   ^
+⋆  'World!' FIO∆send_utf8 Handle1
+   ^
+⋆  ⎕UCS 200 FIO∆recv Handle1
+   ^
+⋆  'Hello' FIO∆send_utf8 Handle2
+   ^
+⋆  Handle2 ← ↑ FIO∆accept Handle
+   ^
+⋆  Server FIO∆connect Handle1
+   ^
+⋆  4 ≤ Handle1←FIO∆socket AF_INET, SOCK_STREAM, IPPROTO_IP
+   ^
+⋆  10 FIO∆listen Handle
+   ^
+⋆  Server FIO∆bind Handle
+   ^
+⋆  (SOL_SOCKET, SO_REUSEADDR, 1) FIO∆setsockopt Handle
+   ^
+⋆  3 ≤ Handle←FIO∆socket AF_INET, SOCK_STREAM, IPPROTO_IP
+   ^
+⋆  ⎕UCS FIO∆read_file Filename
+   ^
+⋆  FIO∆pclose Handle ⍝ close command (returning its exit code)
+   ^
+⋆  Handle← FIO∆popen_ro Command
+   ^
+⋆  HELLO ⍋ ⌽ ⍒ ⍴ ⍵
+   ^
+⋆  FIO∆fclose Handle ⍝ close file
+   ^
+⋆  ⎕←Handle←'w' FIO∆fopen Filename← 'FILE_IO.test2'
+   ^
+⋆  FIO∆printf FORMAT, 42 (○1) 'Hello'
+   ^
+⋆  Error←-FIO∆unlink Filename
+   ^
+⋆  FIO∆unlink Filename
+   ^
+⋆  FIO∆fclose Handle
+   ^
+⋆  ⎕←FSTAT←FIO∆fstat Handle
+   ^
+⋆  FIO∆feof Handle
+   ^
+⋆  Z←200 FIO∆fread Handle
+   ^
+⋆  FIO∆feof Handle
+   ^
+⋆  Z←200 FIO∆fgets Handle
+   ^
+⋆  Z←FIO∆fgets Handle
+   ^
+⋆  ⎕←Handle← FIO∆fopen_ro Filename
+   ^
+⋆  FIO∆fclose Handle
+   ^
+⋆  ⎕←(⎕UCS "Hello\n") FIO∆fwrite Handle
+   ^
+⋆  ⎕←Handle←'w' FIO∆fopen Filename← 'FILE_IO.test1'
+   ^
+⋆  ⎕←FIO∆fclose Handle
+   ^
+⋆  ⎕←FIO∆fstat Handle
+   ^
+⋆  ⎕←Handle←FIO∆fopen_ro Filename←'testcases/File_IO.tc'
+   ^
+
+print_stale_info():   alloc(/Users/sparrevo/projects/apl-svn/trunk/src/Parser.cc:1266) flags(3072)
+value history disabled
+
+addr=0x8c30a9200 ≡2 ⍴⊏⊐ flags: 0x0C00   3072 /Users/sparrevo/projects/apl-svn/trunk/src/Parser.cc:1266
+    [0] addr=0x8c30ec400 ≡1 ⍴⊏31⊐ flags: 0x0400   1024 /Users/sparrevo/projects/apl-svn/trunk/src/Tokenizer.cc:741
+┌→──────────────────────────────┐
+│⎕everything %d Pi %e String %s␊│
+└───────────────────────────────┘
+
+
+print_stale_info():   alloc(/Users/sparrevo/projects/apl-svn/trunk/src/Parser.cc:1950) flags(3072)
+value history disabled
+
+addr=0x8c30ee000 ≡0 ⍴⊏⊐ flags: 0x0C00   3072 /Users/sparrevo/projects/apl-svn/trunk/src/Parser.cc:1950
+2
+
+
+ (automatic check for stale values failed, offending Value erased).

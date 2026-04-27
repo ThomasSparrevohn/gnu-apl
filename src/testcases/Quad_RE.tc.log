@@ -1,0 +1,4 @@
+----> ⍝ Quad_RE.tc
+----> ⍝ ----------------------------------
+----> 
+----> ]NEXTFILE not-⎕RE   ⍝ done if ⎕RE is not available

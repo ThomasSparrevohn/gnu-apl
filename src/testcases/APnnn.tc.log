@@ -1,0 +1,60 @@
+----> ⍝ APnnn.tc
+----> ⍝ ----------------------------------
+----> 
+---->       )CLEAR
+== CLEAR WS
+----> 
+---->       ⎕AI
+== 1010 2295 2295 0 99
+----> 
+---->       ⍝ check that we have the correct --id
+---->       ⍝
+---->       ⍎(1010≠↑⎕AI)/']NEXTFILE  ⋆⋆⋆ This testcase requires --id 1010 ⋆⋆⋆'
+----> 
+---->       )ERASE SYNC
+----> ∇SYNC B;C;Q
+---->     Q←B ⎕SVO 'VAR444' ◊ I←0
+----> L:  C←⎕SVO 'VAR444' ◊ →(2=C)/OK ◊ 0 0⍴⎕DL 0.4 ◊ →(10≠I←I+1)/L          
+---->     'SYNC FAILED:' ◊ C ◊ ⍎']NEXTFILE'
+----> OK: ⎕SVE←0 ◊ 0 0⍴⎕SVE ◊ 0 0⍴⎕DL 0.1 ◊ 'SYNC OK'
+----> ∇
+----> 
+---->       ⍝ 0. start another interpreter with ID 1011
+---->       ⍝
+---->       100 ⎕SVO 'OS' ◊ 0 0⍴⎕DL 1
+== 0
+----> 
+---->       OS←'testcases/APnnn_1011.sh'
+---->       OS
+apl: ⋅⋅⋅testcases/APnnn_1011.sh⋅⋅⋅
+ref: ⋅⋅⋅0⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+---->       ⎕SVR 'OS'
+apl: ⋅⋅⋅0⋅⋅⋅
+ref: ⋅⋅⋅2⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+----> 
+---->       ⍝ offer VAR444 and wait for sharing to complete
+---->       ⍝
+---->       SYNC 1011
+apl: ⋅⋅⋅SYNC FAILED:⋅⋅⋅
+ref: ⋅⋅⋅SYNC OK⋅⋅⋅
+ ∆ : ⋅⋅⋅     ^
+apl: ⋅⋅⋅0⋅⋅⋅
+ref: ⋅⋅⋅⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+
+)SI not cleared at the end of testcases/APnnn.tc:
+SYNC[3]  OK: ⎕SVE←0
+         ^
+⋆  SYNC 1011
+   ^
+
+print_stale_info():   alloc(/Users/sparrevo/projects/apl-svn/trunk/src/ScalarFunction.cc:353) flags(3072)
+value history disabled
+
+addr=0x8c3032800 ≡0 ⍴⊏⊐ flags: 0x0C00   3072 /Users/sparrevo/projects/apl-svn/trunk/src/ScalarFunction.cc:353
+0
+
+
+ (automatic check for stale values failed, offending Value erased).

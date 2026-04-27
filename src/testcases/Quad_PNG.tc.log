@@ -1,0 +1,5 @@
+----> ⍝ Quad_PNG.tc
+----> ⍝ ----------------------------------
+----> 
+---->        ]NEXTFILE no-⎕PNG        ⍝ done if ⎕PNG is not available
+---->        ]NEXTFILE no-GTK3        ⍝ done if GTK is not available

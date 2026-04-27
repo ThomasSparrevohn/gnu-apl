@@ -1,0 +1,54 @@
+----> ⍝ Quad_SVE
+----> ⍝ ----------------------------------
+----> 
+---->       ⍝ clear all events
+---->       ⍝
+---->       ⎕SVE←0
+---->       ⎕SVE
+== 0
+----> 
+---->       ⎕SVE←1.9
+---->       100 ⎕SVO 'OS' ◊ ⎕SVE
+apl: ⋅⋅⋅0⋅⋅⋅
+ref: ⋅⋅⋅1⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+apl: ⋅⋅⋅0⋅⋅⋅
+ref: ⋅⋅⋅⁰.⁰⋅⋅⋅
+ ∆ : ⋅⋅⋅ ^
+----> 
+---->       ⍝ assignment clears events
+---->       OS←'pwd'
+---->       ⎕SVE←0.2
+---->       ⎕SVE
+== 0
+----> 
+---->       ⎕SVR 'OS'
+apl: ⋅⋅⋅0⋅⋅⋅
+ref: ⋅⋅⋅2⋅⋅⋅
+ ∆ : ⋅⋅⋅^
+----> 
+----> ⍝ ==================================
+----> 
+
+)SI not cleared at the end of testcases/Quad_SVE.tc:
+⋆  ⎕SQL[2] DB   ⍝ close DB
+   ^
+⋆  1 Paul  20000
+   ^
+⋆  update ⎕SQL[4, DB] 22000 3
+   ^
+⋆  select ⎕SQL[4, DB] ''
+   ^
+⋆  insert ⎕SQL[3, DB] 3 'Teddy' 23 'Norway'     20000.00
+   ^
+⋆  insert ⎕SQL[3, DB] 1 'Paul'  32 'California' 20000.00
+   ^
+⋆  name    text
+   ^
+⋆  DB ⎕SQL[9] 'company'
+   ^
+⋆  ⎕SQL[8] DB
+   ^
+⋆  DB←'postgresql' ⎕SQL[1] 'apl_quadSQL'
+   ^
+

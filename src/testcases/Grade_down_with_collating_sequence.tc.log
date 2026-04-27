@@ -1,0 +1,175 @@
+----> ⍝ Grade_down_with_collating_sequence
+----> ⍝ ----------------------------------
+----> 
+---->       ⎕IO←1
+---->       'ABCDE'⍒'BEAD'
+== 2 4 1 3
+----> 
+---->       ⎕IO←0
+---->       'ABCDE'⍒'BEAD'
+== 1 3 0 2
+----> 
+---->       ⎕IO←1
+---->       A←5 4ρ'DEADBADECEDEBEADDEED'
+---->       A
+== DEAD
+== BADE
+== CEDE
+== BEAD
+== DEED
+----> 
+---->       'ABCDE'⍒A
+== 5 1 3 4 2
+----> 
+---->       C←'FACE$'
+---->       B←'@$&ABCDEF'
+---->       B⍒C
+== 1 4 3 2 5
+----> 
+---->       C[B⍒C]
+== FECA$
+----> 
+----> ⍝ diffs in spelling ----------------------------------
+----> 
+---->       ⎕←K←5 4ρ'dealDealdeadDeadDEED'
+== deal
+== Deal
+== dead
+== Dead
+== DEED
+----> 
+---->       ⎕←H←2 12ρ'abcdefghijklABCDEFGHIJKL'
+== abcdefghijkl
+== ABCDEFGHIJKL
+----> 
+---->       Z←H⍒K
+---->       K[Z;]
+== DEED
+== Deal
+== deal
+== Dead
+== dead
+----> 
+----> ⍝ DCS ----------------------------------
+----> 
+---->       DCS←10 2 28⍴' '
+---->       DCS[1;1;1+⍳26]←⎕UCS  64+⍳26
+---->       DCS[1;2;1+⍳26]←⎕UCS 944+⍳26
+---->       DCS[2;2;1+⍳26]←⎕UCS  96+⍳26
+---->       DCS[;1;28]←'0123456789'
+---->       DCS
+==  ABCDEFGHIJKLMNOPQRSTUVWXYZ0
+==  αβγδεζηθικλμνξοπρςστυφχψωϊ 
+== 
+==                            1
+==  abcdefghijklmnopqrstuvwxyz 
+== 
+==                            2
+==                             
+== 
+==                            3
+==                             
+== 
+==                            4
+==                             
+== 
+==                            5
+==                             
+== 
+==                            6
+==                             
+== 
+==                            7
+==                             
+== 
+==                            8
+==                             
+== 
+==                            9
+==                             
+----> 
+----> 
+---->       DCS⍒'AVENUE'
+== 2 5 4 6 3 1
+----> 
+---->       H←'YZOMMXA'
+---->       DCS⍒H
+== 2 1 6 3 5 4 7
+----> 
+---->       H[DCS⍒H]
+== ZYXOMMA
+---->       Q←5 4ρ'SENT ZAPDOWNALSOBOA '
+---->       Q
+== SENT
+==  ZAP
+== DOWN
+== ALSO
+== BOA 
+---->       DCS⍒Q
+== 1 3 5 4 2
+----> 
+---->       Q[DCS⍒Q;]
+== SENT
+== DOWN
+== BOA 
+== ALSO
+==  ZAP
+----> 
+---->       K
+== deal
+== Deal
+== dead
+== Dead
+== DEED
+----> 
+---->       DCS⍒K
+== 5 1 2 3 4
+----> 
+---->       K[DCS⍒K;]
+== DEED
+== deal
+== Deal
+== dead
+== Dead
+----> 
+---->       S←⊃'X1' 'X10' 'X2' 'X21' 'X3' 'X9' 'X11' 'x3'
+---->       S
+== X1 
+== X10
+== X2 
+== X21
+== X3 
+== X9 
+== X11
+== x3 
+----> 
+---->       DCS⍒S
+== 4 7 2 8 6 5 3 1
+---->       S[DCS⍒S;]
+== X21
+== X11
+== X10
+== x3 
+== X9 
+== X3 
+== X2 
+== X1 
+----> 
+----> ⍝ identical subarrays ----------------------------------
+----> 
+---->       'ABCDE'⍒'DABBED'
+== 5 6 1 4 3 2
+---->       'DABBED'['ABCDE'⍒'DABBED']
+== EDDBBA
+----> 
+----> ⍝ item not in collating sequence ----------------------------------
+----> 
+---->       Q←'BLEAT'
+---->       W←'ABCDE'⍒Q
+---->       W
+== 5 2 3 1 4
+---->       Q[W]
+== TLEBA
+----> 
+---->       )CHECK BRIEF
+----> 
