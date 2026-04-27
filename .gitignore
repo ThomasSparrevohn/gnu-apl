@@ -53,3 +53,46 @@ dkms.conf
 
 # debug information files
 *.dwo
+
+# Backup / temp files
+*~
+*.orig
+*.bak
+
+# Autotools generated / configure output
+config.log
+config.status
+config.rpath
+confdefs.h
+conftest.cpp
+conftest.err
+stamp-h1
+
+# CMake build directories
+cmake-build-*/
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+compile_commands.json
+
+# Out-of-tree build directories
+buildcl/
+build/
+
+# APL runtime
+.apl.history
+
+# IntelliJ / CLion
+.idea/workspace.xml
+.idea/dataSources/
+.idea/dataSources.ids
+.idea/dataSources.local.xml
+.idea/dataSources.xml
+.idea/dynamic.classpath
+.idea/httpRequests/
+.idea/shelf/
+.idea/tasks.xml
+.idea/usage.statistics.xml
+
+# macOS
+.DS_Store
