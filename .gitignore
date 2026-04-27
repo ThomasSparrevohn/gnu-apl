@@ -79,6 +79,12 @@ compile_commands.json
 buildcl/
 build/
 
+# Automake dependency tracking
+.deps/
+
+# Autotools cache
+autom4te.cache/
+
 # APL runtime
 .apl.history
 

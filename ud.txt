@@ -1,0 +1,409 @@
+
+    *** core tests... ***
+
+checking for gcc... /usr/bin/cc
+checking whether the C compiler works... yes
+checking for C compiler default output file name... a.out
+checking for suffix of executables... 
+checking whether we are cross compiling... no
+checking for suffix of object files... o
+checking whether the compiler supports GNU C... yes
+checking whether /usr/bin/cc accepts -g... yes
+checking for /usr/bin/cc option to enable C23 features... -std=gnu23
+checking whether /usr/bin/cc -std=gnu23 understands -c and -o together... yes
+checking for stdio.h... yes
+checking for stdlib.h... yes
+checking for string.h... yes
+checking for inttypes.h... yes
+checking for stdint.h... yes
+checking for strings.h... yes
+checking for sys/stat.h... yes
+checking for sys/types.h... yes
+checking for unistd.h... yes
+checking for wchar.h... yes
+checking for minix/config.h... no
+checking whether it is safe to define __EXTENSIONS__... yes
+checking whether _XOPEN_SOURCE should be defined... no
+checking for a BSD-compatible install... /usr/bin/install -c
+checking whether sleep supports fractional seconds... yes
+checking filesystem timestamp resolution... 2
+checking whether build environment is sane... yes
+checking for a race-free mkdir -p... mkdir -p
+checking for gawk... /usr/bin/awk
+checking whether make sets $(MAKE)... yes
+checking whether make supports the include directive... yes (GNU style)
+checking whether make supports nested variables... yes
+checking xargs -n works... yes
+checking whether UID '501' is supported by ustar format... yes
+checking whether GID '20' is supported by ustar format... yes
+checking how to create a ustar tar archive... gnutar
+checking dependency style of /usr/bin/cc -std=gnu23... gcc3
+checking whether to enable maintainer-specific portions of Makefiles... no
+checking build system type... aarch64-apple-darwin25.4.0
+checking host system type... aarch64-apple-darwin25.4.0
+checking how to print strings... printf
+checking for a sed that does not truncate output... /usr/bin/sed
+checking for grep that handles long lines and -e... /usr/bin/grep
+checking for egrep... /usr/bin/grep -E
+checking for fgrep... /usr/bin/grep -F
+checking for ld used by /usr/bin/cc -std=gnu23... /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld
+checking if the linker (/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld) is GNU ld... no
+checking for BSD- or MS-compatible name lister (nm)... /usr/bin/nm -B
+checking the name lister (/usr/bin/nm -B) interface... BSD nm
+checking whether ln -s works... yes
+checking the maximum length of command line arguments... 786432
+checking how to convert aarch64-apple-darwin25.4.0 file names to aarch64-apple-darwin25.4.0 format... func_convert_file_noop
+checking how to convert aarch64-apple-darwin25.4.0 file names to toolchain format... func_convert_file_noop
+checking for /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld option to reload object files... -r
+checking for file... file
+checking for objdump... objdump
+checking how to recognize dependent libraries... pass_all
+checking for dlltool... no
+checking how to associate runtime and link libraries... printf %s\n
+checking whether the compiler supports GNU C++... yes
+checking whether /usr/bin/c++ accepts -g... yes
+checking dependency style of /usr/bin/c++... gcc3
+checking for ranlib... ranlib
+checking for ar... ar
+checking for archiver @FILE support... no
+checking for strip... strip
+checking command to parse /usr/bin/nm -B output from /usr/bin/cc -std=gnu23 object... ok
+checking for sysroot... no
+checking for a working dd... /bin/dd
+checking how to truncate binary pipes... /bin/dd bs=4096 count=1
+checking for mt... no
+checking if : is a manifest tool... no
+checking for dsymutil... dsymutil
+checking for nmedit... nmedit
+checking for lipo... lipo
+checking for otool... otool
+checking for otool64... no
+checking for -single_module linker flag... ld: warning: -single_module is obsolete
+no
+checking for -no_fixup_chains linker flag... yes
+checking for -exported_symbols_list linker flag... yes
+checking for -force_load linker flag... yes
+checking for dlfcn.h... yes
+checking for objdir... .libs
+checking if /usr/bin/cc -std=gnu23 supports -fno-rtti -fno-exceptions... yes
+checking for /usr/bin/cc -std=gnu23 option to produce PIC... -fno-common -DPIC
+checking if /usr/bin/cc -std=gnu23 PIC flag -fno-common -DPIC works... yes
+checking if /usr/bin/cc -std=gnu23 static flag -static works... no
+checking if /usr/bin/cc -std=gnu23 supports -c -o file.o... yes
+checking if /usr/bin/cc -std=gnu23 supports -c -o file.o... (cached) yes
+checking whether the /usr/bin/cc -std=gnu23 linker (/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld) supports shared libraries... yes
+checking dynamic linker characteristics... darwin25.4.0 dyld
+checking how to hardcode library paths into programs... immediate
+checking for dlopen in -ldl... yes
+checking whether a program can dlopen itself... yes
+checking whether a statically linked program can dlopen itself... yes
+checking whether stripping libraries is possible... yes
+checking if libtool supports shared libraries... yes
+checking whether to build shared libraries... yes
+checking whether to build static libraries... yes
+checking how to run the C++ preprocessor... /usr/bin/c++ -E
+checking for ld used by /usr/bin/c++... /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld
+checking if the linker (/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld) is GNU ld... no
+checking whether the /usr/bin/c++ linker (/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld) supports shared libraries... yes
+checking for /usr/bin/c++ option to produce PIC... -fno-common -DPIC
+checking if /usr/bin/c++ PIC flag -fno-common -DPIC works... yes
+checking if /usr/bin/c++ static flag -static works... no
+checking if /usr/bin/c++ supports -c -o file.o... yes
+checking if /usr/bin/c++ supports -c -o file.o... (cached) yes
+checking whether the /usr/bin/c++ linker (/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld) supports shared libraries... yes
+checking dynamic linker characteristics... darwin25.4.0 dyld
+checking how to hardcode library paths into programs... immediate
+
+    *** compiler checks... ***
+
+checking whether the compiler supports GNU C++... (cached) yes
+checking whether /usr/bin/c++ accepts -g... (cached) yes
+checking dependency style of /usr/bin/c++... (cached) gcc3
+checking for gcc... (cached) /usr/bin/cc
+checking whether the compiler supports GNU C... (cached) yes
+checking whether /usr/bin/cc accepts -g... (cached) yes
+checking for /usr/bin/cc option to enable C23 features... (cached) -std=gnu23
+checking whether /usr/bin/cc -std=gnu23 understands -c and -o together... (cached) yes
+
+    *** checks for the presence and usablility of header files... ***
+
+checking for ncurses.h... yes
+checking for term.h... yes
+checking for dirent.h... yes
+checking for execinfo.h... yes
+checking for ext/atomicity.h... no
+checking for fcntl.h... yes
+checking for fenv.h... yes
+checking for fftw3.h... yes
+checking for inttypes.h... (cached) yes
+checking for libpng16/png.h... yes
+checking for limits.h... yes
+checking for locale.h... yes
+checking for malloc.h... no
+checking for netdb.h... yes
+checking for netinet/in.h... yes
+checking for netinet/tcp.h... yes
+checking for stdint.h... (cached) yes
+checking for stdlib.h... (cached) yes
+checking for string.h... (cached) yes
+checking for strings.h... (cached) yes
+checking for sys/fcntl.h... yes
+checking for sys/ioctl.h... yes
+checking for sys/mman.h... yes
+checking for sys/resource.h... yes
+checking for sys/select.h... yes
+checking for sys/socket.h... yes
+checking for sys/stat.h... (cached) yes
+checking for sys/time.h... yes
+checking for sys/types.h... (cached) yes
+checking for sys/time.h... (cached) yes
+checking for sys/un.h... yes
+checking for sys/wait.h... yes
+checking for termios.h... yes
+checking for unistd.h... (cached) yes
+checking for utmpx.h... yes
+checking for vector... yes
+checking for zlib.h... yes
+checking for windows.h... no
+checking for winsock2.h... no
+
+    *** checks for standard C/C++ types... ***
+
+checking for _Bool... no
+checking for stdbool.h that conforms to C99 or later... yes
+checking for inline... inline
+checking for int16_t... yes
+checking for int32_t... yes
+checking for int64_t... yes
+checking for off_t... yes
+checking for size_t... yes
+checking for ssize_t... yes
+checking for uint16_t... yes
+checking for uint32_t... yes
+checking for uint64_t... yes
+checking for uint8_t... yes
+checking for stat.st_blksize stat.st_rdev... no
+checking for error_at_line... no
+checking for pid_t... yes
+checking for vfork.h... no
+checking for sys/time.h... (cached) yes
+checking for sys/param.h... yes
+checking for fork... yes
+checking for vfork... yes
+checking for alarm... yes
+checking for getpagesize... yes
+checking for working fork... yes
+checking for working vfork... (cached) yes
+checking whether malloc (0) returns nonnull... yes
+checking for working mktime... no
+checking for working strtod... yes
+checking for working mmap... yes
+checking for dup2... yes
+checking for floor... yes
+checking for getcwd... yes
+checking for gethostbyname... yes
+checking for gettimeofday... yes
+checking for memset... yes
+checking for mkdir... yes
+checking for modf... yes
+checking for munmap... yes
+checking for pow... yes
+checking for realpath... yes
+checking for rint... yes
+checking for rmdir... yes
+checking for select... yes
+checking for setenv... yes
+checking for setlocale... yes
+checking for socket... yes
+checking for sqrt... yes
+checking for strcasecmp... yes
+checking for strchr... yes
+checking for strdup... yes
+checking for strncasecmp... yes
+checking for strndup... yes
+checking for strerror... yes
+checking for strrchr... yes
+checking for strstr... yes
+checking for strtol... yes
+checking for uname... yes
+checking for tparm in -ltinfo... no
+checking for socket in -lsocket... no
+checking for sem_init in -lpthread... yes
+checking for yp_all in -lnsl... no
+checking for setupterm in -lcurses... yes
+checking for setupterm in -lncurses... yes
+checking for acosh in -lm... yes
+checking for dlopen in -ldl... (cached) yes
+checking for initstate_r in -lc... no
+checking for __atomic_fetch_add_4 in -latomicity... no
+checking for struct stat.st_blocks... yes
+
+    *** checks for optional (not strictly required) libraries... ***
+
+checking for X... libraries , headers 
+checking for xcb/xcb.h... yes
+checking for X11/Xlib.h... yes
+checking for X11/Xlib-xcb.h... yes
+checking for X11/Xutil.h... yes
+checking for X11/XKBlib.h... yes
+checking for xcb/xproto.h... yes
+checking for XOpenDisplay in -lX11... yes
+checking for xcb_connect in -lxcb... yes
+checking for XGetXCBConnection in -lX11-xcb... yes
+checking for fftw3.h... (cached) yes
+checking for fftw_plan_dft in -lfftw3... yes
+checking for png.h... yes
+checking for zlib.h... (cached) yes
+checking for png_init_io in -lpng... yes
+checking for uncompress in -lz... yes
+checking for SQLite3 library >= 3.0.0... yes
+cat: /include/sqlite3.h: No such file or directory
+configure: WARNING: Can not find SQLITE_VERSION macro in sqlite3.h header to retrieve SQLite version!
+checking for pg_config... /opt/homebrew/bin/pg_config
+checking for PostgreSQL libraries... yes
+checking for PostgreSQL usability... yes
+checking for pcre2_compile_32 in -lpcre2-32... yes
+checking for cblas_cgemv in -lgslcblas... no
+checking for gsl/gsl_blas.h... no
+checking for gsl_linalg_QL_decomp in -lgsl... no
+checking for gsl/gsl_version.h... no
+   └──── will affect: ⎕MX
+checking for pkg-config... /opt/homebrew/bin/pkg-config
+checking for gtk_init in -lgtk-3... yes
+checking for gdk_init in -lgdk-3... yes
+checking for cairo_fill in -lcairo... yes
+checking for GTK (≥ version 3)... yes
+
+    *** checks for functions that are missing on some platforms... ***
+
+checking whether CPU has rdtsc (read CPU cycle counter) opcode... no
+checking whether gettimeofday exists... yes
+checking whether sem_init() works... no
+checking whether ioctl(fd, TIOCGWINSZ, ...) is available... yes
+checking whether pthread_setname_np is available... no
+checking whether pthread_setaffinity_np is available... no
+checking whether pthread_setname_np is available... no
+checking whether OSAtomicAdd32Barrier() is available... no
+checking whether atomic_add_32_nv() is available... no
+
+    *** choices made by the user (via ./configure arguments)... ***
+
+checking if ctrl-D shall delete one char (and ctrl-Z be EOF)... no
+checking if the build target is Android... no
+checking if the build target is the Erlang interface (also requires libapl.so)... no
+checking if the build target is libapl.so... no
+checking if the build target is libpython_apl.so... no
+checking whether development mode is desired... no
+checking whether internal value checks shall be enabled... no
+checking whether internal performance counters shall be enabled)... no
+checking whether to remember the history of APL values (debug feature)... no
+checking whether gprof profiling shall be enabled... no
+checking whether gcov coverage testing shall be enabled... no
+checking whether dynamic logging shall be enabled... no
+checking whether value flags shall be traced... no
+checking how picky (0=not, 1=somwhat, 2=very) internal tests shall be... 1
+checking security level (0=none, 1=configured in preferences, 2=all)... 0
+checking how many CPU cores shall be used by APL (experimental!)... 0
+checking which type of socket APserver shall use... 0
+checking which port number APserver shall use for TCP or UDP sockets... 16366
+checking which *nix port name APserver shall use... /tmp/GNU-APL/APserver
+checking how long a short APL value shall be at most... 12
+checking whether visible markers shall be used... no
+checking whether support for rational numbers is desired ... no
+checking when and where this interpreter was built... 2026-04-22 13:42:20 BST
+checking for MINGW (not yet working!)... no
+
+    *** ./configure checks done, producing the Makefiles and config.h... ***
+
+checking that generated files are newer than configure... done
+configure: creating ./config.status
+config.status: creating Makefile
+config.status: creating build/Makefile
+config.status: creating debian/Makefile
+config.status: creating debian/source/Makefile
+config.status: creating doc/Makefile
+config.status: creating doc/DALY/Makefile
+config.status: creating erlang/Makefile
+config.status: creating erlang/apl.erl
+config.status: creating gnu-apl.d/Makefile
+config.status: creating gnu-apl.d/preferences
+config.status: creating HOWTOs/Makefile
+config.status: creating rpm/Makefile
+config.status: creating rpm/apl.spec
+config.status: creating src/Makefile
+config.status: creating src/APs/Makefile
+config.status: creating src/Gtk/Makefile
+config.status: creating src/emacs_mode/Makefile
+config.status: creating src/native/Makefile
+config.status: creating src/sql/Makefile
+config.status: creating src/testcases/Makefile
+config.status: creating src/workspaces/Makefile
+config.status: creating support-files/Makefile
+config.status: creating support-files/105-key-International-Keyboard/Makefile
+config.status: creating support-files/Bill_Daly_Ubuntu/Makefile
+config.status: creating support-files/Dirk/Makefile
+config.status: creating support-files/Dyalog-Keyboard/Makefile
+config.status: creating support-files/Juergen-Mint-19/Makefile
+config.status: creating support-files/Juergen-Mint-21/Makefile
+config.status: creating support-files/old-Keyboard/Makefile
+config.status: creating support-files/OS-X-Keyboard/Makefile
+config.status: creating support-files/Unicomp-Keyboard/Makefile
+config.status: creating support-files/WASD-Keyboard/Makefile
+config.status: creating tools/Makefile
+config.status: creating websock/Makefile
+config.status: creating websock/client/Makefile
+config.status: creating websock/server/Makefile
+config.status: creating workspaces/Makefile
+config.status: creating wslib3/Makefile
+config.status: creating wslib3/DALY/Makefile
+config.status: creating wslib4/Makefile
+config.status: creating wslib5/Makefile
+config.status: creating wslib5/APLComponentFiles/Makefile
+config.status: creating wslib5/DALY/Makefile
+config.status: creating wslib5/iso-apl-cf/Makefile
+config.status: creating config.h
+config.status: executing depfiles commands
+config.status: executing libtool commands
+ 
+checking if any of the optional libraries shall be used... yes
+
+configure:    ---- SUMMARY OF TESTS (please include it in error reports) ----
+
+    # A. command line arguments for ./configure
+    #
+    prefix:                      /usr/local
+
+    DEVELOP_WANTED:              no
+    ASSERT_LEVEL_WANTED:         1
+    ALT_MAP_WANTED:              0
+    DYNAMIC_LOG_WANTED:          no
+    PERFORMANCE_COUNTERS_WANTED: no
+    VALUE_CHECK_WANTED:          no
+    VALUE_HISTORY_WANTED:        no
+
+    # B. computed variables (most of them in m4/*.m4
+    #
+    host_os:                     darwin25.4.0
+    apl_BUILD_DATE:              2026-04-22 13:42:20 BST
+    apl_BUILD_OS:                Darwin 25.4.0 arm64
+    apl_MAINTAINER_MODE:         no
+    apl_missing_headers:         3
+    apl_missing_functions:       0
+    apl_FFT:                     yes	(affects: ⎕FFT)
+    apl_GSL:                     no	(affects: ⎕MX, ⌹)
+    apl_PCRE:                    yes	(affects: ⎕RE)
+    apl_PNG:                     yes	(affects: ⎕PNG)
+    apl_POSTGRES:                yes	(may affect: ⎕SQL)
+    apl_SQLITE3:                 yes	(may affect: ⎕SQL)
+    apl_SQL                      yes	(affects:    ⎕SQL)
+    apl_XCB                      yes	(fallback for               ⎕PLOT)
+    apl_GTK3:                    yes	(affects: ⎕PNG, ⎕GTK, maybe ⎕PLOT)
+    apl_GUI:                     yes	(affects: ⎕PNG, ⎕GTK,       ⎕PLOT)
+    apl_LIBC:                    no	(affects: ⎕RVAL)
+
+    Special Build targets:
+        Android:                 no
+        Erlang:                  no
+        libapl:                  no
+        Python:                  no
+

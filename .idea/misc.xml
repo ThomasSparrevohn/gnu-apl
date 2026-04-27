@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="GoImports">
-    <option name="excludedPackages">
-      <array>
-        <option value="github.com/pkg/errors" />
-        <option value="golang.org/x/net/context" />
-      </array>
-    </option>
+  <component name="CMakePythonSetting">
+    <option name="pythonIntegrationState" value="YES" />
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_21" default="true" project-jdk-name="zulu-21" project-jdk-type="JavaSDK">
-    <output url="file://$PROJECT_DIR$/out" />
-  </component>
+  <component name="CMakeWorkspace" PROJECT_DIR="$PROJECT_DIR$" />
 </project>
