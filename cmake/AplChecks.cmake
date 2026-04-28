@@ -516,32 +516,132 @@ endif()
 # --- X11/XCB -------------------------------------------------------------
 if(APL_WITH_X)
     set(_x11_ok TRUE)
+    set(APL_XCB_INCLUDE_DIRS "")
+    set(APL_XCB_LIBRARY_DIRS "")
+    set(APL_XCB_LIBRARIES "")
+
+    set(_x11_prefix_hints ${APL_PLATFORM_PREFIX_HINTS})
 
     if(APL_X_INCLUDE_DIR OR APL_X_LIBRARY_DIR)
-        find_library(_x11_lib  X11 PATHS "${APL_X_LIBRARY_DIR}" NO_DEFAULT_PATH)
-        find_library(_xcb_lib  xcb PATHS "${APL_X_LIBRARY_DIR}" NO_DEFAULT_PATH)
-        find_library(_x11xcb_lib X11-xcb PATHS "${APL_X_LIBRARY_DIR}" NO_DEFAULT_PATH)
-        set(X11_INCLUDE_DIR "${APL_X_INCLUDE_DIR}")
-        set(X11_FOUND TRUE)
+        if(APL_X_INCLUDE_DIR)
+            list(APPEND APL_XCB_INCLUDE_DIRS "${APL_X_INCLUDE_DIR}")
+        endif()
+        if(APL_X_LIBRARY_DIR)
+            list(APPEND APL_XCB_LIBRARY_DIRS "${APL_X_LIBRARY_DIR}")
+        endif()
+
+        find_path(_x11_inc X11/Xlib.h
+            PATHS ${APL_X_INCLUDE_DIR}
+            NO_DEFAULT_PATH)
+        find_path(_xcb_inc xcb/xcb.h
+            PATHS ${APL_X_INCLUDE_DIR}
+            NO_DEFAULT_PATH)
+
+        find_library(_x11_lib X11
+            PATHS ${APL_X_LIBRARY_DIR}
+            NO_DEFAULT_PATH)
+        find_library(_xcb_lib xcb
+            PATHS ${APL_X_LIBRARY_DIR}
+            NO_DEFAULT_PATH)
+        find_library(_x11xcb_lib X11-xcb
+            PATHS ${APL_X_LIBRARY_DIR}
+            NO_DEFAULT_PATH)
     else()
+        if(PKG_CONFIG_FOUND)
+            pkg_check_modules(X11_PC QUIET x11)
+            pkg_check_modules(XCB_PC QUIET xcb)
+            pkg_check_modules(X11_XCB_PC QUIET x11-xcb)
+
+            if(X11_PC_FOUND)
+                list(APPEND APL_XCB_INCLUDE_DIRS ${X11_PC_INCLUDE_DIRS})
+                list(APPEND APL_XCB_LIBRARY_DIRS ${X11_PC_LIBRARY_DIRS})
+                list(APPEND APL_XCB_LIBRARIES ${X11_PC_LIBRARIES})
+            endif()
+            if(XCB_PC_FOUND)
+                list(APPEND APL_XCB_INCLUDE_DIRS ${XCB_PC_INCLUDE_DIRS})
+                list(APPEND APL_XCB_LIBRARY_DIRS ${XCB_PC_LIBRARY_DIRS})
+                list(APPEND APL_XCB_LIBRARIES ${XCB_PC_LIBRARIES})
+            endif()
+            if(X11_XCB_PC_FOUND)
+                list(APPEND APL_XCB_INCLUDE_DIRS ${X11_XCB_PC_INCLUDE_DIRS})
+                list(APPEND APL_XCB_LIBRARY_DIRS ${X11_XCB_PC_LIBRARY_DIRS})
+                list(APPEND APL_XCB_LIBRARIES ${X11_XCB_PC_LIBRARIES})
+            endif()
+        endif()
+
         find_package(X11 QUIET)
-        find_library(_xcb_lib    xcb)
-        find_library(_x11xcb_lib X11-xcb)
+
+        find_path(_x11_inc X11/Xlib.h
+            HINTS ${_x11_prefix_hints}
+            PATH_SUFFIXES include)
+        find_path(_xcb_inc xcb/xcb.h
+            HINTS ${_x11_prefix_hints}
+            PATH_SUFFIXES include)
+
+        find_library(_x11_lib X11
+            HINTS ${_x11_prefix_hints}
+            PATH_SUFFIXES lib lib64)
+        find_library(_xcb_lib xcb
+            HINTS ${_x11_prefix_hints}
+            PATH_SUFFIXES lib lib64)
+        find_library(_x11xcb_lib X11-xcb
+            HINTS ${_x11_prefix_hints}
+            PATH_SUFFIXES lib lib64)
     endif()
 
-    # Required headers for Plot_xcb.cc
+    if(_x11_inc)
+        list(APPEND APL_XCB_INCLUDE_DIRS "${_x11_inc}")
+    endif()
+    if(_xcb_inc)
+        list(APPEND APL_XCB_INCLUDE_DIRS "${_xcb_inc}")
+    endif()
+
+    if(_x11_lib)
+        list(APPEND APL_XCB_LIBRARIES "${_x11_lib}")
+        get_filename_component(_x11_lib_dir "${_x11_lib}" DIRECTORY)
+        list(APPEND APL_XCB_LIBRARY_DIRS "${_x11_lib_dir}")
+    endif()
+    if(_xcb_lib)
+        list(APPEND APL_XCB_LIBRARIES "${_xcb_lib}")
+        get_filename_component(_xcb_lib_dir "${_xcb_lib}" DIRECTORY)
+        list(APPEND APL_XCB_LIBRARY_DIRS "${_xcb_lib_dir}")
+    endif()
+    if(_x11xcb_lib)
+        list(APPEND APL_XCB_LIBRARIES "${_x11xcb_lib}")
+        get_filename_component(_x11xcb_lib_dir "${_x11xcb_lib}" DIRECTORY)
+        list(APPEND APL_XCB_LIBRARY_DIRS "${_x11xcb_lib_dir}")
+    endif()
+
+    list(REMOVE_DUPLICATES APL_XCB_INCLUDE_DIRS)
+    list(REMOVE_DUPLICATES APL_XCB_LIBRARY_DIRS)
+    list(REMOVE_DUPLICATES APL_XCB_LIBRARIES)
+
+    set(CMAKE_REQUIRED_INCLUDES ${APL_XCB_INCLUDE_DIRS})
+
     foreach(_xhdr
             "xcb/xcb.h" "X11/Xlib.h" "X11/Xlib-xcb.h"
             "X11/Xutil.h" "X11/XKBlib.h")
-        check_include_file_cxx("${_xhdr}" _xhdr_found)
-        if(NOT _xhdr_found)
+        string(MAKE_C_IDENTIFIER "${_xhdr}" _xhdr_var)
+        check_include_file_cxx("${_xhdr}" "_APL_HAVE_${_xhdr_var}")
+        if(NOT _APL_HAVE_${_xhdr_var})
             set(_x11_ok FALSE)
+            message(STATUS "APL: X11/XCB missing header: ${_xhdr}")
         endif()
-        unset(_xhdr_found CACHE)
     endforeach()
 
-    if(NOT X11_FOUND OR NOT _xcb_lib OR NOT _x11xcb_lib)
+    unset(CMAKE_REQUIRED_INCLUDES)
+
+    if(NOT _x11_lib)
         set(_x11_ok FALSE)
+        message(STATUS "APL: X11/XCB missing library: X11")
+    endif()
+    if(NOT _xcb_lib)
+        set(_x11_ok FALSE)
+        message(STATUS "APL: X11/XCB missing library: xcb")
+    endif()
+    if(NOT _x11xcb_lib)
+        set(_x11_ok FALSE)
+        message(STATUS "APL: X11/XCB missing library: X11-xcb")
     endif()
 
     if(_x11_ok)
@@ -555,8 +655,9 @@ if(APL_WITH_X)
         set(HAVE_X11_XUTIL_H 1)
         set(HAVE_X11_XKBLIB_H 1)
         set(HAVE_XCB_XCB_H 1)
-        set(APL_XCB_LIBRARIES "${X11_LIBRARIES}" "${_xcb_lib}" "${_x11xcb_lib}")
         message(STATUS "APL: X11/XCB found – ⎕PLOT available")
+        message(STATUS "APL: X11/XCB include dirs: ${APL_XCB_INCLUDE_DIRS}")
+        message(STATUS "APL: X11/XCB library dirs: ${APL_XCB_LIBRARY_DIRS}")
     else()
         message(STATUS "APL: X11/XCB NOT fully found – ⎕PLOT may use ASCII fallback")
     endif()

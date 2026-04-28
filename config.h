@@ -5,7 +5,7 @@
 #define ARCHIVE_SVN "cmake"
 
 /* How and when GNU APL was configured */
-#define BUILDTAG PACKAGE_NAME, PACKAGE_VERSION " / cmake", "2026-04-27 23:50:44 UTC", "macOS 20 core Apple M1 Ultra", "cmake -S . -B <builddir>"
+#define BUILDTAG PACKAGE_NAME, PACKAGE_VERSION " / cmake", "2026-04-28 01:09:21 UTC", "macOS 20 core Apple M1 Ultra", "cmake -S . -B <builddir>"
 
 /* Define to 1 iff pthread_setaffinity_np() is available */
 /* #undef HAVE_AFFINITY_NP */
@@ -29,7 +29,7 @@
 #define HAVE_EXECINFO_H 1
 
 /* Define to 1 if you have the <ext/atomicity.h> header file. */
-#define HAVE_EXT_ATOMICITY_H 1
+/* #undef HAVE_EXT_ATOMICITY_H */
 
 /* Define to 1 if you have the <fcntl.h> header file. */
 #define HAVE_FCNTL_H 1
@@ -86,10 +86,10 @@
 #define HAVE_LIBGDK_3 1
 
 /* Define to 1 if you have the 'gsl' library (-lgsl). */
-/* #undef HAVE_LIBGSL */
+#define HAVE_LIBGSL 1
 
 /* Define to 1 if you have the 'gslcblas' library (-lgslcblas). */
-/* #undef HAVE_LIBGSLCBLAS */
+#define HAVE_LIBGSLCBLAS 1
 
 /* Define to 1 if you have the 'gtk-3' library (-lgtk-3). */
 #define HAVE_LIBGTK_3 1
@@ -122,13 +122,13 @@
 /* #undef HAVE_LIBTINFO */
 
 /* Define to 1 if you have the 'X11' library (-lX11). */
-/* #undef HAVE_LIBX11 */
+#define HAVE_LIBX11 1
 
 /* Define to 1 if you have the 'X11-xcb' library (-lX11-xcb). */
-/* #undef HAVE_LIBX11_XCB */
+#define HAVE_LIBX11_XCB 1
 
 /* Define to 1 if you have the 'xcb' library (-lxcb). */
-/* #undef HAVE_LIBXCB */
+#define HAVE_LIBXCB 1
 
 /* Define to 1 if you have the 'z' library (-lz). */
 #define HAVE_LIBZ 1
@@ -353,19 +353,19 @@
 #define HAVE_WORKING_VFORK 1
 
 /* Define to 1 if you have the <X11/XKBlib.h> header file. */
-/* #undef HAVE_X11_XKBLIB_H */
+#define HAVE_X11_XKBLIB_H 1
 
 /* Define to 1 if you have the <X11/Xlib.h> header file. */
-/* #undef HAVE_X11_XLIB_H */
+#define HAVE_X11_XLIB_H 1
 
 /* Define to 1 if you have the <X11/Xlib-xcb.h> header file. */
-/* #undef HAVE_X11_XLIB_XCB_H */
+#define HAVE_X11_XLIB_XCB_H 1
 
 /* Define to 1 if you have the <X11/Xutil.h> header file. */
-/* #undef HAVE_X11_XUTIL_H */
+#define HAVE_X11_XUTIL_H 1
 
 /* Define to 1 if you have the <xcb/xcb.h> header file. */
-/* #undef HAVE_XCB_XCB_H */
+#define HAVE_XCB_XCB_H 1
 
 /* Define to 1 if you have the <zlib.h> header file. */
 #define HAVE_ZLIB_H 1
@@ -513,7 +513,7 @@
 #define apl_FFT 1
 
 /* GSL available ? */
-#define apl_GSL 0
+#define apl_GSL 1
 
 /* GTK+ version 3 installed ? */
 #define apl_GTK3 1
@@ -546,10 +546,10 @@
 /* #undef apl_TARGET_PYTHON */
 
 /* X11 is available ? */
-#define apl_X11 0
+#define apl_X11 1
 
 /* XCB is available ? */
-#define apl_XCB 0
+#define apl_XCB 1
 
 /* Alt key map profile */
 #define cfg_ALT_MAP_WANTED 0

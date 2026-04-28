@@ -52,6 +52,7 @@ set(APL_DIR_SRC         "${CMAKE_SOURCE_DIR}/src")
 # User options and platform checks
 # ---------------------------------------------------------------------------
 include(cmake/AplOptions.cmake)
+include(cmake/AplHost.cmake)
 include(cmake/AplChecks.cmake)
 
 # ---------------------------------------------------------------------------
