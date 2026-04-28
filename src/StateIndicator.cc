@@ -511,7 +511,15 @@ result_callback res_callback = 0;
 #endif
 
 #ifdef apl_TARGET_PYTHON
-extern bool python_result_callback(Token & result);
+bool python_result_callback_available __attribute__((weak)) = false;
+
+bool __attribute__((weak))
+python_result_callback(Token & result)
+{
+const TokenTag tag = result.get_tag();
+
+   return result.get_Class() == TC_VALUE && tag != TOK_APL_VALUE2;
+}
 #endif
 
 void
@@ -544,7 +552,7 @@ StateIndicator::statement_result(Token & result, bool trace)
    if (result.get_ValueType() != TV_VAL)
       {
 #ifdef apl_TARGET_PYTHON
-         python_result_callback(result);
+         if (python_result_callback_available)   python_result_callback(result);
 #endif
 
          return;
@@ -569,7 +577,8 @@ bool print_value = result.get_Class() == TC_VALUE && tag != TOK_APL_VALUE2;
 #endif
 
 #ifdef apl_TARGET_PYTHON
-   print_value = python_result_callback(result);
+   if (python_result_callback_available)
+      print_value = python_result_callback(result);
 #endif
 
    if (!print_value)   return;

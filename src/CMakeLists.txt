@@ -293,8 +293,86 @@ else()
 endif()
 
 # ---------------------------------------------------------------------------
-# Build target selection
+# Build targets
 # ---------------------------------------------------------------------------
+
+# ---------------------------------------------------------------------------
+# Normal apl executable
+# ---------------------------------------------------------------------------
+add_executable(${APL_EXECUTABLE_NAME}
+    main.cc
+    ${APL_COMMON_SOURCES}
+)
+apl_target_common_setup(${APL_EXECUTABLE_NAME})
+if(APL_EXPORT_DYNAMIC_FLAGS)
+    target_link_options(${APL_EXECUTABLE_NAME} PRIVATE "${APL_EXPORT_DYNAMIC_FLAGS}")
+endif()
+
+install(TARGETS ${APL_EXECUTABLE_NAME}
+        RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}")
+
+# CTest: run all testcases
+if(BUILD_TESTING)
+    file(GLOB _testcases
+         LIST_DIRECTORIES FALSE
+         "${CMAKE_CURRENT_SOURCE_DIR}/testcases/*.tc")
+    if(_testcases)
+        add_test(
+            NAME apl_testcases
+            COMMAND ${APL_EXECUTABLE_NAME} --id 1010 -T ${_testcases}
+            WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+        )
+        set_tests_properties(apl_testcases PROPERTIES
+            TIMEOUT 600
+        )
+
+        add_test(
+            NAME apl_testcases_strict
+            COMMAND ${APL_EXECUTABLE_NAME} --id 1010 -T ${_testcases}
+            WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+        )
+        set_tests_properties(apl_testcases_strict PROPERTIES
+            TIMEOUT 600
+        )
+
+        file(GLOB _ap_testcases
+             LIST_DIRECTORIES FALSE
+             "${CMAKE_CURRENT_SOURCE_DIR}/testcases/AP*.tc")
+        if(_ap_testcases)
+            file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/testcases")
+            configure_file(
+                "${CMAKE_CURRENT_SOURCE_DIR}/testcases/APnnn_1011.tc2.in"
+                "${CMAKE_BINARY_DIR}/testcases/APnnn_1011.tc2"
+                @ONLY
+            )
+            configure_file(
+                "${CMAKE_CURRENT_SOURCE_DIR}/testcases/APnnn_1011.sh.in"
+                "${CMAKE_BINARY_DIR}/testcases/APnnn_1011.sh"
+                @ONLY
+            )
+            file(CHMOD "${CMAKE_BINARY_DIR}/testcases/APnnn_1011.sh"
+                 PERMISSIONS
+                     OWNER_READ OWNER_WRITE OWNER_EXECUTE
+                     GROUP_READ GROUP_EXECUTE
+                     WORLD_READ WORLD_EXECUTE)
+
+            add_test(
+                NAME apl_testcases_AP
+                COMMAND ${APL_EXECUTABLE_NAME} --id 1010 -T ${_ap_testcases}
+                WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
+            )
+            set_tests_properties(apl_testcases_AP PROPERTIES
+                TIMEOUT 120
+            )
+        endif()
+    endif()
+endif()
+
+# Build APserver, AP100, AP210 alongside the rest of GNU APL so that the
+# shared-variable subsystem works in tests and normal use.
+if(NOT APL_WITH_ANDROID)
+    add_subdirectory(APs)
+endif()
 
 if(APL_WITH_LIBAPL)
     # -----------------------------------------------------------------------
@@ -316,14 +394,14 @@ if(APL_WITH_LIBAPL)
         target_link_options(libapl PRIVATE "${APL_EXPORT_DYNAMIC_FLAGS}")
     endif()
 
-    # Install libapl
     install(TARGETS libapl
             LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}/apl"
             ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}/apl")
     install(FILES libapl.h Error.def
             DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/apl")
+endif()
 
-elseif(APL_WITH_PYTHON)
+if(APL_WITH_PYTHON)
     # -----------------------------------------------------------------------
     # Python extension module lib_gnu_apl.so
     # -----------------------------------------------------------------------
@@ -342,7 +420,14 @@ elseif(APL_WITH_PYTHON)
     )
     apl_target_common_setup(lib_gnu_apl)
     target_include_directories(lib_gnu_apl PRIVATE ${Python3_INCLUDE_DIRS})
-    target_link_libraries(lib_gnu_apl PRIVATE ${Python3_LIBRARIES})
+    if(TARGET Python3::Module)
+        target_link_libraries(lib_gnu_apl PRIVATE Python3::Module)
+    else()
+        target_link_libraries(lib_gnu_apl PRIVATE ${Python3_LIBRARIES})
+    endif()
+    if(APPLE)
+        target_link_options(lib_gnu_apl PRIVATE -undefined dynamic_lookup)
+    endif()
     target_compile_options(lib_gnu_apl PRIVATE
         -DNDEBUG
         -D_FORTIFY_SOURCE=2
@@ -356,95 +441,6 @@ elseif(APL_WITH_PYTHON)
 
     install(TARGETS lib_gnu_apl
             LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}/apl")
-
-else()
-    # -----------------------------------------------------------------------
-    # Normal apl executable
-    # -----------------------------------------------------------------------
-    add_executable(${APL_EXECUTABLE_NAME}
-        main.cc
-        ${APL_COMMON_SOURCES}
-    )
-    apl_target_common_setup(${APL_EXECUTABLE_NAME})
-    if(APL_EXPORT_DYNAMIC_FLAGS)
-        target_link_options(${APL_EXECUTABLE_NAME} PRIVATE "${APL_EXPORT_DYNAMIC_FLAGS}")
-    endif()
-
-    install(TARGETS ${APL_EXECUTABLE_NAME}
-            RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}")
-
-    # CTest: run all testcases
-    if(BUILD_TESTING)
-        file(GLOB _testcases
-             LIST_DIRECTORIES FALSE
-             "${CMAKE_CURRENT_SOURCE_DIR}/testcases/*.tc")
-        if(_testcases)
-            add_test(
-                NAME apl_testcases
-                COMMAND ${APL_EXECUTABLE_NAME} --id 1010 -T ${_testcases}
-                WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
-            )
-            set_tests_properties(apl_testcases PROPERTIES
-                TIMEOUT 600
-            )
-
-            # strict variant: same invocation as the default test — both use
-            # the default TM_EXIT_AFTER_LAST_FILE mode which is the only mode
-            # that produces a clean exit code under CTest (non-TTY stdin).
-            # --TM N (N>0) modes do not auto-exit after the last file when
-            # stdin is a pipe, so they are not suitable for automated testing.
-            add_test(
-                NAME apl_testcases_strict
-                COMMAND ${APL_EXECUTABLE_NAME} --id 1010 -T ${_testcases}
-                WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
-            )
-            set_tests_properties(apl_testcases_strict PROPERTIES
-                TIMEOUT 600
-            )
-
-            # AP-related tests.  Run from CMAKE_BINARY_DIR so that relative
-            # paths like "./src/APs/APserver" resolve correctly: LibPaths
-            # computes APL_bin_path as "./src" (relative to where ctest was
-            # launched), so AP binaries must be reachable as ./src/APs/<name>.
-            file(GLOB _ap_testcases
-                 LIST_DIRECTORIES FALSE
-                 "${CMAKE_CURRENT_SOURCE_DIR}/testcases/AP*.tc")
-            if(_ap_testcases)
-                # Generate the APnnn companion script and APL program that
-                # the APnnn.tc test uses to start a second interpreter.
-                file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/testcases")
-                configure_file(
-                    "${CMAKE_CURRENT_SOURCE_DIR}/testcases/APnnn_1011.tc2.in"
-                    "${CMAKE_BINARY_DIR}/testcases/APnnn_1011.tc2"
-                    @ONLY
-                )
-                configure_file(
-                    "${CMAKE_CURRENT_SOURCE_DIR}/testcases/APnnn_1011.sh.in"
-                    "${CMAKE_BINARY_DIR}/testcases/APnnn_1011.sh"
-                    @ONLY
-                )
-                file(CHMOD "${CMAKE_BINARY_DIR}/testcases/APnnn_1011.sh"
-                     PERMISSIONS
-                         OWNER_READ OWNER_WRITE OWNER_EXECUTE
-                         GROUP_READ GROUP_EXECUTE
-                         WORLD_READ WORLD_EXECUTE)
-
-                add_test(
-                    NAME apl_testcases_AP
-                    COMMAND ${APL_EXECUTABLE_NAME} --id 1010 -T ${_ap_testcases}
-                    WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
-                )
-                set_tests_properties(apl_testcases_AP PROPERTIES
-                    TIMEOUT 120
-                )
-            endif()
-        endif()
-    endif()
-
-    # Build APserver, AP100, AP210 alongside the apl binary so that the
-    # shared-variable subsystem works in tests and normal use.
-    add_subdirectory(APs)
-
 endif()
 
 # ---------------------------------------------------------------------------

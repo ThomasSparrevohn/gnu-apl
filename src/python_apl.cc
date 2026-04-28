@@ -4,8 +4,8 @@
 
 #include "Command.hh"
 #include "ComplexCell.hh"
-#include "DiffOut.hh"
 #include "Error.hh"
+#include "FileBuffers.hh"
 #include "FloatCell.hh"
 #include "LineInput.hh"
 #include "Macro.hh"
@@ -117,6 +117,8 @@ PyObject * ravel = PyList_New(ravel_len);
 }
 //----------------------------------------------------------------------------
 static PyObject * exec_result = 0;
+
+bool python_result_callback_available = true;
 
 bool
 python_result_callback(Token & result)
@@ -501,7 +503,7 @@ int error_line = 0;
 
 const UTF8_string creator("python");
 UserFunction * fun = UserFunction::fix(text_ucs, error_line, false, LOC,
-                                       creator, true);
+                                       creator);
 
    if (fun)   return Py_None;
 

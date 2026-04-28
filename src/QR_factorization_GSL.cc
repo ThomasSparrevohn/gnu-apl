@@ -144,7 +144,7 @@ gsl_matrix * R = gsl_matrix_alloc(N, N);   if (R == 0)   WS_FULL;
         if (col < row)   // below diag
            {
              gsl_matrix_set(R, row, col, 0);
-             Z1->next_ravel_Number(0,0);
+             Z1->next_ravel_Number(0.0);
            }
         else
            {
@@ -164,7 +164,7 @@ Value_P Z2(N, N, LOC);   // Z[2] is the N×N matrix Ri
       {
         if (col < row)   // below diag
            {
-             Z2->next_ravel_Number(0,0);
+             Z2->next_ravel_Number(0.0);
            }
         else
            {
@@ -364,7 +364,11 @@ int signum = 0;
   //
 Value_P Z0(M, LOC);   // Z0 is P
 const APL_Integer qio = Workspace::get_IO();
-  loop(m, M)   Z0->next_ravel_Int(gsl_permutation_get(P, m) + qio);
+  loop(m, M)
+     {
+       const APL_Integer p = APL_Integer(gsl_permutation_get(P, m));
+       Z0->next_ravel_Int(p + qio);
+     }
   Z0->check_value(LOC);
 
 const ShapeItem min_MN = min(M, N);
@@ -416,7 +420,11 @@ int signum = 0;
   //
 Value_P Z0(M, LOC);   // Z0 is P
 const APL_Integer qio = Workspace::get_IO();
-  loop(m, M)   Z0->next_ravel_Int(gsl_permutation_get(P, m) + qio);
+  loop(m, M)
+     {
+       const APL_Integer p = APL_Integer(gsl_permutation_get(P, m));
+       Z0->next_ravel_Int(p + qio);
+     }
   Z0->check_value(LOC);
 
 const ShapeItem min_MN = min(M, N);
