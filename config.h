@@ -5,7 +5,7 @@
 #define ARCHIVE_SVN "cmake"
 
 /* How and when GNU APL was configured */
-#define BUILDTAG PACKAGE_NAME, PACKAGE_VERSION " / cmake", "2026-04-28 11:51:33 UTC", "macOS 20 core Apple M1 Ultra", "cmake -S . -B <builddir>"
+#define BUILDTAG PACKAGE_NAME, PACKAGE_VERSION " / cmake", "2026-04-28 13:21:17 UTC", "macOS 20 core Apple M1 Ultra", "cmake -S . -B <builddir>"
 
 /* Define to 1 iff pthread_setaffinity_np() is available */
 /* #undef HAVE_AFFINITY_NP */
@@ -29,7 +29,7 @@
 #define HAVE_EXECINFO_H 1
 
 /* Define to 1 if you have the <ext/atomicity.h> header file. */
-/* #undef HAVE_EXT_ATOMICITY_H */
+#define HAVE_EXT_ATOMICITY_H 1
 
 /* Define to 1 if you have the <fcntl.h> header file. */
 #define HAVE_FCNTL_H 1
@@ -564,7 +564,7 @@
 #define cfg_APSERVER_TRANSPORT 0
 
 /* the desired ASSERT() level (0=no, 1=some, 2=all assertions) */
-#define cfg_ASSERT_LEVEL_WANTED 1
+#define cfg_ASSERT_LEVEL_WANTED 2
 
 /* how cmake was called */
 #define cfg_CONFIGURE_ARGS "cmake -S . -B <builddir>"
@@ -573,7 +573,7 @@
 #define cfg_CORE_COUNT_WANTED 0
 
 /* Define to set options typical for software development */
-/* #undef cfg_DEVELOP_WANTED */
+#define cfg_DEVELOP_WANTED 1
 
 /* Define to enable dynamic logging */
 #define cfg_DYNAMIC_LOG_WANTED 1
@@ -600,10 +600,10 @@
 #define cfg_USER_WANTS_SQLITE3 1
 
 /* Define to enable internal value checks */
-/* #undef cfg_VALUE_CHECK_WANTED */
+#define cfg_VALUE_CHECK_WANTED 1
 
 /* Define to enable value events */
-/* #undef cfg_VALUE_HISTORY_WANTED */
+#define cfg_VALUE_HISTORY_WANTED 1
 
 /* Define to enable tracing of value flags */
 /* #undef cfg_VF_TRACING_WANTED */

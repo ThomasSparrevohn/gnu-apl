@@ -80,11 +80,11 @@ configure_file(
 # That path resolves to the project root regardless of -I flags, so we
 # also write config.h there.  config.h is generated output (like Makefile),
 # not a hand-maintained source file; ./configure overwrites it anyway.
-configure_file(
-    "${CMAKE_SOURCE_DIR}/config.h.cmake.in"
-    "${CMAKE_SOURCE_DIR}/config.h"
-    @ONLY
-)
+#configure_file(
+#    "${CMAKE_SOURCE_DIR}/config.h.cmake.in"
+#    "${CMAKE_SOURCE_DIR}/config.h"
+#    @ONLY
+#)
 
 # ---------------------------------------------------------------------------
 # CTest (must come before add_subdirectory so BUILD_TESTING is set)

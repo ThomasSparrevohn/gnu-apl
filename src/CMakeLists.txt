@@ -1,3 +1,9 @@
+
+
+# Do not generate config.h into CMAKE_SOURCE_DIR.
+# Multiple CMake profiles can configure/build concurrently, and a shared
+# source-tree config.h causes races between profiles.
+
 # src/CMakeLists.txt
 # Builds the GNU APL executable (and optionally libapl or the Python module).
 
