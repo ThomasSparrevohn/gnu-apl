@@ -255,9 +255,9 @@ FunctionGroup::init_function_group(const FunctionGroup::function_info * unsorted
       }
 
    Heapsort<const FunctionGroup::function_info *>::
-            sort(sorted_by_name, greater_function_name, 0);
+            sort(sorted_by_name, greater_function_name, nullptr);
    Heapsort<const FunctionGroup::function_info *>::
-            sort(sorted_by_axis, greater_function_axis, 0);
+            sort(sorted_by_axis, greater_function_axis, nullptr);
    }
 
    // check that sorted_by_name is sorted ascendingly
@@ -325,9 +325,9 @@ FunctionGroup::get_info_by_name(const char * name) const
 {
 const FunctionGroup::function_info* const * ret =
       Heapsort<const FunctionGroup::function_info *>
-      ::search<const char *>(name, sorted_by_name, compare_function_name, 0);
+      ::search<const char *>(name, sorted_by_name, compare_function_name, nullptr);
 
-   if (ret == 0)   return reinterpret_cast<const function_info *>(0);
+   if (ret == nullptr)   return reinterpret_cast<const function_info *>(0);
    return *ret;
 }
 //----------------------------------------------------------------------------
@@ -336,9 +336,9 @@ FunctionGroup::get_info_by_axis(uAxis axis) const
 {
 const FunctionGroup::function_info* const * ret =
       Heapsort<const FunctionGroup::function_info *>
-      ::search<const uAxis>(axis, sorted_by_axis, compare_function_axis, 0);
+      ::search<const uAxis>(axis, sorted_by_axis, compare_function_axis, nullptr);
                      
-   if (ret == 0)   return reinterpret_cast<const function_info *>(0);
+   if (ret == nullptr)   return reinterpret_cast<const function_info *>(0);
    return *reinterpret_cast<const function_info * const *>(ret);
 }
 //----------------------------------------------------------------------------

@@ -52,7 +52,7 @@ Bif_F12_FORMAT::eval_B(Value_P B) const
 
    if (!B->is_simple())
       {
-        PrintBuffer pb(*B, Workspace::get_PrintContext(PR_APL), 0);
+        PrintBuffer pb(*B, Workspace::get_PrintContext(PR_APL), nullptr);
         Assert(pb.is_rectangular());
         const ShapeItem cols = pb.get_column_count();
         const ShapeItem rows = pb.get_row_count();
@@ -195,7 +195,7 @@ Bif_F12_FORMAT::monadic_format(Value_P B)
 const PrintStyle style(PrintStyle(PR_APL | PST_NO_FRACT_0));
 const PrintContext pctx = Workspace::get_PrintContext(style);
 
-const PrintBuffer pb(*B, pctx, 0);
+const PrintBuffer pb(*B, pctx, nullptr);
 
 const ShapeItem width  = pb.get_column_count();
 const ShapeItem height = pb.get_row_count();
@@ -699,7 +699,7 @@ const int data_buf_len = int_part.out_len + 1        // 123.
    if (data_buf_len > 100)   DOMAIN_ERROR;
 
 char data_buf[101];
-char * fract_end = 0;
+char * fract_end = nullptr;
 
    if (exponent.size())   // E in format string
       {
@@ -753,7 +753,7 @@ char * fract_end = 0;
 char * int_end = strchr(data_buf, '.');
    if (fract_part.size() == 0)
       {
-        Assert(int_end == 0);
+        Assert(int_end == nullptr);
         int_end = fract_end;
       }
    else

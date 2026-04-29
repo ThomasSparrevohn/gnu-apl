@@ -1190,7 +1190,7 @@ Bif_F12_ELEMENT::do_eval_B(const Value * B)
              // (∈⍬)←value is a noop
              //
              Value_P Z(ShapeItem(0), LOC);
-             new (&Z->get_wproto()) LvalCell(0, 0);
+             new (&Z->get_wproto()) LvalCell(nullptr, nullptr);
              Z->check_value(LOC);
              return Z;
            }
@@ -1443,7 +1443,7 @@ Bif_F1_EXECUTE::execute_statement(UCS_string & statement)
         statement[0] == UNI_R_BRACK))   return execute_command(statement);
 
 ExecuteList * fun = ExecuteList::fix(statement.no_pad(), LOC);
-   if (fun == 0)   SYNTAX_ERROR;
+   if (fun == nullptr)   SYNTAX_ERROR;
 
    Log(LOG_UserFunction__execute)   fun->print(CERR);
 
@@ -1593,7 +1593,7 @@ vector<const Cell *> cells_B;
    cells_B.reserve(len_B);
 
    loop(b, len_B)   cells_B.push_back(&B->get_cravel(b));
-   Heapsort<const Cell *>::sort(cells_B, Cell::compare_stable, 0);
+   Heapsort<const Cell *>::sort(cells_B, Cell::compare_stable, nullptr);
 
    // 2. remove duplicates
    //
@@ -1609,7 +1609,7 @@ vector<const Cell *> unique;
 
    // 3. restore original order and create the result
    //
-   Heapsort<const Cell *>::sort(unique, Cell::compare_ptr, 0);
+   Heapsort<const Cell *>::sort(unique, Cell::compare_ptr, nullptr);
 
 const ShapeItem len_Z = unique.size();
 Value_P Z(len_Z, LOC);
@@ -1645,8 +1645,8 @@ const double qct = Workspace::get_CT();
         loop(a, len_A)   cells_A.push_back(&A->get_cravel(a));
         loop(b, len_B)   cells_B.push_back(&B->get_cravel(b));
 
-        Heapsort<const Cell *>::sort(cells_A, Cell::compare_stable, 0);
-        Heapsort<const Cell *>::sort(cells_B, Cell::compare_stable, 0);
+        Heapsort<const Cell *>::sort(cells_A, Cell::compare_stable, nullptr);
+        Heapsort<const Cell *>::sort(cells_B, Cell::compare_stable, nullptr);
 
         ShapeItem idx_B = 0;
         loop(idx_A, len_A)
@@ -1670,7 +1670,7 @@ const double qct = Workspace::get_CT();
         // sort cells_Z by position so that the original order in A is
         //  reconstructed
         //
-        Heapsort<const Cell *>::sort(cells_Z, Cell::compare_ptr, 0);
+        Heapsort<const Cell *>::sort(cells_Z, Cell::compare_ptr, nullptr);
         Value_P Z(cells_Z.size(), LOC);
         loop(z, cells_Z.size())   Z->next_ravel_Cell(*cells_Z[z]);
 

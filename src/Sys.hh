@@ -50,7 +50,7 @@ public:
         if (ptr)
            {
              const int ret = pclose(ptr);
-             ptr = 0;
+             ptr = nullptr;
              return ret;
            }
 
@@ -71,7 +71,7 @@ public:
 
    static inline const uint8_t * mmap(int fd, int len)
       {
-      const void * vp = mmap(NULL, len, PROT_READ, MAP_PRIVATE, fd, 0);
+      const void * vp = mmap(nullptr, len, PROT_READ, MAP_PRIVATE, fd, 0);
          if (vp == MAP_FAILED)   return 0;
          return reinterpret_cast<const uint8_t *>(vp);
       }
@@ -91,7 +91,7 @@ public:
               delete[] buffer;
             }
 
-         return 0;
+         return nullptr;
       }
 
    static inline void munmap(const uint8_t * data, size_t len)
@@ -130,7 +130,7 @@ class PipeReader
 {
 public:
    /// default constructor for placement new
-   PipeReader() : fp(0) {}
+   PipeReader() : fp(nullptr) {}
 
 
    /// constructor
@@ -147,16 +147,16 @@ public:
 
    /// return \b true if ptr is not open
    bool operator !() const
-      { return fp == 0; }
+      { return fp == nullptr; }
 
    /// return \b true if ptr is (open)
    bool operator +() const
-      { return fp != 0; }
+      { return fp != nullptr; }
 
    char * fgets(char * buffer, int buflen) const
       {
         if (fp)   return ::fgets(buffer, buflen, fp);
-        return 0;
+        return nullptr;
       }
 
    size_t fread(char * buffer, int buflen) const
@@ -175,7 +175,7 @@ public:
        if (fp)
           {
             const int ret = sys_pclose(fp);
-            fp = 0;
+            fp = nullptr;
             return ret;
           }
         return 0;
@@ -190,7 +190,7 @@ class FileReader
 {
 public:
    /// default constructor for placement new
-   FileReader() : fp(0) {}
+   FileReader() : fp(nullptr) {}
 
 
    /// constructor: from alrady open FILE *
@@ -222,16 +222,16 @@ public:
 
    /// return \b true if ptr is not open
    bool operator !() const
-      { return fp == 0; }
+      { return fp == nullptr; }
 
    /// return \b true if ptr is (open)
    bool operator +() const
-      { return fp != 0; }
+      { return fp != nullptr; }
 
    char * fgets(char * buffer, int buflen) const
       {
         if (fp)   return ::fgets(buffer, buflen, fp);
-        return 0;
+        return nullptr;
       }
 
    size_t fread(char * buffer, int buflen) const
@@ -255,7 +255,7 @@ class FileWriter
 {
 public:
    /// default constructor for placement new
-   FileWriter() : fp(0) {}
+   FileWriter() : fp(nullptr) {}
 
 
    /// constructor: from alrady open FILE *
@@ -287,11 +287,11 @@ public:
 
    /// return \b true if ptr is not open
    bool operator !() const
-      { return fp == 0; }
+      { return fp == nullptr; }
 
    /// return \b true if ptr is (open)
    bool operator +() const
-      { return fp != 0; }
+      { return fp != nullptr; }
 
    size_t fwrite(const void * buffer, size_t bufsize)
       { if (fp)   return ::fwrite(buffer, 1, bufsize, fp);

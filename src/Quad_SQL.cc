@@ -182,7 +182,7 @@ const char * funs[] =
    "Z  ← Db ⎕SQL[ 9] Ts    ", "the column names and types of table Ts"     ,
    "Vi ←    ⎕SQL[10] Ty   ", "the provider version number for DB type Ty" ,
    "Vs ←    ⎕SQL[11] Ty   ", "the provider version string for DB type Ty" ,
-   0                       , 0
+   nullptr                       , nullptr
  };
 
    for (const char ** f = funs; *f; )
@@ -229,7 +229,7 @@ Quad_SQL::find_free_connection(const UTF8_string & filename)
    loop(h, SQL_connections.size())
        {
          conn_file & slot = SQL_connections[h];
-         if (slot.connection == 0)   // free slot
+         if (slot.connection == nullptr)   // free slot
             {
               slot.filename = filename;
               return h;              // re-use handle h
@@ -238,7 +238,7 @@ Quad_SQL::find_free_connection(const UTF8_string & filename)
 
    // no free connection: append a new slot to SQL_connections
    //
-   conn_file slot = { 0, filename };
+   conn_file slot = { nullptr, filename };
    SQL_connections.push_back(slot);
    return SQL_connections.size() - 1;
 }
@@ -345,7 +345,7 @@ int db_id = B->get_cfirst().get_int_value();
 
    if (Connection * conn = SQL_connections[db_id].connection)
       {
-        SQL_connections[db_id].connection = 0;  // mark slot as free
+        SQL_connections[db_id].connection = nullptr;  // mark slot as free
         delete conn;
 
         return Token(TOK_APL_VALUE1, Str0(LOC));

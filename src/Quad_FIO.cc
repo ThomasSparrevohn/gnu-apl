@@ -140,7 +140,7 @@ file_entry f2(stderr, STDERR_FILENO);   f2.path << "stderr";
 #if ! MINGW_SRC
    if (-1 != fcntl(3, F_GETFD))   // this process was forked from another APL
       {
-        file_entry f3(0, 3);
+        file_entry f3(nullptr, 3);
         f3.path << "pipe-to_client";
         open_files.push_back(f3);
       }
@@ -210,7 +210,7 @@ FILE *
 Quad_FIO::get_FILE(int handle)
 {
 file_entry & fe = get_file_entry(handle);
-   if (fe.fe_FILE == 0)
+   if (fe.fe_FILE == nullptr)
       {
         if (fe.fe_may_read && fe.fe_may_write)
            fe.fe_FILE = fdopen(fe.fe_fd, "a+");
@@ -579,14 +579,14 @@ public:
    /// constructor: from file
    File_or_String(FILE * f)
    : file(f),
-     string(0),
+     string(nullptr),
      lookahead(Invalid_Unicode),
      unicodes_read(0)
    { offset = ftell(f);  }
 
    /// constructor: from string
    File_or_String(const UCS_string * u)
-   : file(0),
+   : file(nullptr),
      string(u),
      offset(0),
      lookahead(Invalid_Unicode),
@@ -678,7 +678,7 @@ public:
          cc[cidx] = 0;
          const int base =  (conv == 'X') || (conv == 'x') ? 16 : 10;
          errno = 0;
-         value = strtoll(cc, 0, base);
+         value = strtoll(cc, nullptr, base);
          return errno ? 0 : 1;
       }
 
@@ -722,7 +722,7 @@ public:
 
          cc[cidx] = 0;
          errno = 0;
-         value = strtod(cc, 0);
+         value = strtod(cc, nullptr);
          return errno ? 0 : 1;
       }
 
@@ -1183,9 +1183,9 @@ const APL_Integer function_number = B->get_cfirst().get_int_value();
                   {
                     const int64_t blocks = B->get_cravel(1).get_int_value();
                     const int64_t verbo  = B->get_cravel(2).get_int_value();
-                    uint64_t * p = 0;
+                    uint64_t * p = nullptr;
                     try { p = new uint64_t[blocks * 512]; }   catch (...) { }
-                    if (p == 0)
+                    if (p == nullptr)
                        {
                           const APL_Integer K_bytes = blocks * 4;
                           const APL_Integer M_bytes = K_bytes / 1024;
@@ -1288,8 +1288,8 @@ NOT_MINGW(
                //
                struct sigaction action;
                memset(&action, 0, sizeof(struct sigaction));
-               action.sa_handler = 0;
-               sigaction(SIGSEGV, &action, 0);
+               action.sa_handler = nullptr;
+               sigaction(SIGSEGV, &action, nullptr);
                const APL_Integer result = *reinterpret_cast<char *>(4343);
                CERR << "NOTE: Throwing a segfault failed." << endl;
                return Token(TOK_APL_VALUE1, IntScalar(result, LOC));
@@ -1320,7 +1320,7 @@ NOT_MINGW(
              {
                timeval tv = { 0, 100000 }; // 100 ms
                const uint64_t from = cycle_counter();
-               select(0, 0, 0, 0, &tv);
+               select(0, nullptr, nullptr, nullptr, &tv);
                const uint64_t to = cycle_counter();
 
                return Token(TOK_APL_VALUE1, IntScalar(10*(to - from), LOC));
@@ -1618,7 +1618,7 @@ Quad_FIO::eval_XB(Value_P X, Value_P B) const
                 const UTF8_string path(path_ucs);
                 errno = 0;
                 FILE * f = fopen(path.c_str(), "r");
-                if (f == 0)   return Token(TOK_APL_VALUE1, IntScalar(-1, LOC));
+                if (f == nullptr)   return Token(TOK_APL_VALUE1, IntScalar(-1, LOC));
 
                 file_entry fe(f, fileno(f));
                 fe.path = path;
@@ -1794,7 +1794,7 @@ NOT_MINGW(
                 const UTF8_string path(path_ucs);
                 errno = 0;
                 FILE * f = sys_popen(path.c_str(), "r");
-                if (f == 0)
+                if (f == nullptr)
                    {
                      if (errno)   goto out_errno;   // errno may be set or not
                      return Token(TOK_APL_VALUE1, IntScalar(-1, LOC));
@@ -1849,7 +1849,7 @@ NOT_MINGW(
                 const ShapeItem len = st.st_size;
                 const UTF8 * data = Sys::mmap(fd, len);
                 close(fd);
-                if (data == 0)   goto out_errno;
+                if (data == nullptr)   goto out_errno;
 
                 Value_P Z(len, LOC);
                 Z->set_proto_Spc();
@@ -1869,13 +1869,13 @@ NOT_MINGW(
                 const UCS_string path_ucs(*B.get());
                 const UTF8_string path(path_ucs);
                 DIR * dir = opendir(path.c_str());
-                if (dir == 0)   goto out_errno;
+                if (dir == nullptr)   goto out_errno;
 
                 vector<struct dirent> entries;
                 for (;;)
                     {
                       dirent * entry = readdir(dir);
-                      if (entry == 0)   break;   // directory done
+                      if (entry == nullptr)   break;   // directory done
 
                        // skip . and ..
                        //
@@ -1957,7 +1957,7 @@ NOT_MINGW(
                 const int sock = socket(domain, type, protocol);
                 if (sock == -1)   goto out_errno;
 
-                file_entry fe(0, sock);
+                file_entry fe(nullptr, sock);
                 fe.fe_may_read = true;
                 fe.fe_may_write = true;
                 open_files.push_back(fe);
@@ -1981,7 +1981,7 @@ NOT_MINGW(
                 const int sock = accept(fd, &addr.addr, &alen);
                 if (sock == -1)   goto out_errno;
 
-                file_entry nfe (0, sock);
+                file_entry nfe (nullptr, sock);
                 open_files.push_back(nfe);
 
                 Value_P Z(4, LOC);
@@ -2015,10 +2015,10 @@ NOT_MINGW(
                 fd_set writefds;    FD_ZERO(&writefds);
                 fd_set exceptfds;   FD_ZERO(&exceptfds);
                 timeval timeout = { 0, 0 };
-                fd_set * rd = 0;
-                fd_set * wr = 0;
-                fd_set * ex = 0;
-                timeval * to = 0;
+                fd_set * rd = nullptr;
+                fd_set * wr = nullptr;
+                fd_set * ex = nullptr;
+                timeval * to = nullptr;
                 APL_Integer max_fd = -1;
 
                 if (B->element_count() > 4)   LENGTH_ERROR;
@@ -2175,7 +2175,7 @@ NOT_MINGW(
                 const ShapeItem len = st.st_size;
                 const UTF8 * data = Sys::mmap(fd, len);
                 close(fd);
-                if (data == 0)   goto out_errno;
+                if (data == nullptr)   goto out_errno;
 
                 // count number of LFs in the file
                 //
@@ -2228,7 +2228,7 @@ NOT_MINGW(
               {
                 const APL_Integer unit = B->get_cfirst().get_near_int();
                 timeval tv;
-                gettimeofday(&tv, 0);
+                gettimeofday(&tv, nullptr);
                 int64_t usec = tv.tv_sec;
                 usec *= 1000000;
                 usec += tv.tv_usec;
@@ -2281,7 +2281,7 @@ NOT_MINGW(
                 const time_t t = B->get_cfirst().get_int_value();
                 const tm * tmp = (subfunction == 52) ? localtime(&t)
                                                          : gmtime(&t);
-                if (tmp == 0)   DOMAIN_ERROR;
+                if (tmp == nullptr)   DOMAIN_ERROR;
 
                 Value_P Z(9, LOC);
                 Z->next_ravel_Int(tmp->tm_year + 1900);
@@ -2309,7 +2309,7 @@ NOT_MINGW(
               {
                 CHECK_SECURITY(disable_Quad_FIO__exec);
                 errno = 0;
-                const int fd = do_FIO_57(*B.get(), 0);
+                const int fd = do_FIO_57(*B.get(), nullptr);
                 if (fd == -1)   goto out_errno;
                 return Token(TOK_APL_VALUE1, IntScalar(fd, LOC));
               }
@@ -2329,7 +2329,7 @@ NOT_MINGW(
               {
                 const Pfstat_ID b = Pfstat_ID(B->get_cfirst().get_int_value());
                 Statistics * stat = Performance::get_statistics(b);
-                if (stat == 0)   DOMAIN_ERROR;   // bad statistics ID
+                if (stat == nullptr)   DOMAIN_ERROR;   // bad statistics ID
 
                 if (subfunction == 200)   // reset statistics
                    {
@@ -2375,7 +2375,7 @@ NOT_MINGW(
          case 202:   // get monadic parallel threshold
          case 203:   // get dyadic  parallel threshold
               {
-                const Function * fun = 0;
+                const Function * fun = nullptr;
                 if (B->element_count() == 3)   // dyadic operator
                    {
                      const Unicode lfun = B->get_cfirst().get_char_value();
@@ -2395,7 +2395,7 @@ NOT_MINGW(
                      if (!tok.is_function())   DOMAIN_ERROR;
                      fun = tok.get_function();
                    }
-                if (fun == 0)   DOMAIN_ERROR;
+                if (fun == nullptr)   DOMAIN_ERROR;
                 APL_Integer old_threshold;
                 if (subfunction == 202)
                    {
@@ -2439,7 +2439,7 @@ const pid_t child = fork();
 
    if (child)   // parent process: return handle
       {
-        file_entry fe(0, spair[0]);
+        file_entry fe(nullptr, spair[0]);
         fe.fe_may_read = true;
         fe.fe_may_write = true;
         open_files.push_back(fe);
@@ -2484,7 +2484,7 @@ char * from = filename;
        }
 
    if (*from)  argv[ai++] = from;
-   argv[ai] = 0;
+   argv[ai] = nullptr;
 
    execve(filename, argv, envp);   // no return on success
 
@@ -2533,7 +2533,7 @@ const sAxis subfunction = value_to_subfun(*X);
 
                 errno = 0;
                 FILE * f = fopen(path.c_str(), m);
-                if (f == 0)   return Token(TOK_APL_VALUE1, IntScalar(-1, LOC));
+                if (f == nullptr)   return Token(TOK_APL_VALUE1, IntScalar(-1, LOC));
 
                 file_entry fe(f, fileno(f));
                 fe.path = path;
@@ -2552,7 +2552,7 @@ const sAxis subfunction = value_to_subfun(*X);
 
                 char small_buffer[SMALL_BUF];
                 char * buffer = small_buffer;
-                char * del = 0;
+                char * del = nullptr;
                 if (bytes > sizeof(small_buffer))
                    buffer = del = new char[bytes];
 
@@ -2575,7 +2575,7 @@ const sAxis subfunction = value_to_subfun(*X);
 
                 char small_buffer[SMALL_BUF];
                 char * buffer = small_buffer;
-                char * del = 0;
+                char * del = nullptr;
                 if (bytes > sizeof(small_buffer))
                    buffer = del = new char[bytes];
 
@@ -2596,7 +2596,7 @@ const sAxis subfunction = value_to_subfun(*X);
 
                 char small_buffer[SMALL_BUF];
                 char * buffer = small_buffer;
-                char * del = 0;
+                char * del = nullptr;
                 if (bytes > sizeof(buffer))
                    buffer = del = new char[bytes + 1];
 
@@ -2790,7 +2790,7 @@ NOT_MINGW(
 
                 char small_buffer[SMALL_BUF];
                 char * buffer = small_buffer;
-                char * del = 0;
+                char * del = nullptr;
                 if (bytes > sizeof(small_buffer))
                    buffer = del = new char[bytes];
 
@@ -2813,7 +2813,7 @@ NOT_MINGW(
 
                 char small_buffer[SMALL_BUF];
                 char * buffer = small_buffer;
-                char * del = 0;
+                char * del = nullptr;
                 if (bytes > sizeof(small_buffer))
                    buffer = del = new char[bytes];
 
@@ -2845,7 +2845,7 @@ NOT_MINGW(
 
                 char small_buffer[SMALL_BUF];
                 char * buffer = small_buffer;
-                char * del = 0;
+                char * del = nullptr;
                 if (bytes > sizeof(small_buffer))
                    buffer = del = new char[bytes];
 
@@ -2868,7 +2868,7 @@ NOT_MINGW(
 
                 char small_buffer[SMALL_BUF];
                 char * buffer = small_buffer;
-                char * del = 0;
+                char * del = nullptr;
                 if (bytes > sizeof(small_buffer))
                    buffer = del = new char[bytes];
 
@@ -2973,7 +2973,7 @@ NOT_MINGW(
 
                 // 2. at this point As is OK. Write it to file Bs.
                 FILE * f = fopen(path.c_str(), "w");
-                if (f == 0)   goto out_errno;
+                if (f == nullptr)   goto out_errno;
 
                 loop(a, line_count)
                     {
@@ -3041,7 +3041,7 @@ NOT_MINGW(
          case 203:   // set dyadicadic parallel threshold
               {
                 const APL_Integer threshold = A->get_cfirst().get_int_value();
-                cFunction_P fun = 0;
+                cFunction_P fun = nullptr;
                 if (B->element_count() == 3)   // dyadic operator
                    {
                      const Unicode oper = B->get_cravel(1).get_char_value();
@@ -3055,7 +3055,7 @@ NOT_MINGW(
                      if (!tok.is_function())   DOMAIN_ERROR;
                      fun = tok.get_function();
                    }
-                if (fun == 0)   DOMAIN_ERROR;
+                if (fun == nullptr)   DOMAIN_ERROR;
                 APL_Integer old_threshold;
                 if (subfunction == 202)
                    {

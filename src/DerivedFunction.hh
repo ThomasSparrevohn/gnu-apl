@@ -73,7 +73,7 @@ public:
    /// return the right operand (or 0) of this derived function
    cFunction_P get_RO() const
       {
-        return right_arg.get_tag() == TOK_VOID ? 0 : right_arg.get_function();
+        return right_arg.get_tag() == TOK_VOID ? nullptr : right_arg.get_function();
       }
 
    /// return the axis argument (or 0 if none) of this derived function
@@ -103,7 +103,7 @@ protected:
 
    /// overloaded Function::locate_X()
    virtual Value_P * locate_X() const
-      { return !axis ? 0 : const_cast<Value_P *>(&axis); }
+      { return !axis ? nullptr : const_cast<Value_P *>(&axis); }
 
    /// debug printout when an eval_XXX() function is called.
    void entering(const char * class_name, const char * fun_name) const;
@@ -178,7 +178,7 @@ class Derived_LO_M: public DerivedFunction
 public:
    /// constructor
    Derived_LO_M(Token & LO, cMonOP M, const char * loc)
-   : DerivedFunction(&LO, M, 0, Value_P(), loc)
+   : DerivedFunction(&LO, M, nullptr, Value_P(), loc)
    {
      Log(LOG_FunOperX)   CERR << "Binding: (LO M) at " << loc << endl;
    }
@@ -204,7 +204,7 @@ public:
    /// constructor
    Derived_LO_M_X(Token & LO, cMonOP M, Value_P X,
                           const char * loc)
-   : DerivedFunction(&LO, M, 0, X, loc)
+   : DerivedFunction(&LO, M, nullptr, X, loc)
    {}
 
    /// overloaded Function::eval_AB();
@@ -228,7 +228,7 @@ class Derived_F_X : public DerivedFunction
 public:
    /// constructor
    Derived_F_X(cFunction_P F, Value_P X, const char * loc)
-   : DerivedFunction(0, F, 0, X, loc)
+   : DerivedFunction(nullptr, F, nullptr, X, loc)
    {
      Log(LOG_FunOperX)   CERR << "Binding: (F rXM) at " << loc << endl;
      Assert(+X);

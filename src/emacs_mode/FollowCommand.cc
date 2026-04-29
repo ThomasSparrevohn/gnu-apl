@@ -113,7 +113,7 @@ void FollowCommand::run_command( NetworkConnection &conn, const std::vector<std:
 
     SymbolTable &symbol_table = const_cast<SymbolTable &>( Workspace::get_symbol_table() );
     Symbol *symbol = symbol_table.lookup_existing_symbol( ucs_string_from_string( args[1] ) );
-    if( symbol == NULL ) {
+    if( symbol == nullptr ) {
         conn.send_reply( "undefined" );
         return;
     }
@@ -128,7 +128,7 @@ void FollowCommand::run_command( NetworkConnection &conn, const std::vector<std:
         if( num_args > 3 ) {
             string cr_arg = args[3];
             if( cr_arg != "off" ) {
-                long v = strtol( cr_arg.c_str(), NULL, 10 );
+                long v = strtol( cr_arg.c_str(), nullptr, 10 );
                 if( v == LONG_MAX && errno == ERANGE ) {
                     throw ConnectionError( "Illegal CR level argument to follow command" );
                 }

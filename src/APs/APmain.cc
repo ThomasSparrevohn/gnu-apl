@@ -57,7 +57,7 @@ extern bool verbose;
 bool verbose = false;
 int event_port = 0;
 
-const char * prog = 0;
+const char * prog = nullptr;
 char pref[FILENAME_MAX + 20];
 
 /// coupled variables
@@ -80,7 +80,7 @@ uint64_t
 now_ms()
 {
 timeval current;
-   gettimeofday(&current, 0);
+   gettimeofday(&current, nullptr);
 
 uint64_t ret = current.tv_sec;
    ret *= 1000;
@@ -100,7 +100,7 @@ add_var(SV_key key)
 
    // key is new; add it to coupled_vars
    //
-Coupled_var cv = { key, 0, 0 };
+Coupled_var cv = { key, nullptr, nullptr };
    initialize(cv);
    coupled_vars.push_back(cv);
 
@@ -210,7 +210,7 @@ char * slash = strrchr(bin_path, '/');
    for (int a = 1; a < argc; )
        {
          const char * opt = argv[a++];
-         const char * val = (a < argc) ? argv[a] : 0;
+         const char * val = (a < argc) ? argv[a] : nullptr;
 
          if      (!strcmp(opt, "-h"))             need_help = true;
          else if (!strcmp(opt, "--help"))         need_help = true;
@@ -259,7 +259,7 @@ Svar_partner this_proc(ProcessorID::get_id(), NO_TCP_SOCKET);
 const TCP_socket tcp = Svar_DB::get_DB_tcp();
 
    if (ProcessorID::get_id().proc < AP_FIRST_USER)
-      tcp2 = Svar_DB::connect_to_APserver(0, prog_name(), /* retry_max */ 10,
+      tcp2 = Svar_DB::connect_to_APserver(nullptr, prog_name(), /* retry_max */ 10,
                                           verbose);
 
    if (tcp == NO_TCP_SOCKET || tcp2 == NO_TCP_SOCKET)
@@ -289,13 +289,13 @@ string progname(prog_name());
    for (bool goon = true; goon;)
        {
          uint8_t buff[MAX_SIGNAL_CLASS_SIZE + 40000];
-         char * del = 0;
-         const char * err_loc = 0;
+         char * del = nullptr;
+         const char * err_loc = nullptr;
          const Signal_base * signal =
                Signal_base::recv_TCP(tcp2, reinterpret_cast<char *>(buff),
-                                     sizeof(buff), del, 0, &err_loc);
+                                     sizeof(buff), del, nullptr, &err_loc);
 
-         if (signal == 0)   // no signal for 10 seconds
+         if (signal == nullptr)   // no signal for 10 seconds
             {
               goon = false;
               if (verbose)   get_CERR() << AP_NAME
@@ -316,7 +316,7 @@ cerr << "APnnn got " << signal->get_sigName() << endl;
                  {
                    const SV_key key = signal->get__MAKE_OFFER__key();
                    const uint32_t * varname = Svar_DB::get_svar_name(key);
-                  if (varname == 0)
+                  if (varname == nullptr)
                      {
                        get_CERR() << "Could not find svar for key "
                             << key << " at " << LOC << endl;

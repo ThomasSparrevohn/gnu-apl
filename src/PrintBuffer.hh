@@ -162,7 +162,7 @@ public:
    void add_outer_frame(PrintStyle style);
 
    /// print properties of \b this PrintBuffer
-   ostream & debug(ostream & out, const char * title = 0) const;
+   ostream & debug(ostream & out, const char * title = nullptr) const;
 
    /// append PrintBuffer \b pb1 to \b this PrintBuffer
    void append_col(const PrintBuffer & pb1);

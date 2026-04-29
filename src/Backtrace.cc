@@ -122,7 +122,7 @@ static int64_t main_offset_0 = 0;
 static void
 set_main_offset_0(const char * main_line)
 {
-const int64_t backtrace_main = strtoll(main_line, 0, 16);
+const int64_t backtrace_main = strtoll(main_line, nullptr, 16);
 const int64_t loaded_main = get_main();
    main_offset_0 = loaded_main - backtrace_main;
 
@@ -143,7 +143,7 @@ Backtrace::pc_cmp(const int64_t & key, const PC_src & pc_src, const void *)
 const char *
 Backtrace::find_src(int64_t pc)
 {
-   if (pc == NO_PC)   return 0;   // no pc
+   if (pc == NO_PC)   return nullptr;   // no pc
 
    if (pc_2_src.size())   // database was properly set up.
       {
@@ -152,12 +152,12 @@ Backtrace::find_src(int64_t pc)
                                             (pc,         // key
                                              pc_2_src,   // array
                                              &pc_cmp,    // compare fun
-                                             0))         // compare arg
+                                             nullptr))         // compare arg
         return posp->src_loc;   // found
       }
 
    (0) && cerr << "PC=" << hex << pc << dec << " not found in apl.lines" << endl;
-   return 0;   // not found
+   return nullptr;   // not found
 }
 //----------------------------------------------------------------------------
 void
@@ -177,8 +177,8 @@ static enum APL_lines_status
    // line numbers work only if ./configure was called with CXXFLAGS set
    // to (at least) -rdynamic -gdwarf-2. Give up if this was not the case.
    //
-   if (0 == strstr(cfg_CONFIGURE_ARGS, "-rdynamic") ||
-       0 == strstr(cfg_CONFIGURE_ARGS, "-gdwarf-2"))
+   if (nullptr == strstr(cfg_CONFIGURE_ARGS, "-rdynamic") ||
+       nullptr == strstr(cfg_CONFIGURE_ARGS, "-gdwarf-2"))
       {
         cerr << "*** useless apl.lines "
                 "(no CXXFLAGS=-rdynamic -gdwarf-2)" << endl;
@@ -226,14 +226,14 @@ size_t asm_lines = 0;
 
    Assert(+reader);
 
-const char * src_line = 0;
+const char * src_line = nullptr;
 bool new_line = false;
 int64_t prev_pc = NO_PC;
 
    for (;;)
        {
          const char * s = reader.fgets(buffer, sizeof(buffer) - 1);
-         if (s == 0)   break;   // end of file.
+         if (s == nullptr)   break;   // end of file.
          ++file_lines;
 
          // the end of the line depends on the platform. On GNU/Linux it
@@ -287,7 +287,7 @@ main():
             {
               ++asm_lines;
               errno = 0;
-              long long pc = strtoll(s, 0, 16);   // opcode address
+              long long pc = strtoll(s, nullptr, 16);   // opcode address
               if (errno)   // strtoll() failed
                  {
                    pc = NO_PC;
@@ -1436,14 +1436,14 @@ std::string tmp;
        tmp += *b;
    tmp += char(0);
 
-char * e = 0;
+char * e = nullptr;
 int status = 3;
 char * p = strchr(&tmp[0], '(');
-   if (p == 0)   goto error;
+   if (p == nullptr)   goto error;
    else          ++p;
 
    e = strchr(p, '+');
-   if (e == 0)   goto error;
+   if (e == nullptr)   goto error;
    else *e = 0;
 
 // cerr << "mangled fun is: " << p << endl;

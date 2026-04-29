@@ -425,7 +425,7 @@ public:
 
    /// return the current ravel cell to be initialized (excluding prototype)
    Cell * current_ravel()
-      { return more() ? ravel + valid_ravel_items : 0; }
+      { return more() ? ravel + valid_ravel_items : nullptr; }
 
    /// return \b true iff \b this value has the same rank as \b other.
    bool same_rank(const Value & other) const
@@ -942,7 +942,7 @@ protected:
 
    /// return the next ravel cell to be initialized (excluding prototype)
    Cell * next_ravel()
-      { return more() ? ravel + valid_ravel_items++ : 0; }
+      { return more() ? ravel + valid_ravel_items++ : nullptr; }
 
    /// init the ravel of an APL value, return the ravel length
    inline void init_ravel();

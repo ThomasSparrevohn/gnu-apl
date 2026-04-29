@@ -127,17 +127,17 @@ GSL::QR_factorize_DD_matrix(Value & Z, int M, int N, const Cell * cB)
 
   // 0. Init GSL matrix B from APL ravel * cB
   //
-gsl_matrix * B = gsl_matrix_alloc(M, N);   if (B == 0)   WS_FULL;
+gsl_matrix * B = gsl_matrix_alloc(M, N);   if (B == nullptr)   WS_FULL;
   loop(row, M)
   loop(col, N)   gsl_matrix_set(B, row, col, cB++->get_real_value());
 
   // 1. Compute R and T. The diagonal of B and above is R ←→ Z1 = Z[1]
   //
-gsl_matrix * T = gsl_matrix_alloc(N, N);   if (T == 0)   WS_FULL;
+gsl_matrix * T = gsl_matrix_alloc(N, N);   if (T == nullptr)   WS_FULL;
   gsl_linalg_QR_decomp_r(B, T);
 
 Value_P Z1(N, N, LOC);   // Z2 is the upper triangle N×N matrix R
-gsl_matrix * R = gsl_matrix_alloc(N, N);   if (R == 0)   WS_FULL;
+gsl_matrix * R = gsl_matrix_alloc(N, N);   if (R == nullptr)   WS_FULL;
   loop(row, N)
   loop(col, N)
       {
@@ -175,7 +175,7 @@ Value_P Z2(N, N, LOC);   // Z[2] is the N×N matrix Ri
 
   // 3. unpack T into Q and R
   //
-gsl_matrix * Q = gsl_matrix_alloc(M, M);   if (Q == 0)   WS_FULL;
+gsl_matrix * Q = gsl_matrix_alloc(M, M);   if (Q == nullptr)   WS_FULL;
   gsl_linalg_QR_unpack_r(B, T, Q, R);
   gsl_matrix_free(T);
   gsl_matrix_free(B);
@@ -207,7 +207,7 @@ GSL::QR_factorize_ZZ_matrix(Value & Z, int M, int N, const Cell * cB)
 
   // 0. Init GSL matric B from APL ravel * cB
   //
-gsl_matrix_complex * B = gsl_matrix_complex_alloc(M, N);  if (B == 0)   WS_FULL;
+gsl_matrix_complex * B = gsl_matrix_complex_alloc(M, N);  if (B == nullptr)   WS_FULL;
   loop(row, M)
   loop(col, N)
      {
@@ -218,12 +218,12 @@ gsl_matrix_complex * B = gsl_matrix_complex_alloc(M, N);  if (B == 0)   WS_FULL;
 
   // 1. Compute R and T. The diagonal of B and above is R ←→ Z1 = Z[1]
   //
-gsl_matrix_complex * T = gsl_matrix_complex_alloc(N, N);  if (T == 0)   WS_FULL;
+gsl_matrix_complex * T = gsl_matrix_complex_alloc(N, N);  if (T == nullptr)   WS_FULL;
   gsl_linalg_complex_QR_decomp_r(B, T);
 
 const gsl_complex zero = { 0, 0 };
 Value_P Z1(N, N, LOC);   // Z2 is the upper triangle N×N matrix R
-gsl_matrix_complex * R = gsl_matrix_complex_alloc(N, N);  if (R == 0)   WS_FULL;
+gsl_matrix_complex * R = gsl_matrix_complex_alloc(N, N);  if (R == nullptr)   WS_FULL;
   loop(row, N)
   loop(col, N)
       {
@@ -263,7 +263,7 @@ Value_P Z2(N, N, LOC);   // Z[2] is the N×N matrix Ri
 
   // 3. unpack T into Q and R
   //
-gsl_matrix_complex * Q = gsl_matrix_complex_alloc(M, M);  if (Q == 0)   WS_FULL;
+gsl_matrix_complex * Q = gsl_matrix_complex_alloc(M, M);  if (Q == nullptr)   WS_FULL;
   gsl_linalg_complex_QR_unpack_r(B, T, Q, R);
   gsl_matrix_complex_free(T);
   gsl_matrix_complex_free(B);
@@ -292,19 +292,19 @@ GSL::QL_factorize_DD_matrix(Value & Z, int M, int N, const Cell * cB)
 
   // 0. Init GSL matrix B from APL ravel * cB
   //
-gsl_matrix * B = gsl_matrix_alloc(M, N);   if (B == 0)   WS_FULL;
+gsl_matrix * B = gsl_matrix_alloc(M, N);   if (B == nullptr)   WS_FULL;
   loop(row, M)
   loop(col, N)   gsl_matrix_set(B, row, col, cB++->get_real_value());
 
   // 1. Compute Q, L, and TAU. Q and L are packed into B
   //
-gsl_vector * TAU = gsl_vector_alloc(N);   if (TAU == 0)   WS_FULL;
+gsl_vector * TAU = gsl_vector_alloc(N);   if (TAU == nullptr)   WS_FULL;
   gsl_linalg_QL_decomp(B, TAU);
 
   // 2. unpack Q and L
   //
-gsl_matrix * Q = gsl_matrix_alloc(M, M);   if (Q == 0)   WS_FULL;
-gsl_matrix * L = gsl_matrix_alloc(M, N);   if (L == 0)   WS_FULL;
+gsl_matrix * Q = gsl_matrix_alloc(M, M);   if (Q == nullptr)   WS_FULL;
+gsl_matrix * L = gsl_matrix_alloc(M, N);   if (L == nullptr)   WS_FULL;
   gsl_linalg_QL_unpack(B, TAU, Q, L);
   gsl_vector_free(TAU);
   gsl_matrix_free(B);
@@ -327,7 +327,7 @@ Value_P Z0(M, M, LOC);   // Z[0] is the orthogonal M×M matrix Q
   // 2. Invert Z1 to get Z2. L is inverted in place. The non-zero triangle
   //    of L aka. Z1 sits at the bottom of L, i.e. it starts at row (M - N).
   //
-gsl_matrix * Li = gsl_matrix_alloc(M, M);   if (Li == 0)   WS_FULL;
+gsl_matrix * Li = gsl_matrix_alloc(M, M);   if (Li == nullptr)   WS_FULL;
   loop(row, N)
   loop(col, N)   gsl_matrix_set(Li, row, col,
                                 gsl_matrix_get(L, row + M - N, col));
@@ -352,11 +352,11 @@ GSL::LU_factorize_DD_matrix(Value & Z, int M, int N, const Cell * cB)
 {
   // 0. Init GSL matrix B from APL ravel * cB
   //
-gsl_matrix * B = gsl_matrix_alloc(M, N);   if (B == 0)   WS_FULL;
+gsl_matrix * B = gsl_matrix_alloc(M, N);   if (B == nullptr)   WS_FULL;
   loop(row, M)
   loop(col, N)   gsl_matrix_set(B, row, col, cB++->get_real_value());
 
-gsl_permutation * P = gsl_permutation_alloc(M);   if (P == 0)   WS_FULL;
+gsl_permutation * P = gsl_permutation_alloc(M);   if (P == nullptr)   WS_FULL;
 int signum = 0;
   gsl_linalg_LU_decomp(B, P, &signum);
 
@@ -403,7 +403,7 @@ GSL::LU_factorize_ZZ_matrix(Value & Z, int M, int N, const Cell * cB)
 {
   // 0. Init GSL matrix B from APL ravel * cB
   //
-gsl_matrix_complex * B = gsl_matrix_complex_alloc(M, N);   if (B == 0)   WS_FULL;
+gsl_matrix_complex * B = gsl_matrix_complex_alloc(M, N);   if (B == nullptr)   WS_FULL;
   loop(row, M)
   loop(col, N)
       {
@@ -412,7 +412,7 @@ gsl_matrix_complex * B = gsl_matrix_complex_alloc(M, N);   if (B == 0)   WS_FULL
         ++cB;
       }
 
-gsl_permutation * P = gsl_permutation_alloc(M);   if (P == 0)   WS_FULL;
+gsl_permutation * P = gsl_permutation_alloc(M);   if (P == nullptr)   WS_FULL;
 int signum = 0;
   gsl_linalg_complex_LU_decomp(B, P, &signum);
 

@@ -164,7 +164,7 @@ const struct _tag
    for (;;)   // read all lines of /proc.meminfo
        {
          char buffer[2000];
-         if (reader.fgets(buffer, sizeof(buffer) - 1) == 0)   break;
+         if (reader.fgets(buffer, sizeof(buffer) - 1) == nullptr)   break;
          buffer[sizeof(buffer) - 1] = 0;   // to allow strncmp()
 
          for (size_t t = 0; t < sizeof(tags) / sizeof(*tags); ++t)
@@ -174,7 +174,7 @@ const struct _tag
                if (!strncmp(buffer, tag.name, name_len))
                   {
                     // proc/meminfo valuesa re in kbytes, so we * 1024
-                    tag.value =  1024 * strtoll(buffer + name_len, 0, 10);
+                    tag.value =  1024 * strtoll(buffer + name_len, nullptr, 10);
                     ++ret;
                   }
              }
@@ -253,7 +253,7 @@ char mem_unit = mem_arg[strlen(mem_arg) -1];
         exit(3);
       }
 
-uint64_t mem_number = strtoll(mem_arg, 0, 0);
+uint64_t mem_number = strtoll(mem_arg, nullptr, 0);
 uint64_t mem_val = 0;
    if (mem_unit == '%')
       {

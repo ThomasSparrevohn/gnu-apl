@@ -83,8 +83,8 @@ TrueIndexIterator::TrueIndexIterator(ShapeItem w, Value_P value,
 //============================================================================
 MultiIndexIterator::MultiIndexIterator(const Shape & shape,
                                        const IndexExpr & IDX)
-   : highest_it(0),
-     lowest_it(0),
+   : highest_it(nullptr),
+     lowest_it(nullptr),
      empty(false)
 {
    // IDX is parsed from right to left:    Value[I2;I1;I0]  --> I0 I1 I2

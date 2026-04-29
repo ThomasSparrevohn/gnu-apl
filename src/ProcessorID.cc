@@ -131,7 +131,7 @@ const TCP_socket sock = Svar_DB::get_DB_tcp();
 const char *
 ProcessorID::read_svopid(FILE * file, SvoPid & svopid, int & line)
 {
-const char * loc = 0;
+const char * loc = nullptr;
 
    for (line = 1;; ++line)
        {
@@ -139,7 +139,7 @@ const char * loc = 0;
          const long filepos = ftell(file);   // remember file position
          char * s = fgets(buffer, sizeof(buffer) - 1, file);
 
-         if (s == 0)   break;   // end of file
+         if (s == nullptr)   break;   // end of file
 
 
          // skip leading whitespaces
@@ -172,7 +172,7 @@ const char * loc = 0;
               while (e > s && *e > 0 && *e < ' ')   *--e = 0;
 
               hostent * host = gethostbyname(s);
-              if (host == 0)
+              if (host == nullptr)
                  {
                    CERR << "gethostbyname(" << s << ") failed" << endl;
                    loc = LOC;
@@ -219,7 +219,7 @@ const char * loc = 0;
 const char *
 ProcessorID::read_procauth(FILE * file, ProcAuth & procauth, int & line)
 {
-const char * loc = 0;
+const char * loc = nullptr;
 
    for (line = 1;; ++line)
        {
@@ -227,7 +227,7 @@ const char * loc = 0;
          const long filepos = ftell(file);   // remember file position
          char * s = fgets(buffer, sizeof(buffer) - 1, file);
 
-         if (s == 0)   break;   // end of file
+         if (s == nullptr)   break;   // end of file
 
 
          // skip leading whitespaces
@@ -248,7 +248,7 @@ const char * loc = 0;
               for (errno = 0; s && !errno; s = strchr(s, ','))
                   {
                     ++s;   // skip comma
-                    const unsigned int id = strtoll(s, 0, 10);
+                    const unsigned int id = strtoll(s, nullptr, 10);
 
                     procauth.rsvopid.push_back(id);
                   }
@@ -286,7 +286,7 @@ ProcessorID::read_network_profile(const char * filename)
 {
 FileReader reader(filename);
 int line = 0;
-const char * loc = 0;
+const char * loc = nullptr;
 
    if (!reader)
       {
@@ -300,7 +300,7 @@ const char * loc = 0;
          char buffer[200];
          const char * s = reader.fgets(buffer, sizeof(buffer) - 1);
 
-         if (s == 0)   // end of file
+         if (s == nullptr)   // end of file
             {
               line = 0;
               break;
@@ -361,6 +361,6 @@ const char * loc = 0;
 void
 ProcessorID::disconnect()
 {
-   Svar_DB::DB_tcp_error(0, 0, 0);
+   Svar_DB::DB_tcp_error(nullptr, 0, 0);
 }
 //----------------------------------------------------------------------------

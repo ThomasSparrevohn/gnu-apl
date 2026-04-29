@@ -58,7 +58,7 @@ uint64_t Value::total_ravel_count = 0;
 
 // most static members of class Value are defined in StaticObjects.cc
 
-_deleted_value * Value::deleted_values = 0;
+_deleted_value * Value::deleted_values = nullptr;
 
 int Value::deleted_values_count = 0;
 
@@ -76,7 +76,7 @@ Value::init_ravel()
    fetcher = &cell_fetcher;
    pointer_cell_count = 0;
    nz_subcell_count = 0;
-   check_ptr = 0;
+   check_ptr = nullptr;
    IntCell::z0(short_value);
    ravel = short_value;
 
@@ -422,9 +422,9 @@ Value::~Value()
       {
         uint8_t * bits = reinterpret_cast<uint8_t *>(ravel);
         delete[] bits;
-        ravel = 0;
+        ravel = nullptr;
         Assert(check_ptr == charP(this) + 7);
-        check_ptr = 0;
+        check_ptr = nullptr;
         return;
       }
 
@@ -453,7 +453,7 @@ const ShapeItem length = nz_element_count();
 
    --value_count;
 
-   if (ravel == 0)   return;   // new() failed
+   if (ravel == nullptr)   return;   // new() failed
 
    if (ravel != short_value)   // long value
       {
@@ -462,7 +462,7 @@ const ShapeItem length = nz_element_count();
       }
 
    Assert(check_ptr == charP(this) + 7);
-   check_ptr = 0;
+   check_ptr = nullptr;
 }
 //----------------------------------------------------------------------------
 Value_P
@@ -696,13 +696,13 @@ Value::get_member(const vector<const UCS_string *> & members,
                   << *members.back() << " has no member ";
               more.append_members(members, 0);
               if (throw_error)   DOMAIN_ERROR;
-              else               return 0;
+              else               return nullptr;
             }
 
          const UCS_string & member_ucs = *members[m];
          if (owner->get_rank() != 2)
             {
-              if (!throw_error)   return 0;
+              if (!throw_error)   return nullptr;
               UCS_string & more = MORE_ERROR() << "member access: the rank of ";
               more.append_members(members, m);
               more << " is not 2.\n"
@@ -712,7 +712,7 @@ Value::get_member(const vector<const UCS_string *> & members,
 
          if (owner->get_cols() != 2)
             {
-              if (!throw_error)   return 0;
+              if (!throw_error)   return nullptr;
               UCS_string & more = MORE_ERROR()
                  << "member access: the number of columns of ";
               more.append_members(members, m);
@@ -732,7 +732,7 @@ Value::get_member(const vector<const UCS_string *> & members,
               if (!member_cell->is_pointer_cell() ||
                   !member_cell->get_pointer_value()->is_member())
                  {
-                   if (!throw_error)   return 0;
+                   if (!throw_error)   return nullptr;
                    UCS_string & more = MORE_ERROR()
                                 << "member access: member " << member_ucs
                                 << " exists in ";
@@ -921,13 +921,13 @@ Value::sorted_members(std::vector<ShapeItem> & result,
 const Unicode filters_all[] = { UNI_DELTA_UNDERBAR, UNI_DELTA,
                                 UNI_UNDERSCORE,     Unicode_0 };
 
-   if (filters == 0)   filters = filters_all;
+   if (filters == nullptr)   filters = filters_all;
 
 const ShapeItem rows = get_rows();
 const ShapeItem max_member_count = get_all_members_count() + 1;   // ⎕IO←0 or 1
 const ShapeItem alloc = 2*max_member_count; // one for ⍙, one for ∆ and _
 ShapeItem * sorted = new ShapeItem[alloc];
-   if (sorted == 0)   WS_FULL;
+   if (sorted == nullptr)   WS_FULL;
 
 ShapeItem * sorted_attributes = sorted;      // ⍙
 ShapeItem * sorted_nodes = sorted + max_member_count;   // ∆ and _
@@ -987,7 +987,7 @@ ShapeItem row = member.FNV_hash() % rows;
 
    // member row not found
    //
-   return 0;
+   return nullptr;
 }
 //----------------------------------------------------------------------------
 Cell *
@@ -1013,7 +1013,7 @@ ShapeItem row = member_name.FNV_hash() % rows;
 
    // member row not found
    //
-   return 0;
+   return nullptr;
 }
 //----------------------------------------------------------------------------
 ShapeItem
@@ -1129,7 +1129,7 @@ Value::double_ravel(const char * loc)
 Cell * const old_ravel = ravel;
 
    Assert(is_member());
-const char * del = 0;
+const char * del = nullptr;
    if (ravel != short_value)   del = reinterpret_cast<char *>(ravel);
 
    Assert(get_rank() == 2);
@@ -1194,13 +1194,13 @@ Value::get_lval_cellowner() const
            }
       }
 
-   return 0;   // not found (this is most likely not a left value)
+   return nullptr;   // not found (this is most likely not a left value)
 }
 //----------------------------------------------------------------------------
 bool
 Value::is_or_contains(const Value * value, const Value * sub)
 {
-   if (value == 0)     return false;   // value is not a valid value
+   if (value == nullptr)     return false;   // value is not a valid value
    if (value == sub)   return true;    // value is sub
 
    for (ConstRavel_P v(*value, true); +v; ++v)
@@ -1268,7 +1268,7 @@ vector<const UCS_string *> members;
    members.push_back(&member_name);
    members.push_back(&member_name);   // ignored
 
-Value * member_owner = 0;
+Value * member_owner = nullptr;
 Cell * data = get_member(members, member_owner, false);
    Assert(member_owner);
    Assert(member_owner == this);
@@ -1507,7 +1507,7 @@ Value::enlist_left(Value & Z) const
          else if (cell.is_lval_cell())
             {
               Cell * target = cell.get_lval_value();
-              if (target == 0)
+              if (target == nullptr)
                  {
                    CERR << "0-pointer at " LOC << endl;
                  }
@@ -2022,7 +2022,7 @@ const Cell * cI = &X->get_cfirst();
 sRank
 Value::get_single_axis(const Value * val, sRank max_axis)
 {
-   if (val == 0)   AXIS_ERROR;
+   if (val == nullptr)   AXIS_ERROR;
 
    if (!val->is_scalar_or_len1_vector())     AXIS_ERROR;
 
@@ -2040,7 +2040,7 @@ const int axis = val->get_cfirst().get_near_int() - Workspace::get_IO();
 Shape
 Value::to_shape(const Value * val)
 {
-   if (val == 0)
+   if (val == nullptr)
       {
         MORE_ERROR() << "illegal elided index [].";
         INDEX_ERROR;   // elided index ?
@@ -2648,7 +2648,7 @@ void
 Value::debug(const char * info) const
 {
 const PrintContext pctx = Workspace::get_PrintContext(PR_APL);
-PrintBuffer pb(*this, pctx, 0);
+PrintBuffer pb(*this, pctx, nullptr);
    pb.debug(CERR, info);
 }
 //----------------------------------------------------------------------------
@@ -3058,7 +3058,7 @@ Value::explode()
    Assert(is_packed());
 const uint8_t * bits = reinterpret_cast<const uint8_t *>(ravel);
 
-IntCell * new_ravel = 0;
+IntCell * new_ravel = nullptr;
    try           { ravel = new IntCell[element_count()]; }
    catch (...)   { WS_FULL }
 
@@ -3081,9 +3081,9 @@ Value::try_implode()
    //
 const ShapeItem Z_len = (nz_element_count() + 63) >> 6;
 uint64_t * bits = new uint64_t[Z_len];
-const char * error_reason = 0;
+const char * error_reason = nullptr;
 
-   if (bits == 0)   return "WS FULL";
+   if (bits == nullptr)   return "WS FULL";
 
    // first set all bits to 0
    //

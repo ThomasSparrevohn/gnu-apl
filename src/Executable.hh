@@ -72,11 +72,11 @@ public:
    /// return the result symbol iff this is a user defined function or
    /// operator that returns a value
    virtual Symbol * get_sym_Z() const
-      { return 0; }
+      { return nullptr; }
 
    /// return a UserFunction * (if \b this is one) or else 0.
    virtual const UserFunction * get_exec_ufun() const
-      { return 0; }
+      { return nullptr; }
 
    /// return true if this Executable localizes Symbol \b sym
    virtual bool pushes_sym(const Symbol * sym) const
@@ -84,7 +84,7 @@ public:
 
    /// return a UserFunction * (if \b this is one) or else 0.
    virtual UserFunction * get_exec_ufun()
-   { return 0; }
+   { return nullptr; }
 
    /// get the line number for pc
    virtual Function_Line get_line(Function_PC pc) const

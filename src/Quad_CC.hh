@@ -258,7 +258,7 @@ public:
 
 protected:
    virtual Shape get_shape() const          { return Shape(127); }
-   virtual const char * get_ravel() const   { return 0; }
+   virtual const char * get_ravel() const   { return nullptr; }
    virtual bool contains(Unicode uni) const
       { return (0 <= uni && uni <= 127); }
 };

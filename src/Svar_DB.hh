@@ -101,7 +101,7 @@ public:
    /// return pointer to varname or 0 if key does not exist
    static const uint32_t * get_svar_name(SV_key key)
       {
-        READ_RECORD(key, return svar->get_svar_name(); , return 0; )
+        READ_RECORD(key, return svar->get_svar_name(); , return nullptr; )
       }
 
    /// find ID of the procesdsor that has offered the variable with key \b key

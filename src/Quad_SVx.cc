@@ -191,7 +191,7 @@ Value_P Z(sh_Z, LOC);
         // set control.
         //
         Symbol * sym = Workspace::lookup_existing_symbol(vars[z]);
-        if (sym == 0)   Error::throw_symbol_error(vars[z], LOC);
+        if (sym == nullptr)   Error::throw_symbol_error(vars[z], LOC);
 
         const SV_key key = sym->get_SV_key();
         Svar_DB::set_control(key, Svar_Control(ctl));
@@ -223,7 +223,7 @@ Value_P Z(sh_Z, LOC);
    loop(z, var_count)
       {
         Symbol * sym = Workspace::lookup_existing_symbol(vars[z]);
-        if (sym == 0)   Error::throw_symbol_error(vars[z], LOC);
+        if (sym == nullptr)   Error::throw_symbol_error(vars[z], LOC);
 
         const SV_key key = sym->get_SV_key();
         const Svar_Control control = Svar_DB::get_control(key);
@@ -457,7 +457,7 @@ Value_P Z(sh_Z, LOC);
    loop(z, var_count)
       {
         Symbol * sym = Workspace::lookup_existing_symbol(vars[z]);
-        if (sym == 0)   // variable does not exist
+        if (sym == nullptr)   // variable does not exist
            {
              Z->next_ravel_0();
              continue;
@@ -534,7 +534,7 @@ const char * dirs[] = { "", "/APs" };
          // apl is started locally without installing it. We do not complain
          // if the APs directory does not exist.
          //
-         if (dir == 0)
+         if (dir == nullptr)
             {
               if (*dirs[d] == 0)
                  {
@@ -547,7 +547,7 @@ const char * dirs[] = { "", "/APs" };
          for (;;)   // scan files in directory
              {
                 dirent * entry = readdir(dir);
-                if (entry == 0)   break;   // directory done
+                if (entry == nullptr)   break;   // directory done
 
 #ifdef _DIRENT_HAVE_D_TYPE
                 if (entry->d_type != DT_REG)   continue; // not a regular file
@@ -703,7 +703,7 @@ Value_P Z(sh_Z, LOC);
    loop(z, var_count)
       {
         Symbol * sym = Workspace::lookup_existing_symbol(vars[z]);
-        if (sym == 0)   Error::throw_symbol_error(vars[z], LOC);
+        if (sym == nullptr)   Error::throw_symbol_error(vars[z], LOC);
 
         const SV_key key = sym->get_SV_key();
         const Svar_state state = Svar_DB::get_state(key);

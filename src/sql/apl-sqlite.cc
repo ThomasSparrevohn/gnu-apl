@@ -98,10 +98,10 @@ static int find_free_connection( void )
 {
     loop (i, connections.size())
          {
-           if (connections[i] == NULL )   return i;
+           if (connections[i] == nullptr )   return i;
     }
 
-    connections.push_back( NULL );
+    connections.push_back( nullptr );
     return connections.size() - 1;
 }
 
@@ -143,7 +143,7 @@ static Connection *db_id_to_connection( int db_id )
         throw_illegal_db_id();
     }
     Connection *conn = connections[db_id];
-    if( conn == NULL ) {
+    if( conn == nullptr ) {
         throw_illegal_db_id();
     }
 
@@ -172,11 +172,11 @@ static Token close_database( Value_P B )
         throw_illegal_db_id();
     }
     Connection *conn = connections[db_id];
-    if( conn == NULL ) {
+    if( conn == nullptr ) {
         throw_illegal_db_id();
     }
 
-    connections[db_id] = NULL;
+    connections[db_id] = nullptr;
     delete conn;
 
     return Token( TOK_APL_VALUE1, Str0( LOC ) );
@@ -482,6 +482,6 @@ get_function_mux( const char *function_name )
     if (strcmp(function_name, "close_fun") == 0)
        return reinterpret_cast<void *>(&close_fun);
 
-   return 0;
+   return nullptr;
 }
 

@@ -118,7 +118,7 @@ SV_key
 Svar_DB_server::find_pairing_key(SV_key key) const
 {
 const Svar_record * svar1 = find_var(key, LOC);
-   if (svar1 == 0)   return 0;
+   if (svar1 == nullptr)   return 0;
 
    for (size_t o = 0; o < offered_vars.size(); ++o)
        {
@@ -138,7 +138,7 @@ Svar_DB_server::find_var(SV_key key, const char * loc) const
    if (key == 0)
       {
         cerr << "*** key 0 in find_var() called from " << loc << endl;
-        return 0;
+        return nullptr;
       }
 
    for (size_t o = 0; o < offered_vars.size(); ++o)
@@ -150,7 +150,7 @@ Svar_DB_server::find_var(SV_key key, const char * loc) const
 
    cerr << "*** key 0x" << hex << key << dec
         << " not found in find_var() called from " << loc << endl;
-   return 0;
+   return nullptr;
 }
 //-----------------------------------------------------------------------------
 AP_num3
@@ -312,7 +312,7 @@ Svar_DB_server::match_pending_offer(const uint32_t * UCS_varname,
                                     const AP_num3 & to,
                                     const Svar_partner & from, TCP_socket tcp2)
 {
-Svar_record * pending_offer = 0;
+Svar_record * pending_offer = nullptr;
 
    for (size_t o = 0; o < offered_vars.size(); ++o)
        {
@@ -353,7 +353,7 @@ Svar_record * pending_offer = 0;
          return pending_offer;            // match found
       }
 
-   return 0;   // no match
+   return nullptr;   // no match
 }
 //-----------------------------------------------------------------------------
 Svar_record *

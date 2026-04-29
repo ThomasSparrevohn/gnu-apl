@@ -150,7 +150,7 @@ const TokenTag tag = token.get_tag();
                if (value->get_rank())   out << value->get_shape();
 
                const PrintContext pctx(PR_APL);
-               PrintBuffer pb(*value, pctx, 0);
+               PrintBuffer pb(*value, pctx, nullptr);
                bool more = pb.get_row_count() > 1;
                if (pb.get_row_count() > 0)
                   {
@@ -324,7 +324,7 @@ Token::extract_apl_val(const char * loc)
 Value *
 Token::extract_and_keep(const char * loc)
 {
-   if (!is_apl_val())   return 0;
+   if (!is_apl_val())   return nullptr;
 
 Value * ret = value.apl_val.get();
    value.apl_val.clear_pointer(loc);
@@ -586,7 +586,7 @@ const Value & val = *get_apl_val();
         pctx.set_style(PrintStyle(pctx.get_style() | PST_NO_FRACT_0));
       }
 
-PrintBuffer pb(val, pctx, 0);
+PrintBuffer pb(val, pctx, nullptr);
 const UCS_string indent(fn.size(), UNI_SPACE);
    loop(l, pb.get_row_count())
       {
@@ -640,7 +640,7 @@ UCS_string ucs;
         case TC_VALUE:
              {
                PrintContext pctx(style, DEFAULT_Quad_PP, DEFAULT_Quad_PW);
-               PrintBuffer pbuf(*get_apl_val(), pctx, 0);
+               PrintBuffer pbuf(*get_apl_val(), pctx, nullptr);
                if (pbuf.get_row_count() == 0)   return ucs;
                return pbuf.l1();
              }

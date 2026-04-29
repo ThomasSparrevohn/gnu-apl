@@ -416,7 +416,7 @@ public:
    virtual uint8_t get__SET_STATE__new_state() const   ///< dito
       { bad_get("SET_STATE", "new_state"); return 0; }
    virtual string get__SET_STATE__sloc() const   ///< dito
-      { bad_get("SET_STATE", "sloc"); return 0; }
+      { bad_get("SET_STATE", "sloc"); return nullptr; }
 
 
 /// APserver request: set control of shared var \b key
@@ -440,9 +440,9 @@ public:
    virtual uint32_t get__VALUE_IS__error() const   ///< dito
       { bad_get("VALUE_IS", "error"); return 0; }
    virtual string get__VALUE_IS__error_loc() const   ///< dito
-      { bad_get("VALUE_IS", "error_loc"); return 0; }
+      { bad_get("VALUE_IS", "error_loc"); return nullptr; }
    virtual string get__VALUE_IS__cdr_value() const   ///< dito
-      { bad_get("VALUE_IS", "cdr_value"); return 0; }
+      { bad_get("VALUE_IS", "cdr_value"); return nullptr; }
 
 
 /// APserver request: SVAR←X
@@ -450,7 +450,7 @@ public:
    virtual uint64_t get__ASSIGN_VALUE__key() const   ///< dito
       { bad_get("ASSIGN_VALUE", "key"); return 0; }
    virtual string get__ASSIGN_VALUE__cdr_value() const   ///< dito
-      { bad_get("ASSIGN_VALUE", "cdr_value"); return 0; }
+      { bad_get("ASSIGN_VALUE", "cdr_value"); return nullptr; }
 
 /// APserver result for: SVAR←X
    /// access functions for signal SVAR_ASSIGNED...
@@ -459,7 +459,7 @@ public:
    virtual uint32_t get__SVAR_ASSIGNED__error() const   ///< dito
       { bad_get("SVAR_ASSIGNED", "error"); return 0; }
    virtual string get__SVAR_ASSIGNED__error_loc() const   ///< dito
-      { bad_get("SVAR_ASSIGNED", "error_loc"); return 0; }
+      { bad_get("SVAR_ASSIGNED", "error_loc"); return nullptr; }
 
 
 /// APserver request: Can svar key be referenced ?
@@ -490,7 +490,7 @@ public:
 /// APserver result (record) for: read SVAR database record from APserver
    /// access functions for signal SVAR_RECORD_IS...
    virtual string get__SVAR_RECORD_IS__record() const   ///< dito
-      { bad_get("SVAR_RECORD_IS", "record"); return 0; }
+      { bad_get("SVAR_RECORD_IS", "record"); return nullptr; }
 
 
 /// APserver request: is ID registered ?
@@ -520,13 +520,13 @@ public:
    virtual uint8_t get__REGISTER_PROCESSOR__evconn() const   ///< dito
       { bad_get("REGISTER_PROCESSOR", "evconn"); return 0; }
    virtual string get__REGISTER_PROCESSOR__progname() const   ///< dito
-      { bad_get("REGISTER_PROCESSOR", "progname"); return 0; }
+      { bad_get("REGISTER_PROCESSOR", "progname"); return nullptr; }
 
 
 /// APserver request: match offered shared variable or make a new offer
    /// access functions for signal MATCH_OR_MAKE...
    virtual string get__MATCH_OR_MAKE__varname() const   ///< dito
-      { bad_get("MATCH_OR_MAKE", "varname"); return 0; }
+      { bad_get("MATCH_OR_MAKE", "varname"); return nullptr; }
    virtual uint32_t get__MATCH_OR_MAKE__to_proc() const   ///< dito
       { bad_get("MATCH_OR_MAKE", "to_proc"); return 0; }
    virtual uint32_t get__MATCH_OR_MAKE__to_parent() const   ///< dito
@@ -573,7 +573,7 @@ public:
 /// APserver result for: get offering processors  (⎕SVQ)
    /// access functions for signal OFFERING_PROCS_ARE...
    virtual string get__OFFERING_PROCS_ARE__offering_procs() const   ///< dito
-      { bad_get("OFFERING_PROCS_ARE", "offering_procs"); return 0; }
+      { bad_get("OFFERING_PROCS_ARE", "offering_procs"); return nullptr; }
 
 
 /// APserver request: get offered variables  (⎕SVQ)
@@ -587,7 +587,7 @@ public:
 /// APserver result for: get offered variables  (⎕SVQ)
    /// access functions for signal OFFERED_VARS_ARE...
    virtual string get__OFFERED_VARS_ARE__offered_vars() const   ///< dito
-      { bad_get("OFFERED_VARS_ARE", "offered_vars"); return 0; }
+      { bad_get("OFFERED_VARS_ARE", "offered_vars"); return nullptr; }
 
 
 /// APserver request: find pairing key (CTL vs. DAT or Cnnn vs. Dnnn) for AP210
@@ -651,7 +651,7 @@ public:
    virtual uint64_t get__ASSIGN_WSWS_VAR__key() const   ///< dito
       { bad_get("ASSIGN_WSWS_VAR", "key"); return 0; }
    virtual string get__ASSIGN_WSWS_VAR__cdr_value() const   ///< dito
-      { bad_get("ASSIGN_WSWS_VAR", "cdr_value"); return 0; }
+      { bad_get("ASSIGN_WSWS_VAR", "cdr_value"); return nullptr; }
 
 /// APserver request: X←ws-ws SVAR
    /// access functions for signal READ_WSWS_VAR...
@@ -661,7 +661,7 @@ public:
 /// APserver result for: X←ws-ws SVAR
    /// access functions for signal WSWS_VALUE_IS...
    virtual string get__WSWS_VALUE_IS__cdr_value() const   ///< dito
-      { bad_get("WSWS_VALUE_IS", "cdr_value"); return 0; }
+      { bad_get("WSWS_VALUE_IS", "cdr_value"); return nullptr; }
 
 
 /// APserver request: print the entire database (for command ]SVARS)
@@ -670,7 +670,7 @@ public:
 /// APserver result for: print the entire database
    /// access functions for signal SVAR_DB_PRINTED...
    virtual string get__SVAR_DB_PRINTED__printout() const   ///< dito
-      { bad_get("SVAR_DB_PRINTED", "printout"); return 0; }
+      { bad_get("SVAR_DB_PRINTED", "printout"); return nullptr; }
 
 
 
@@ -2911,7 +2911,7 @@ Signal_base::recv_TCP(int tcp_sock, char * buffer, int bufsize,
               << " in recv_TCP() !!!" << endl;
 
          *loc = LOC;
-         return 0;
+         return nullptr;
       }
 ssize_t siglen = 0;
    for (;;)
@@ -2921,19 +2921,19 @@ ssize_t siglen = 0;
          FD_SET(SOCKET(tcp_sock), &readfds);
 
          errno = 0;
-         const int select__result = select(tcp_sock + 1, &readfds, 0, 0, 0);
+         const int select__result = select(tcp_sock + 1, &readfds, nullptr, nullptr, nullptr);
          if (select__result == -1)   // select() error with errno set
             {
               if (errno == EINTR)   continue;   // start over
 
               *loc = LOC;
-              return 0;   // most likely: connection was closed by the peer
+              return nullptr;   // most likely: connection was closed by the peer
             }
 
          if (!FD_ISSET(SOCKET(tcp_sock), &readfds))
             {
               *loc = LOC;
-              return 0;   // never happens
+              return nullptr;   // never happens
             }
 
          // read 4 byte signal length
@@ -2945,7 +2945,7 @@ ssize_t siglen = 0;
               // connection was closed by the peer
               //
               *loc = LOC;
-              return 0;
+              return nullptr;
             }
 
          break;   // got  sizeof(uint32_t) length bytes
@@ -2957,7 +2957,7 @@ ssize_t siglen = 0;
    if (siglen == 0)
       {
         *loc = LOC;
-        return 0;   // close
+        return nullptr;   // close
       }
 
 // debug && *debug << "signal length is " << siglen << " in recv_TCP()" << endl;
@@ -2972,11 +2972,11 @@ char * rx_buf = buffer + MAX_SIGNAL_CLASS_SIZE;
         // the buffer provided is too small: allocate a bigger one
         //
         del = new char[siglen];
-        if (del == 0)
+        if (del == nullptr)
            {
              cerr << "*** new(" << siglen <<") failed in recv_TCP()" << endl;
              *loc = LOC;
-             return 0;
+             return nullptr;
            }
         rx_buf = del;
       }
@@ -2994,7 +2994,7 @@ char * rx_buf = buffer + MAX_SIGNAL_CLASS_SIZE;
                cerr << "*** got " << rx_bytes
                     << " when expecting " << siglen << endl;
                *loc = LOC;
-               return 0;
+               return nullptr;
              }
 
 
@@ -3006,7 +3006,7 @@ char * rx_buf = buffer + MAX_SIGNAL_CLASS_SIZE;
 const uint8_t * b = reinterpret_cast<const uint8_t *>(rx_buf);
 Sig_item_u16 signal_id(b);
 
-Signal_base * ret = 0;
+Signal_base * ret = nullptr;
    switch(signal_id.get_value())
       {
 
@@ -3124,7 +3124,7 @@ Signal_base * ret = 0;
                       << signal_id.get_value() << endl;
                  errno = EINVAL;
                  *loc = LOC;
-                 return 0;
+                 return nullptr;
       }
 
    debug && ret->print(*debug << "<-- ");

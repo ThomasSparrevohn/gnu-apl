@@ -149,7 +149,7 @@ Value_P Z(shape_Z, LOC);
            }
 
         const NamedObject * obj = Workspace::lookup_existing_name(symbol_name);
-        if (obj == 0)   Error::throw_symbol_error(symbol_name, LOC);
+        if (obj == nullptr)   Error::throw_symbol_error(symbol_name, LOC);
 
         if (const Function * function = obj->get_function())
            {
@@ -276,13 +276,13 @@ Quad_EC::eval_B(Value_P B) const
 {
 const UCS_string statement_B(*B.get());
 
-ExecuteList * fun = 0;
+ExecuteList * fun = nullptr;
    try {
          fun = ExecuteList::fix(statement_B, LOC);
        }
      catch (...) {}
 
-   if (fun == 0)
+   if (fun == nullptr)
       {
         // syntax error in B
         //
@@ -515,7 +515,7 @@ Token
 Quad_ES::eval_B(Value_P B) const
 {
 Error error(E_NO_ERROR, LOC);
-const Token ret = event_simulate(0, B, error);
+const Token ret = event_simulate(nullptr, B, error);
    if (error.get_error_code() == E_NO_ERROR)              return ret;
    if (Workspace::SI_top()->get_safe_execution_depth())   return ret;
 
@@ -697,7 +697,7 @@ Quad_EX::expunge(const UCS_string & name)
    if (!name.contains(UNI_FULLSTOP))   // unless member access
       {
         Symbol * symbol = Workspace::lookup_existing_symbol(name);
-        if (symbol == 0)   return 0;
+        if (symbol == nullptr)   return 0;
         return symbol->expunge();
       }
 
@@ -724,7 +724,7 @@ vector<const UCS_string *>members;
 //      CERR << "VAR '"     << *members.back() << "'" << endl;
 
 Symbol * symbol = Workspace::lookup_existing_symbol(*members.back());
-   if (symbol == 0)     goto cleanup;
+   if (symbol == nullptr)     goto cleanup;
 
    {
      Value_P toplevel_val = symbol->get_var_value();
@@ -1112,7 +1112,7 @@ const Unicode uni = ucs[0];
 
    // system name ?
    {
-     const Symbol * sys = 0;
+     const Symbol * sys = nullptr;
 
      // ⍺, ⍶, ⍵, and ⍹ are local variables of lambdas and may change their
      // NC at runtime. We will therefore consult their symbol later on.
@@ -1307,7 +1307,7 @@ const ShapeItem len = Workspace::SI_entry_count();
    if (a < -len)   DOMAIN_ERROR;
    if (a < 0)   a += len;   // negative a counts backwards from end
 
-const StateIndicator * si = 0;
+const StateIndicator * si = nullptr;
    for (si = Workspace::SI_top(); si; si = si->get_parent())
        {
          if (si->get_level() == a)   break;   // found
@@ -1395,7 +1395,7 @@ Value_P Z(len, LOC);
 
    // move from oldest SI entry towards SI_top()...
    //
-   for (const StateIndicator * parent = 0; parent != Workspace::SI_top();)
+   for (const StateIndicator * parent = nullptr; parent != Workspace::SI_top();)
        {
          const StateIndicator * si = parent->find_child();
          parent = si;   // for the next iteration
@@ -1518,31 +1518,31 @@ const ShapeItem ec = B->element_count();
 const UserFunction *
 Stop_Trace::locate_fun(const Value & fun_name)
 {
-   if (!fun_name.is_char_string())   return 0;
+   if (!fun_name.is_char_string())   return nullptr;
 
 UCS_string fun_name_ucs(fun_name);
-   if (fun_name_ucs.size() == 0)   return 0;
+   if (fun_name_ucs.size() == 0)   return nullptr;
 
 Symbol * fun_symbol = Workspace::lookup_existing_symbol(fun_name_ucs);
-   if (fun_symbol == 0)
+   if (fun_symbol == nullptr)
       {
         CERR << "symbol " << fun_name_ucs << " not found" << endl;
-        return 0;
+        return nullptr;
       }
 
 cFunction_P fun = fun_symbol->get_function();
-   if (fun == 0)
+   if (fun == nullptr)
       {
         CERR << "symbol " << fun_name_ucs << " is not a function" << endl;
-        return 0;
+        return nullptr;
       }
 
 const UserFunction * ufun = fun->get_func_ufun();
-   if (ufun == 0)
+   if (ufun == nullptr)
       {
         CERR << "symbol " << fun_name_ucs
              << " is not a defined function" << endl;
-        return 0;
+        return nullptr;
       }
 
    return ufun;

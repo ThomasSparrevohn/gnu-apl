@@ -59,7 +59,7 @@ char buffer[BUFLEN];
    for (;;)
        {
           const char * s = fgets(buffer, sizeof(buffer), stdin);
-          if (s == 0)   break;
+          if (s == nullptr)   break;
           buffer[BUFLAST] = 0;   // just in case buffer is not 0-terminated.
 
           char filename[BUFLEN];
@@ -72,7 +72,7 @@ char buffer[BUFLEN];
 
           if (strcmp(addr_str, "0") && strncmp(addr_str, "0x", 2))   continue;
 
-          const int addr = strtol(addr_str, 0, 16);
+          const int addr = strtol(addr_str, nullptr, 16);
 
           printf("%8.8X %s:%u\n", addr, filename, line_num);
        }

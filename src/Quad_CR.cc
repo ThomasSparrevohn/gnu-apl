@@ -132,7 +132,7 @@ UCS_string symbol_name(*B);
 
    if (symbol_name.size() == 0)   return Token(TOK_APL_VALUE1, Str0_0(LOC));
 
-const Function * function = 0;
+const Function * function = nullptr;
    if (symbol_name[0] == UNI_MUE)   // macro
       {
         loop(m, Macro::MAC_COUNT)
@@ -152,10 +152,10 @@ const Function * function = 0;
         if (obj && obj->is_user_defined())
            {
              function = obj->get_function();
-             if (function && function->get_exec_properties()[0])   function = 0;
+             if (function && function->get_exec_properties()[0])   function = nullptr;
            }
       }
-   if (function == 0)   return Token(TOK_APL_VALUE1, Str0_0(LOC));
+   if (function == nullptr)   return Token(TOK_APL_VALUE1, Str0_0(LOC));
 
    // show the function...
    //
@@ -320,12 +320,12 @@ bool extra_frame = false;
         Value * Zsub = const_cast<Value *>(B);   // will die at } below
         Z->next_ravel_Pointer(Zsub);             // Z ← ⊂ B
         Z->check_value(LOC);
-        PrintBuffer pb(*Z, pctx, 0);
+        PrintBuffer pb(*Z, pctx, nullptr);
         return Value_P(pb, LOC);
       }
    else   // no frame
       {
-         PrintBuffer pb(*B, pctx, 0);
+         PrintBuffer pb(*B, pctx, nullptr);
          return Value_P(pb, LOC);
       }
 }
@@ -392,7 +392,7 @@ Quad_CR::do_CR10(UCS_string_vector & result, const Value * B)
    //
 const UCS_string symbol_name(*B);
 const Symbol * symbol = Workspace::lookup_existing_symbol(symbol_name);
-   if (symbol == 0)
+   if (symbol == nullptr)
       {
         MORE_ERROR() << "10⎕CR: bad Symbol in do_CR10()";
         DOMAIN_ERROR;
@@ -783,7 +783,7 @@ Quad_CR::do_CR10_structured(UCS_string_vector & result,
             }
        }
 
-   return 0;
+   return nullptr;
 }
 //----------------------------------------------------------------------------
 bool
@@ -1245,7 +1245,7 @@ PrintContext pctx = Workspace::get_PrintContext(PR_APL);
         loop(col, row->element_count())
             {
               Value_P item = row->get_cravel(col).get_pointer_value();
-              PrintBuffer pb_item(*item, pctx, 0);
+              PrintBuffer pb_item(*item, pctx, nullptr);
               pb.pad_height(UNI_SPACE, pb_item.get_row_count());
               if (A_31_32 == 31)   // align bottoms
                  pb_item.pad_height_above(UNI_SPACE, pb.get_row_count());
@@ -1629,7 +1629,7 @@ const ShapeItem B_len = B->element_count() ;
    //
 const ShapeItem Z_len = (B_len + 63) >> 6;   // length in units of uint64_t
 uint64_t * bits = new uint64_t[Z_len];
-   if (bits == 0)   WS_FULL;
+   if (bits == nullptr)   WS_FULL;
 
    // set all bits to 0, then some to 1...
    //
@@ -1976,7 +1976,7 @@ Quad_CR::temp_varname()
 {
 char cc[40];
 timeval tv;
-   gettimeofday(&tv, 0);
+   gettimeofday(&tv, nullptr);
    SPRINTF(cc, "⍙¯%X¯%X", uint32_t(tv.tv_sec), uint32_t(tv.tv_usec));
    usleep(1000);   // to make the timestamp unique;
 

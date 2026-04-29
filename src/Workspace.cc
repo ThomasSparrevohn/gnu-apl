@@ -71,7 +71,7 @@ Workspace::Workspace()
    : WS_id(U"CLEAR WS", true),
 //   prompt(U"-----> "),
      prompt(U"      "),
-     top_SI(0)
+     top_SI(nullptr)
 {
 /// Read-Only System Variable
 #define ro_sv_def(x, str, _txt)                         \
@@ -143,7 +143,7 @@ Workspace::push_SI(const Executable * fun, const char * loc)
       {
          StateIndicator * old_top = SI_top();
          the_workspace.top_SI = new StateIndicator(fun, old_top);
-         if (the_workspace.top_SI == 0)
+         if (the_workspace.top_SI == nullptr)
             {
               MORE_ERROR() <<
               "malloc() → 0 when calling a defined function";
@@ -240,7 +240,7 @@ Workspace::SI_top_fun()
          if (si->get_parse_mode() == PM_FUNCTION)   return si;
        }
 
-   return 0;   // no context wirh parse mode PM_FUNCTION
+   return nullptr;   // no context wirh parse mode PM_FUNCTION
 }
 //----------------------------------------------------------------------------
 StateIndicator *
@@ -255,7 +255,7 @@ Workspace::SI_top_error(bool quad_LRX)
             }
        }
 
-   return 0;   // no context with an error
+   return nullptr;   // no context with an error
 }
 //----------------------------------------------------------------------------
 Token
@@ -314,14 +314,14 @@ Workspace::immediate_execution(bool exit_on_error)
 const NamedObject *
 Workspace::lookup_existing_name(const UCS_string & name)
 {
-   if (name.size() == 0)   return 0;
+   if (name.size() == 0)   return nullptr;
 
    if (Avec::is_quad(name[0]))   // distinguished name
       {
         int len;
         Token tok = get_quad(name, len);
-        if (len == 1)                          return 0;
-        if (name.ssize() != len)               return 0;
+        if (len == 1)                          return nullptr;
+        if (name.ssize() != len)               return nullptr;
         if (tok.get_Class() == TC_SYMBOL)      return tok.get_sym_ptr();
         if (tok.get_Class() == TC_FUN0)        return tok.get_function();
         if (tok.get_Class() == TC_FUN1)        return tok.get_function();
@@ -333,7 +333,7 @@ Workspace::lookup_existing_name(const UCS_string & name)
    // user defined variable or function
    //
 Symbol * sym = the_workspace.symbol_table.lookup_existing_symbol(name);
-   if (sym == 0)   return 0;
+   if (sym == nullptr)   return nullptr;
 
    switch(sym->get_NC())
       {
@@ -341,21 +341,21 @@ Symbol * sym = the_workspace.symbol_table.lookup_existing_symbol(name);
 
         case NC_FUNCTION:
         case NC_OPERATOR: return sym->get_function();
-        default:          return 0;
+        default:          return nullptr;
       }
 }
 //----------------------------------------------------------------------------
 Symbol *
 Workspace::lookup_existing_symbol(const UCS_string & symbol_name)
 {
-   if (symbol_name.size() == 0)   return 0;
+   if (symbol_name.size() == 0)   return nullptr;
 
    if (Avec::is_quad(symbol_name[0]))   // distinguished name
       {
         int len;
         Token tok = get_quad(symbol_name, len);
-        if (symbol_name.ssize() != len)     return 0;
-        if (tok.get_Class() != TC_SYMBOL)   return 0;   // system function
+        if (symbol_name.ssize() != len)     return nullptr;
+        if (tok.get_Class() != TC_SYMBOL)   return nullptr;   // system function
 
         return tok.get_sym_ptr();
       }
@@ -375,7 +375,7 @@ Workspace::get_quad(const UCS_string & ucs, int & len)
 UCS_string name(UNI_Quad_Quad);
    len = 1;
 
-SystemName * longest = 0;
+SystemName * longest = nullptr;
 
    for (ShapeItem u = 1; u < ucs.ssize(); ++u)
       {
@@ -394,7 +394,7 @@ SystemName * longest = 0;
            }
       }
 
-   if (longest == 0)   return Token(TOK_Quad_Quad, &the_workspace.v_Quad_Quad);
+   if (longest == nullptr)   return Token(TOK_Quad_Quad, &the_workspace.v_Quad_Quad);
 
    if (longest->get_variable())   return longest->get_variable()->get_token();
    else                           return longest->get_function()->get_token();
@@ -403,7 +403,7 @@ SystemName * longest = 0;
 StateIndicator *
 Workspace::oldest_exec(const Executable * exec)
 {
-StateIndicator * ret = 0;
+StateIndicator * ret = nullptr;
 
    for (StateIndicator * si = SI_top(); si; si = si->get_parent())
        if (exec == si->get_executable())   ret = si;   // maybe not yet oldest
@@ -417,7 +417,7 @@ Workspace::is_called(const UCS_string & funname)
    // return true if the current-referent of funname is pendant
    //
 Symbol * current_referent = lookup_existing_symbol(funname);
-   if (current_referent == 0)   return false;   // no such symbol
+   if (current_referent == nullptr)   return false;   // no such symbol
 
    Assert(current_referent->get_Id() == ID_USER_SYMBOL);
 
@@ -462,7 +462,7 @@ Workspace::write_OUT(FILE * out, uint64_t & seq,
          loop(o, objects.size())
             {
               const NamedObject * obj = lookup_existing_name(objects[o]);
-              if (obj == 0)   // not found
+              if (obj == nullptr)   // not found
                  {
                    COUT << ")OUT: " << objects[o] << " NOT SAVED (not found)"
                         << endl;
@@ -478,7 +478,7 @@ Workspace::write_OUT(FILE * out, uint64_t & seq,
               else                            // distinguished name
                  {
                    const Symbol * sym = obj->get_symbol();
-                   if (sym == 0)
+                   if (sym == nullptr)
                       {
                         COUT << ")OUT: " << objects[o]
                              << " NOT SAVED (not a variable)" << endl;
@@ -668,7 +668,7 @@ Workspace::save_WS(ostream & out, const LibRef_name & lib_name,
                    bool name_from_WSID)
 {
 const UTF8_string filename =
-      LibPaths::get_filename(lib_name, false, ".xml", 0);
+      LibPaths::get_filename(lib_name, false, ".xml", nullptr);
 
    // don't )SAVE if WS_name differs from wsid and the file exists
    //
@@ -877,7 +877,7 @@ Workspace::dump_WS(ostream & out, const LibRef_name & lib_name,
    // )DUMP libnum WS_name
 
 const char * extension = html ? ".html" : ".apl";
-UTF8_string filename = LibPaths::get_filename(lib_name, false, extension, 0);
+UTF8_string filename = LibPaths::get_filename(lib_name, false, extension, nullptr);
    if (lib_name.get_name().compare(UCS_ASCII_string("CLEAR WS")) == COMP_EQ)
       {
         // don't dump CLEAR WS
@@ -1048,7 +1048,7 @@ XML_Loading_Archive in(out, err, filename.c_str(), dump_fd);
                                   << " from file '" << filename << "' ..."
                                   << endl;
 
-        load_DUMP(out, filename, dump_fd, do_LX, silent, 0);   // closes dump_fd
+        load_DUMP(out, filename, dump_fd, do_LX, silent, nullptr);   // closes dump_fd
 
         // )DUMP files have no )WSID, so create one from the filename
         //
@@ -1056,7 +1056,7 @@ XML_Loading_Archive in(out, err, filename.c_str(), dump_fd);
         // with a slash
         //
         const char * wsid_start = strrchr(filename.c_str(), '/');
-        if (wsid_start == 0)   // no slash (single path component)
+        if (wsid_start == nullptr)   // no slash (single path component)
            wsid_start = filename.c_str();
         else                   // skip the / of the last (or only) component
            ++wsid_start;

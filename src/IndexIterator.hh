@@ -39,7 +39,7 @@ public:
    IndexIterator(ShapeItem w, ShapeItem cnt)
    : weight(w),
      count(cnt),
-     upper(0),
+     upper(nullptr),
      pos(0)
    {}
 
@@ -64,7 +64,7 @@ public:
    IndexIterator * get_upper() const   { return upper; };
 
    /// set the next higher IndexIterator
-   void set_upper(IndexIterator * up)   { Assert(upper == 0);   upper = up; };
+   void set_upper(IndexIterator * up)   { Assert(upper == nullptr);   upper = up; };
 
    /// get the number of indices.
    ShapeItem get_index_count() const   { return count; }

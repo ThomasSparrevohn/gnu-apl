@@ -45,7 +45,7 @@ LibPaths::LibDir LibPaths::lib_dirs[LIB_MAX];
 // realpath() complains if its result is not used, To avoid that warning
 // we assign the result to variable unused below.
 //
-const void * unused = 0;
+const void * unused = nullptr;
 
 //----------------------------------------------------------------------------
 void
@@ -69,7 +69,7 @@ LibPaths::compute_bin_path(const char * argv0, bool logit)
 {
    // compute APL_bin_path from argv0
    //
-   if (strchr(argv0, '/') == 0)
+   if (strchr(argv0, '/') == nullptr)
       {
          // if argv0 contains no / then realpath() seems to prepend the current
          // directory to argv0 (which is wrong since argv0 may be in $PATH).
@@ -254,7 +254,7 @@ LibPaths::maybe_warn_ambiguous(int has_extension, const UTF8_string name,
                                const char * ext1, const char * ext2)
 {
    if (has_extension)   return;   // extension was provided
-   if (ext2 == 0)       return;   // no second extension
+   if (ext2 == nullptr)       return;   // no second extension
 
 UTF8_string filename_ext2 = name;
    filename_ext2 << ext2;
@@ -376,7 +376,7 @@ DIR * dir = opendir(path.c_str());
    if (dir)   // success
       {
         closedir(dir);
-        return 0;
+        return nullptr;
       }
    else
       {

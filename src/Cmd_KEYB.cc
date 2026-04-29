@@ -311,7 +311,7 @@ Cmd_KEYB::parse_xmodmap()
        XOpenDisplay() is likely to succeed.
     */
 #if HAVE_LIBX11
-   if (Display * display = XOpenDisplay(0))   XCloseDisplay(display);
+   if (Display * display = XOpenDisplay(nullptr))   XCloseDisplay(display);
    else                                       return true;   // error
 #else
    return true;   // error
@@ -510,7 +510,7 @@ KeySym symbol = XkbKeycodeToKeysym(display, keycode, 0, level);
 void
 Cmd_KEYB::read_xkbd_template(const char ** lines, int line_count)
 {
-Display * display = XOpenDisplay(0);
+Display * display = XOpenDisplay(nullptr);
 
 bool data_coming = false;
    loop(y, line_count - 2)

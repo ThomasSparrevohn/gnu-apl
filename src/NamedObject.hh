@@ -105,15 +105,15 @@ public:
 
    /// return the function for this Id (if any) or 0 if this Id does
    /// (currently) represent a function.
-   virtual const Function * get_function() const  { return 0; }
+   virtual const Function * get_function() const  { return nullptr; }
 
    /// return the symbol for this user defined symbol (if any) or 0 if this Id
    /// refers to a system name
-   virtual Symbol * get_symbol()   { return 0; }
+   virtual Symbol * get_symbol()   { return nullptr; }
 
    /// return the symbol for this user defined symbol (if any) or 0 if this Id
    /// refers to a system name
-   virtual const Symbol * get_symbol() const  { return 0; }
+   virtual const Symbol * get_symbol() const  { return nullptr; }
 
    /// return the Id of this object (ID_USER_SYMBOL for user defined objects)
    Id get_Id() const

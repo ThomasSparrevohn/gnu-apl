@@ -144,7 +144,7 @@ int buflen = 0;
          void * v = bsearch(&key, sorted_table, table_len,
                              sizeof(const _map *), &compare_map);
 
-         if (v == 0)   continue;   // not found
+         if (v == nullptr)   continue;   // not found
 
          fprintf(stderr, "%s", (*(const _map **)v)->apl_utf8);
          const char * out_string = (*(const _map **)v)->apl_utf8;

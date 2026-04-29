@@ -336,7 +336,7 @@ public:
    static void close(bool do_not_write_hist)
       { if (the_line_input && do_not_write_hist)
             the_line_input->write_history = false;
-        delete the_line_input;   the_line_input = 0; }
+        delete the_line_input;   the_line_input = nullptr; }
 
    /// clear history
    static void clear_history(ostream & out)

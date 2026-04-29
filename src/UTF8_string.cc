@@ -223,7 +223,7 @@ uint32_t uni = 0;
 bool
 UTF8_string::starts_with(const char * path) const
 {
-   if (path == 0)   return false;   // no path provided
+   if (path == nullptr)   return false;   // no path provided
 
 const size_t path_len = strlen(path);
    if (path_len > size())   return false;   // path_len longer than this string
@@ -237,7 +237,7 @@ const size_t path_len = strlen(path);
 bool
 UTF8_string::ends_with(const char * ext) const
 {
-   if (ext == 0)   return false;   // no ext provided
+   if (ext == nullptr)   return false;   // no ext provided
 
 const size_t ext_len = strlen(ext);
    if (ext_len > size())   return false;   // ext longer than this string
@@ -292,7 +292,7 @@ bool got_tag = false;
            {
              src += 2;   // skip "&#"
              int val = 0;
-             char * end = 0;
+             char * end = nullptr;
              if (at(src) == 'x')   // hex value
                 {
                   ++src;   // skip "x"

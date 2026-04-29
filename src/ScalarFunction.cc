@@ -87,8 +87,8 @@ Parallel::parallel_lock_t jobs_lock = LOCK_INITIALIZER;
 
 #endif   // PARALLEL_ENABLED
 
-PJob_scalar_AB * job_AB = 0;
-PJob_scalar_B  * job_B  = 0;
+PJob_scalar_AB * job_AB = nullptr;
+PJob_scalar_B  * job_B  = nullptr;
 
 //----------------------------------------------------------------------------
 Token
@@ -144,7 +144,7 @@ const bool maybe_parallel = Parallel::run_parallel &&
                                        ->joblist_B.next_job();
                if (job_B)   break;
              }
-         if (job_B == 0)   break;   // all jobs done
+         if (job_B == nullptr)   break;   // all jobs done
 
 #if PARALLEL_ENABLED
          if (maybe_parallel && job_B->len_Z > get_monadic_threshold())
@@ -192,7 +192,7 @@ PERFORMANCE_START(start_2)
                         if (ec != E_NO_ERROR)
                            {
                              job_B->~PJob_scalar_B();   // ownership of B, and Z
-                             job_B = 0;
+                             job_B = nullptr;
                              return Value_P();
                            }
 CELL_PERFORMANCE_END(get_statistics_B(), start_2, z)
@@ -201,7 +201,7 @@ CELL_PERFORMANCE_END(get_statistics_B(), start_2, z)
            }
         job_B->value_Z->check_value(LOC);
         job_B->~PJob_scalar_B();   // give up ownership of B, and Z.
-        job_B = 0;
+        job_B = nullptr;
       }
 
    Z->check_value(LOC);
@@ -374,7 +374,7 @@ const bool maybe_parallel = Parallel::run_parallel &&
                                    ->joblist_AB.next_job();
                if (job_AB)   break;
              }
-         if (job_AB == 0)   break;   // all jobs done
+         if (job_AB == nullptr)   break;   // all jobs done
 
 #if PARALLEL_ENABLED
          if (maybe_parallel && job_AB->len_Z > get_dyadic_threshold())
@@ -504,7 +504,7 @@ PERFORMANCE_START(start_2)
                            {
                              // give up the ownership of A, B, Z.
                              job_AB->~PJob_scalar_AB();
-                             job_AB = 0;
+                             job_AB = nullptr;
                              return Value_P();
                            }
 CELL_PERFORMANCE_END(get_statistics_AB(), start_2, z)
@@ -513,7 +513,7 @@ CELL_PERFORMANCE_END(get_statistics_AB(), start_2, z)
            }
         job_AB->value_Z->check_value(LOC);
         job_AB->~PJob_scalar_AB();   // give up ownership of A, B, and Z.
-        job_AB = 0;
+        job_AB = nullptr;
       }
 
    Z->set_default(*B, LOC);
@@ -904,7 +904,7 @@ ScalarFunction::conforming_shape(ErrorCode & ec, const Shape & shape_A,
 
    if (shape_A.get_rank() != shape_B.get_rank())   ec = E_RANK_ERROR;
    else                                            ec = E_LENGTH_ERROR;
-   return 0;
+   return nullptr;
 }
 //============================================================================
 Token
@@ -1020,7 +1020,7 @@ Value_P Z(zlen, LOC);
    // set_size can be rather big, so we new/delete it
    //
 uint8_t * used = new uint8_t[(set_size + 7)/8];
-   if (used == 0)   throw_apl_error(E_WS_FULL, LOC);
+   if (used == nullptr)   throw_apl_error(E_WS_FULL, LOC);
    memset(used, 0, (set_size + 7)/8);
 
    loop(z, zlen)
@@ -1234,8 +1234,8 @@ vector<const Cell *> cells_B;
 
    // sort the A-cells and the B-cells ascendingly
    //
-   Heapsort<const Cell *>::sort(cells_A, Cell::compare_stable, 0);
-   Heapsort<const Cell *>::sort(cells_B, Cell::compare_stable, 0);
+   Heapsort<const Cell *>::sort(cells_A, Cell::compare_stable, nullptr);
+   Heapsort<const Cell *>::sort(cells_B, Cell::compare_stable, nullptr);
 
    // store those cells_A pointers that are not in cells_B into cells_Z. Use
    // the fact that cells_A and cells_B are sorted.
@@ -1260,7 +1260,7 @@ vector<const Cell *> cells_B;
 
    // sort cells_Z by position so that the original order in A is reconstructed
    //
-   Heapsort<const Cell *>::sort(cells_Z, Cell::compare_ptr, 0);
+   Heapsort<const Cell *>::sort(cells_Z, Cell::compare_ptr, nullptr);
 
 Value_P Z(cells_Z.size(), LOC);
 

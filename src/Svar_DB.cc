@@ -180,7 +180,7 @@ char peer[100];
       }
 #else // use TCP
       {
-        server_sockname = 0;
+        server_sockname = nullptr;
         logit && get_CERR() << "Using TCP socket towards APserver..."
                             << endl;
         sock = TCP_socket(socket(AF_INET, SOCK_STREAM, 0));
@@ -379,10 +379,10 @@ const int sock = Svar_DB::get_DB_tcp();
 
    { READ_SVAR_RECORD_c request(sock, key); }
 
-char * del = 0;
+char * del = nullptr;
 char buffer[2*MAX_SIGNAL_CLASS_SIZE + sizeof(Svar_record)];
-ostream * log = (LOG_startup != 0 || LOG_Svar_DB_signals != 0) ? & cerr : 0;
-const char * err_loc = 0;
+ostream * log = (LOG_startup != 0 || LOG_Svar_DB_signals != 0) ? & cerr : nullptr;
+const char * err_loc = nullptr;
 Signal_base * response = Signal_base::recv_TCP(sock, buffer, sizeof(buffer),
                                                del, log, &err_loc);
    if (response)
@@ -452,11 +452,11 @@ MATCH_OR_MAKE_c request(tcp, vname,
                              to.proc,      to.parent,      to.grand,
                              from.id.proc, from.id.parent, from.id.grand);
 
-char * del = 0;
+char * del = nullptr;
 char buffer[2*MAX_SIGNAL_CLASS_SIZE + 16];
-const char * err_loc = 0;
+const char * err_loc = nullptr;
 Signal_base * response = Signal_base::recv_TCP(tcp, buffer, sizeof(buffer),
-                                               del, 0, &err_loc);
+                                               del, nullptr, &err_loc);
 
    if (response)
       {
@@ -480,11 +480,11 @@ const TCP_socket tcp = get_Svar_DB_tcp(__FUNCTION__);
 
 GET_EVENTS_c request(tcp, id.proc, id.parent, id.grand);
 
-char * del = 0;
+char * del = nullptr;
 char buffer[2*MAX_SIGNAL_CLASS_SIZE + 16];
-const char * err_loc = 0;
+const char * err_loc = nullptr;
 Signal_base * response =
-       Signal_base::recv_TCP(tcp, buffer, sizeof(buffer), del, 0, &err_loc);
+       Signal_base::recv_TCP(tcp, buffer, sizeof(buffer), del, nullptr, &err_loc);
 
    if (response)
       {
@@ -511,11 +511,11 @@ const TCP_socket tcp = get_Svar_DB_tcp(__FUNCTION__);
 
 CLEAR_ALL_EVENTS_c request(tcp, id.proc, id.parent, id.grand);
 
-char * del = 0;
+char * del = nullptr;
 char buffer[2*MAX_SIGNAL_CLASS_SIZE + 16];
-const char * err_loc = 0;
+const char * err_loc = nullptr;
 Signal_base * response = Signal_base::recv_TCP(tcp, buffer, sizeof(buffer),
-                                               del, 0, &err_loc);
+                                               del, nullptr, &err_loc);
 
    if (response)
       {
@@ -556,11 +556,11 @@ const TCP_socket tcp = get_Svar_DB_tcp(__FUNCTION__);
 
 MAY_SET_c request(tcp, key, attempt);
 
-char * del = 0;
+char * del = nullptr;
 char buffer[2*MAX_SIGNAL_CLASS_SIZE + 16];
-const char * err_loc = 0;
+const char * err_loc = nullptr;
 Signal_base * response = Signal_base::recv_TCP(tcp, buffer, sizeof(buffer),
-                                               del, 0, &err_loc);
+                                               del, nullptr, &err_loc);
 
    if (response)
       {
@@ -580,11 +580,11 @@ const TCP_socket tcp = get_Svar_DB_tcp(__FUNCTION__);
 
 MAY_USE_c request(tcp, key, attempt);
 
-char * del = 0;
+char * del = nullptr;
 char buffer[2*MAX_SIGNAL_CLASS_SIZE];
-const char * err_loc = 0;
+const char * err_loc = nullptr;
 Signal_base * response = Signal_base::recv_TCP(tcp, buffer, sizeof(buffer),
-                                               del, 0, &err_loc);
+                                               del, nullptr, &err_loc);
 
    if (response)
       {
@@ -622,11 +622,11 @@ const TCP_socket tcp = get_Svar_DB_tcp(__FUNCTION__);
 
 FIND_OFFERING_ID_c request(tcp, key);
 
-char * del = 0;
+char * del = nullptr;
 char buffer[2*MAX_SIGNAL_CLASS_SIZE + 16];
-const char * err_loc = 0;
+const char * err_loc = nullptr;
 Signal_base * response = Signal_base::recv_TCP(tcp, buffer, sizeof(buffer),
-                                               del, 0, &err_loc);
+                                               del, nullptr, &err_loc);
 
    if (response)
       {
@@ -648,11 +648,11 @@ const TCP_socket tcp = get_Svar_DB_tcp(__FUNCTION__);
 
 GET_OFFERING_PROCS_c request(tcp, to_proc);
 
-char * del = 0;
+char * del = nullptr;
 char buffer[2*MAX_SIGNAL_CLASS_SIZE + 16];
-const char * err_loc = 0;
+const char * err_loc = nullptr;
 Signal_base * response = Signal_base::recv_TCP(tcp, buffer, sizeof(buffer),
-                                               del, 0, &err_loc);
+                                               del, nullptr, &err_loc);
 
    if (response)
       {
@@ -674,11 +674,11 @@ const TCP_socket tcp = get_Svar_DB_tcp(__FUNCTION__);
 
 GET_OFFERED_VARS_c request(tcp, to_proc, from_proc);
 
-char * del = 0;
+char * del = nullptr;
 char buffer[2*MAX_SIGNAL_CLASS_SIZE + 16];
-const char * err_loc = 0;
+const char * err_loc = nullptr;
 Signal_base * response = Signal_base::recv_TCP(tcp, buffer, sizeof(buffer),
-                                               del, 0, &err_loc);
+                                               del, nullptr, &err_loc);
 
    if (response)
       {
@@ -699,11 +699,11 @@ const TCP_socket tcp = get_Svar_DB_tcp(__FUNCTION__);
 
 IS_REGISTERED_ID_c request(tcp, id.proc, id.parent, id.grand);
 
-char * del = 0;
+char * del = nullptr;
 char buffer[2*MAX_SIGNAL_CLASS_SIZE + 16];
-const char * err_loc = 0;
+const char * err_loc = nullptr;
 Signal_base * response = Signal_base::recv_TCP(tcp, buffer, sizeof(buffer),
-                                               del, 0, &err_loc);
+                                               del, nullptr, &err_loc);
 
    if (response)
       {
@@ -745,11 +745,11 @@ const TCP_socket tcp = Svar_DB::get_DB_tcp();
 
 FIND_PAIRING_KEY_c request(tcp, key);
 
-char * del = 0;
+char * del = nullptr;
 char buffer[2*MAX_SIGNAL_CLASS_SIZE + 16];
-const char * err_loc = 0;
+const char * err_loc = nullptr;
 Signal_base * response = Signal_base::recv_TCP(tcp, buffer, sizeof(buffer),
-                                               del, 0, &err_loc);
+                                               del, nullptr, &err_loc);
 
    if (response)
       {
@@ -769,12 +769,12 @@ const TCP_socket tcp = Svar_DB::get_DB_tcp();
 
 PRINT_SVAR_DB_c request(tcp);
 
-char * del = 0;
+char * del = nullptr;
 char buffer[2*MAX_SIGNAL_CLASS_SIZE + 4000];
-const char * err_loc = 0;
+const char * err_loc = nullptr;
 
    if (Signal_base * response =
-       Signal_base::recv_TCP(tcp, buffer, sizeof(buffer), del, 0, &err_loc))
+       Signal_base::recv_TCP(tcp, buffer, sizeof(buffer), del, nullptr, &err_loc))
       {
         out << response->get__SVAR_DB_PRINTED__printout();
         delete response;

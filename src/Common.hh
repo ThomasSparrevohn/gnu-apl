@@ -237,7 +237,7 @@ uint32_t lo, hi;
 inline uint64_t cycle_counter()
 {
 timeval tv;
-   gettimeofday(&tv, 0);
+   gettimeofday(&tv, nullptr);
    return tv.tv_sec * 1000000ULL + tv.tv_usec;
 }
 #else // neither HAVE_RDTSC nor HAVE_GETTIMEOFDAY

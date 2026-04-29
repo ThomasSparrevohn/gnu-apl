@@ -242,13 +242,13 @@ const Monomial * largest = &at(0);
    loop(t, size())
        {
          largest->print(out, t == 0);
-         const Monomial * next = 0;
+         const Monomial * next = nullptr;
          loop(t, size())
              {
                const Monomial * tj = &at(t);
                if (tj == largest)      continue;
                if (*largest < *tj)     continue;
-               if (next == 0)          next = tj;
+               if (next == nullptr)          next = tj;
                else if (*next < *tj)   next = tj;
              }
          Assert(next);

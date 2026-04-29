@@ -48,7 +48,7 @@ void *connection_loop( void *arg )
     catch( ConnectionError &connection_error ) {
         CERR << "Disconnected: " << connection_error.get_message() << endl;
     }
-    return NULL;
+    return nullptr;
 }
 
 static void *listener_loop( void *arg )
@@ -57,7 +57,7 @@ Listener * listener(reinterpret_cast<Listener *>(arg));
 ListenerWrapper listener_wrapper(listener);
     listener->wait_for_connection();
 
-    return NULL;
+    return nullptr;
 }
 
 void start_listener(int port)
@@ -68,7 +68,7 @@ unique_ptr<Listener> listener( Listener::create_listener( port ) );
 
 string conninfo = listener->start();
     
-   if (pthread_create(&thread_id, 0, listener_loop, listener.get()))
+   if (pthread_create(&thread_id, nullptr, listener_loop, listener.get()))
       {
         throw InitProtocolError("Unable to start network connection thread");
       }

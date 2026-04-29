@@ -102,7 +102,7 @@ get_function_mux(const char * function_name)
       return reinterpret_cast<void *>(&eval_fill_AB);
    if (!strcmp(function_name, "eval_ident_Bx"))
       return reinterpret_cast<void *>(&eval_ident_Bx);
-   return 0;
+   return nullptr;
 }
 
 Token
@@ -144,7 +144,7 @@ get_function_mux(const char * function_name)
       return reinterpret_cast<void *>(&eval_fill_AB);
    if (!strcmp(function_name, "eval_ident_Bx"))
       return reinterpret_cast<void *>(&eval_ident_Bx);
-   return 0;
+   return nullptr;
 }
 //-----------------------------------------------------------------------------
 Token
@@ -215,7 +215,7 @@ get_function_mux(const char * function_name)
       return reinterpret_cast<void *>(&eval_fill_AB);
    if (!strcmp(function_name, "eval_ident_Bx"))
       return reinterpret_cast<void *>(&eval_ident_Bx);
-   return 0;
+   return nullptr;
 }
 //-----------------------------------------------------------------------------
 Token
@@ -288,7 +288,7 @@ get_function_mux(const char * function_name)
       return reinterpret_cast<void *>(&eval_fill_AB);
    if (!strcmp(function_name, "eval_ident_Bx"))
       return reinterpret_cast<void *>(&eval_ident_Bx);
-   return 0;
+   return nullptr;
 }
 //-----------------------------------------------------------------------------
 Token

@@ -90,7 +90,7 @@ LvalCell::check_consistency() const
             BACKTRACE;
           }
      }
-  else Assert(value.pval.owner == 0);   // no owner
+  else Assert(value.pval.owner == nullptr);   // no owner
 }
 //----------------------------------------------------------------------------
 

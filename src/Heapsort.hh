@@ -134,7 +134,7 @@ public:
               else                 return &array[m];   // key found
             }
 
-        return 0;   // not found
+        return nullptr;   // not found
       }
 
    /// initialize the (initially empty) vector \b sorted with pointers to the

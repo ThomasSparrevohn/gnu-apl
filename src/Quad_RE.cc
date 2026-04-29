@@ -352,7 +352,7 @@ vector<int> ccount(ovector_count,   0);   // 0 children
        }
 
    return deep_value(0, ovector, ovector_count,
-                     parents.data(), ccount.data(), 0);
+                     parents.data(), ccount.data(), nullptr);
 }
 //----------------------------------------------------------------------------
 Token

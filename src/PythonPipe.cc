@@ -113,8 +113,8 @@ const int & python_sock = spair[1];
 // const char * program = "/bin/sh";
 char * program = const_cast<char *>( "/usr/bin/python3" );
 char * argv1  = const_cast<char *>(argv1_utf.c_str());
-char * argv[] = { program, argv1, 0 };
-char * env[] = { 0 };
+char * argv[] = { program, argv1, nullptr };
+char * env[] = { nullptr };
    execve(argv[0], argv, env);
 
    // only reached if execve() has failed

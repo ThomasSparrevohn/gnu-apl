@@ -805,14 +805,14 @@ static PyMethodDef AplMethods[] =
   { "get_value",    apl_get_value,    METH_VARARGS, DESCR_get_value    },
   { "set_value",    apl_set_value,    METH_VARARGS, DESCR_set_value    },
   { "set_display",  apl_set_display,  METH_VARARGS, DESCR_set_display  },
-  { NULL,           0,                0,            0 }   /* Sentinel */
+  { nullptr,           0,                0,            0 }   /* Sentinel */
 };
 //----------------------------------------------------------------------------
 static struct PyModuleDef apl_module =
 {
   PyModuleDef_HEAD_INIT,
   "gnu_apl",   /* name of module */
-  0,           // spam_doc, /* module documentation, may be NULL */
+  0,           // spam_doc, /* module documentation, may be nullptr */
   -1,          /* size of per-interpreter state of the module,
                   -1 if the module keeps state in global variables. */
   AplMethods

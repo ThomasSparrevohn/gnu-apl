@@ -241,7 +241,7 @@ APL_time_us
 now()
 {
 timeval tv_now;
-   gettimeofday(&tv_now, 0);
+   gettimeofday(&tv_now, nullptr);
 
 APL_time_us ret = tv_now.tv_sec;
    ret *= 1000000;

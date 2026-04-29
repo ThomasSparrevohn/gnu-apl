@@ -96,7 +96,7 @@ IO_Files::get_file_line(UTF8_string & line, bool & eof)
                   UCS_string LX = Workspace::get_LX();
                   if (LX.size())   // ⎕LX pending
                      {
-                       Command::process_line(LX, 0);
+                       Command::process_line(LX, nullptr);
                        eof = false;
                        return;
                      }
@@ -380,7 +380,7 @@ int done = testcases_done;
 void
 IO_Files::open_next_file()
 {
-   if (InputFile::current_file() == 0)
+   if (InputFile::current_file() == nullptr)
       {
         CERR << "IO_Files::open_next_file(): no more files" << endl;
         return;
@@ -432,7 +432,7 @@ IO_Files::open_next_file()
               }
 
            InputFile::open_current_file();
-           if (InputFile::current_file()->file == 0)
+           if (InputFile::current_file()->file == nullptr)
               {
                 CERR << "could not open "
                      << InputFile::current_filename() << endl;

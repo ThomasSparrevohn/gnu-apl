@@ -160,7 +160,7 @@ get_function_mux( const char *function_name )
        return reinterpret_cast<void *>(&eval_AXB);
     if (strcmp(function_name, "close_fun") == 0)
        return reinterpret_cast<void *>(&close_fun);
-    return 0;
+    return nullptr;
 }
 
 int emacs_start( const char *emacs_arg, const char *lib_path )

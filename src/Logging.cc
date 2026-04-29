@@ -66,7 +66,7 @@ Log_info(LogId lid)
         default: break;
       }
 
-   return 0;
+   return nullptr;
 }
 
 #endif

@@ -86,7 +86,7 @@ struct InputFile
 
    /// the current file
    static InputFile * current_file()
-      { return files_todo.size() ? &files_todo[0] : 0; }
+      { return files_todo.size() ? &files_todo[0] : nullptr; }
 
    /// the name of the currrent file
    static const char * current_filename()

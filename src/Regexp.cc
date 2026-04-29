@@ -38,9 +38,9 @@ RegexpMatch::RegexpMatch(pcre2_code * code, const UCS_string & B,
                          PCRE2_SIZE start)
    : matched_B(B)
 {
-   match_data = pcre2_match_data_create_from_pattern_32(code, NULL);
+   match_data = pcre2_match_data_create_from_pattern_32(code, nullptr);
    match_result = pcre2_match_32(code, B.raw<PCRE2_UCHAR32>(), B.size(),
-                                 start, 0, match_data, NULL);
+                                 start, 0, match_data, nullptr);
    if (match_result == 0)
       {
         MORE_ERROR() << "Match buffer too small";
@@ -56,7 +56,7 @@ RegexpMatch::RegexpMatch(pcre2_code * code, const UCS_string & B,
       {
         MORE_ERROR() << "libpcre error: " << Regexp::pcre_error(match_result);
         ovector_count = 0;
-        ovector = 0;
+        ovector = nullptr;
       }
 }
 //----------------------------------------------------------------------------
@@ -100,7 +100,7 @@ PCRE2_SIZE error_offset = -1;
 
    code = pcre2_compile_32(pattern_ucs, pattern.size(),
                            PCRE2_UTF | PCRE2_UCP | flags, &error_code,
-                           &error_offset, 0);
+                           &error_offset, nullptr);
    delete[] pattern_ucs;
 
    if (code)   return;   // OK

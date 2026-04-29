@@ -96,7 +96,7 @@ UCS_string_vector content;   // for new-style multiline strings
      multi_pos = line.multi_pos();
      if (multi_pos == -1)   // OUTSIDE
         {
-          process_line(line, 0);
+          process_line(line, nullptr);
           return;
         }
      content.push_back(UCS_string(line, 0, multi_pos));
@@ -193,7 +193,7 @@ const UCS_string suffix(line, multi_pos + 3);
           }
 
         content[0] << " " << suffix;
-        process_line(content[0], 0);
+        process_line(content[0], nullptr);
       }
 }
 //----------------------------------------------------------------------------
@@ -217,13 +217,13 @@ Command::process_line(UCS_string & line, ostream * out)
    switch(line[0])
       {
          case UNI_R_PARENT:      // regular command, e.g. )SI
-              if (out == 0)   out = &COUT;
+              if (out == nullptr)   out = &COUT;
               do_APL_command(*out, line);
               if (line.size())   break;
               return;
 
          case UNI_R_BRACK:       // debug command, e.g. ]LOG
-              if (out == 0)   out = &CERR;
+              if (out == nullptr)   out = &CERR;
               do_APL_command(*out, line);
               if (line.size())   break;
               return;
@@ -386,7 +386,7 @@ Command::do_APL_expression(UCS_string & line, Value_P literal)
    COUT << left << dec << nouppercase << setfill(' ');
    Workspace::more_error().clear();
 
-Executable * statements = 0;
+Executable * statements = nullptr;
    try
       {
         statements = StatementList::fix(line, literal, LOC);
@@ -421,7 +421,7 @@ Executable * statements = 0;
         cmd_OFF(0);
       }
 
-   if (statements == 0)   // StatementList::fix() failed
+   if (statements == nullptr)   // StatementList::fix() failed
       {
         COUT << "main: Parse error";
         if (Workspace::more_error().size())   COUT << "+";
@@ -446,7 +446,7 @@ Executable * statements = 0;
           for (bool goon = true; goon;)
               {
                 StateIndicator * si = Workspace::SI_top();
-                if (si == 0)   break;   // SI empty
+                if (si == nullptr)   break;   // SI empty
 
                 goon = si->get_parse_mode() != PM_STATEMENT_LIST;
                 si->escape();   // pop local vars of user defined functions
@@ -578,7 +578,7 @@ check_EOC:
 
               StateIndicator * si = Workspace::SI_top_fun();
 
-              if (si == 0)
+              if (si == nullptr)
                  {
                     MORE_ERROR() <<
                     "branch back into function (→N) without suspended function";
@@ -601,7 +601,7 @@ check_EOC:
               for (bool goon = true; goon;)
                   {
                     StateIndicator * si = Workspace::SI_top();
-                    if (si == 0)   break;   // SI empty
+                    if (si == nullptr)   break;   // SI empty
 
                     goon = si->get_parse_mode() != PM_STATEMENT_LIST;
                     si->escape();   // pop local vars of user defined functions
@@ -616,7 +616,7 @@ check_EOC:
                  {
                    Workspace::pop_SI(LOC);
                    UCS_string pushed_command = Workspace::get_pushed_Command();
-                   process_line(pushed_command, 0);
+                   process_line(pushed_command, nullptr);
                    pushed_command.clear();
                    Workspace::push_Command(pushed_command);   // clear in
                    return;
@@ -670,7 +670,7 @@ check_EOC:
                       }
                  }
 
-              if (Workspace::get_error()->get_print_loc() == 0)   // not printed
+              if (Workspace::get_error()->get_print_loc() == nullptr)   // not printed
                  {
                    Workspace::get_error()->print(CERR, LOC);
                  }
@@ -1259,7 +1259,7 @@ UCS_string arg;
         //
         CERR << "symbol '" << arg << "' ";
         Symbol * sym = Workspace::lookup_existing_symbol(arg);
-        if (sym == 0)
+        if (sym == nullptr)
            {
              CERR << "does not exist in the current workspace" << endl;
              return;
@@ -1272,7 +1272,7 @@ UCS_string arg;
            }
 
         ValueStackItem * vs = sym->top_of_stack();
-        if (vs == 0)
+        if (vs == nullptr)
            {
              CERR << " has no stack." << endl;
              return;
@@ -1630,7 +1630,7 @@ Command::cmd_OFF(int exit_val)
    if (UserPreferences::uprefs.silence < NO_BANNER)
       {
         timeval end;
-        gettimeofday(&end, 0);
+        gettimeofday(&end, nullptr);
         end.tv_sec -= UserPreferences::uprefs.session_start.tv_sec;
         end.tv_usec -= UserPreferences::uprefs.session_start.tv_usec;
         if (end.tv_usec < 1000000)   { end.tv_usec += 1000000;   --end.tv_sec; }
@@ -1722,7 +1722,7 @@ UCS_string fname = args.front();
    args.erase(0);
 
 const LibRef_name lib_name(LIB0, fname);
-const UTF8_string filename = LibPaths::get_filename(lib_name, false, ".atf", 0);
+const UTF8_string filename = LibPaths::get_filename(lib_name, false, ".atf", nullptr);
 
 FileWriter writer(filename.c_str());
    if (!writer)

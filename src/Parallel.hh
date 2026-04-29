@@ -27,6 +27,11 @@
 #include <pthread.h>
 #include "Common.hh"
 
+#if defined(__APPLE__)
+# define MACOS_PARALLEL_WITHOUT_AFFINITY 1
+#endif
+
+
 // set PARALLEL_ENABLED if wanted and its prerequisites are satisfied
 //
 #if cfg_CORE_COUNT_WANTED == 0
@@ -35,9 +40,9 @@
    //
 # undef PARALLEL_ENABLED
 
-#elif HAVE_AFFINITY_NP
+#elif HAVE_AFFINITY_NP || MACOS_PARALLEL_WITHOUT_AFFINITY
    //
-   // parallel wanted and pthread_setaffinity_np() supported
+   // parallel wanted and its platform prerequisites are supported
    //
 # define PARALLEL_ENABLED 1
 
@@ -80,7 +85,26 @@ inline int atomic_read(volatile _Atomic_word & counter)
 inline void atomic_add(volatile _Atomic_word & counter, int increment)
    { counter += increment; }
 
-#elif HAVE_EXT_ATOMICITY_H
+#elif defined(__GNUC__) || defined(__clang__)
+
+#include <stdint.h>
+
+/// a counter for atomic operations
+typedef int32_t _Atomic_word;
+
+/// atomic \b counter += \b increment, return old value
+inline int atomic_fetch_add(volatile _Atomic_word & counter, int increment)
+   { return __atomic_fetch_add(&counter, increment, __ATOMIC_SEQ_CST); }
+
+/// atomic read \b counter
+inline int atomic_read(volatile _Atomic_word & counter)
+   { return __atomic_load_n(&counter, __ATOMIC_SEQ_CST); }
+
+/// atomic \b counter += \b increment
+inline void atomic_add(volatile _Atomic_word & counter, int increment)
+   { __atomic_fetch_add(&counter, increment, __ATOMIC_SEQ_CST); }
+
+#elif HAVE_EXT_ATOMICITY_H && !defined(__APPLE__)
 #include <ext/atomicity.h>
 
 /// atomic \b counter += \b increment, return old value
@@ -106,22 +130,22 @@ inline void atomic_add(volatile _Atomic_word & counter, int increment)
 
 #elif HAVE_OSX_ATOMIC
 
-#include <libkern/OSAtomic.h>
+#include <stdint.h>
 
 /// a counter for atomic operations
 typedef int32_t _Atomic_word;
 
 /// atomic \b counter += \b increment, return old value
 inline int atomic_fetch_add(volatile _Atomic_word & counter, int increment)
-   { return OSAtomicAdd32Barrier(increment, &counter) - increment; }
+   { return __atomic_fetch_add(&counter, increment, __ATOMIC_SEQ_CST); }
 
 /// atomic read \b counter
 inline int atomic_read(volatile _Atomic_word & counter)
-   { return OSAtomicAdd32Barrier(0, &counter); }
+   { return __atomic_load_n(&counter, __ATOMIC_SEQ_CST); }
 
 /// atomic \b counter += \b increment
 inline void atomic_add(volatile _Atomic_word & counter, int increment)
-   { OSAtomicAdd32Barrier(increment, &counter); }
+   { __atomic_fetch_add(&counter, increment, __ATOMIC_SEQ_CST); }
 
 #elif HAVE_SOLARIS_ATOMIC
 

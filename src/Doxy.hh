@@ -39,8 +39,8 @@ struct fcall_edge
 {
    /// default constructor
    fcall_edge()
-   : caller(0),
-     callee(0),
+   : caller(nullptr),
+     callee(nullptr),
      value(0)
    {}
 

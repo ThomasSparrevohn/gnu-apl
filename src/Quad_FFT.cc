@@ -94,7 +94,7 @@ const UCS_string blanks(max_function_name_length - strlen(name), UNI_SPACE);
 Token
 Quad_FFT::eval_B(Value_P B) const
 {
-   if (B->element_count())   return do_fft(FFTW_FORWARD, B, 0);
+   if (B->element_count())   return do_fft(FFTW_FORWARD, B, nullptr);
    if (B->is_str0())         return list_functions(CERR);
    if (B->is_zilde())        return list_mappings(CERR);
    DOMAIN_ERROR;
@@ -112,7 +112,7 @@ const APL_Integer N = B->element_count();
         in[0][1] = B->get_cfirst().get_imag_value();
       }
 
-   if (win == 0)
+   if (win == nullptr)
       {
         loop(n, N)
            {
@@ -132,7 +132,7 @@ const APL_Integer N = B->element_count();
    else
       {
         double * wp = new double[N];
-        if (wp == 0)   WS_FULL;
+        if (wp == nullptr)   WS_FULL;
         fill_window(wp, B->get_shape(), win);
         loop(n, N)
            {
@@ -159,9 +159,9 @@ const APL_Integer N = B->element_count();
 const ShapeItem io_size = N * sizeof(fftw_complex);
 
 fftw_complex * in  =  reinterpret_cast<fftw_complex *>(fftw_malloc(io_size));
-   if (in == 0)    WS_FULL;
+   if (in == nullptr)    WS_FULL;
 fftw_complex * out =  reinterpret_cast<fftw_complex *>(fftw_malloc(io_size));
-   if (out == 0)    { fftw_free(in);   WS_FULL; }
+   if (out == nullptr)    { fftw_free(in);   WS_FULL; }
 
    enum { flags = FFTW_ESTIMATE | FFTW_DESTROY_INPUT };
 
@@ -170,7 +170,7 @@ fftw_complex * out =  reinterpret_cast<fftw_complex *>(fftw_malloc(io_size));
    if (B->get_rank() <= 1)   // one-dimensional FFT
       {
         fftw_plan plan = fftw_plan_dft_1d(N, in, out, dir, flags);
-        if (plan == 0)
+        if (plan == nullptr)
            {
              fftw_free(in);
              fftw_free(out);
@@ -186,7 +186,7 @@ fftw_complex * out =  reinterpret_cast<fftw_complex *>(fftw_malloc(io_size));
         fftw_plan plan = fftw_plan_dft_2d(B->get_shape_item(0),
                                           B->get_shape_item(1),
                                           in, out, dir, flags);
-        if (plan == 0)
+        if (plan == nullptr)
            {
              fftw_free(in);
              fftw_free(out);
@@ -203,7 +203,7 @@ fftw_complex * out =  reinterpret_cast<fftw_complex *>(fftw_malloc(io_size));
                                           B->get_shape_item(1),
                                           B->get_shape_item(2),
                                           in, out, dir, flags);
-        if (plan == 0)
+        if (plan == nullptr)
            {
              fftw_free(in);
              fftw_free(out);
@@ -220,7 +220,7 @@ fftw_complex * out =  reinterpret_cast<fftw_complex *>(fftw_malloc(io_size));
         loop(r, B->get_rank())   ish[r] = B->get_shape_item(r);
 
         fftw_plan plan = fftw_plan_dft(B->get_rank(), ish, in, out, dir, flags);
-        if (plan == 0)
+        if (plan == nullptr)
            {
              fftw_free(in);
              fftw_free(out);
@@ -270,7 +270,7 @@ Value_P Z(B->get_shape(), LOC);
    else
       {
         double * wp = new double[N];
-        if (wp == 0)   WS_FULL;
+        if (wp == nullptr)   WS_FULL;
         fill_window(wp, B->get_shape(), win);
 
         loop(n, N)
@@ -315,8 +315,8 @@ const sAxis subfunction = value_to_subfun(A_or_X);
         case  11: return do_fft(FFTW_FORWARD, B, &hamming_window);
         case  10: return do_fft(FFTW_FORWARD, B, &hann_window);
 
-        case   0: return do_fft(FFTW_FORWARD,  B, 0);
-        case  -1: return do_fft(FFTW_BACKWARD, B, 0);
+        case   0: return do_fft(FFTW_FORWARD,  B, nullptr);
+        case  -1: return do_fft(FFTW_BACKWARD, B, nullptr);
 
         case -10: return do_window(B, &hann_window);
         case -11: return do_window(B, &hamming_window);

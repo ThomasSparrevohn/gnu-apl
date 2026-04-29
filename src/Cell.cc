@@ -86,7 +86,7 @@ Cell::init_type(const Cell & other, Value & cell_owner, const char * loc)
         proto->to_type(false);
         new (this) PointerCell(proto.get(), cell_owner);
       }
-   else if (other.is_lval_cell())      new (this) LvalCell(0, 0);
+   else if (other.is_lval_cell())      new (this) LvalCell(nullptr, nullptr);
    else if (other.is_character_cell()) new (this) CharCell(UNI_SPACE);
    else                                new (this) IntCell(0);
 }

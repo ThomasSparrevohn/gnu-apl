@@ -242,7 +242,7 @@ Quad_FX::do_quad_FX(const int * exec_props, const UCS_string & text,
 int error_line = 0;
 UserFunction * fun = UserFunction::fix(text, error_line, false, LOC, creator);
 
-   if (fun == 0)   // UserFunction::fix() dailed
+   if (fun == nullptr)   // UserFunction::fix() dailed
       {
         Value_P Z = IntScalar(error_line + Workspace::get_IO(), LOC);
         return Token(TOK_APL_VALUE1, Z);
@@ -275,7 +275,7 @@ const UCS_string function_name = B->get_UCS_ravel();
    if (function_name.size() == 0)   LENGTH_ERROR;
 
 NativeFunction * fun = NativeFunction::fix(so_name, function_name);
-   if (fun == 0)  return IntScalar(0, LOC);
+   if (fun == nullptr)  return IntScalar(0, LOC);
 
    return CLONE(B, LOC);
 }

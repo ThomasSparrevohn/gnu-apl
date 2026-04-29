@@ -249,7 +249,7 @@ APL_Float val = cell.get_real_value();
 Value_P
 Quad_EM::get_apl_value() const
 {
-const Error * err = 0;
+const Error * err = nullptr;
 
    for (StateIndicator * si = Workspace::SI_top(); si; si = si->get_parent())
        {
@@ -261,7 +261,7 @@ const Error * err = 0;
          if (si->get_parse_mode() == PM_FUNCTION)   break;
        }
 
-   if (err == 0)   // no SI entry with non-zero error code
+   if (err == nullptr)   // no SI entry with non-zero error code
       {
         // return 3 0⍴' '
         //
@@ -451,7 +451,7 @@ void
 Quad_L::assign(Value_P B, bool clone, const char * loc)
 {
 StateIndicator * si = Workspace::SI_top_fun();
-   if (si == 0)   return;
+   if (si == nullptr)   return;
 
    // ignore assignments if error was SYNTAX ERROR or VALUE ERROR
    //
@@ -796,7 +796,7 @@ PrintContext pctx(PR_QUOTE_Quad,         // ⍞ style
                   Workspace::get_PP(),   // user's choice
                   0);                    // no APL line folding
 
-PrintBuffer pb(*B, pctx, /* print directly to COUT*/ 0);
+PrintBuffer pb(*B, pctx, /* print directly to COUT*/ nullptr);
    if (pb.get_row_count() > 1)  // multi line output: flush and restart corking
       {
         loop(y, pb.get_row_count())
@@ -873,7 +873,7 @@ void
 Quad_R::assign(Value_P B, bool clone, const char * loc)
 {
 StateIndicator * si = Workspace::SI_top_fun();
-   if (si == 0)   return;
+   if (si == nullptr)   return;
 
    // ignore assignments if error was SYNTAX ERROR or VALUE ERROR
    //
@@ -1223,7 +1223,7 @@ void
 Quad_X::assign(Value_P B, bool clone, const char * loc)
 {
 StateIndicator * si = Workspace::SI_top_fun();
-   if (si == 0)   return;
+   if (si == nullptr)   return;
 
    // ignore assignments if error was SYNTAX ERROR or VALUE ERROR
    //

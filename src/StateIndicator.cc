@@ -65,7 +65,7 @@ StateIndicator::~StateIndicator()
       {
          Assert1(executable);
          delete executable;
-         executable = 0;
+         executable = nullptr;
       }
 }
 //----------------------------------------------------------------------------
@@ -465,7 +465,7 @@ StateIndicator::find_child() const
          if (this == si->get_parent())   return si;   // found child si
        }
 
-   return 0;   // si is Workspace::SI_top()
+   return nullptr;   // si is Workspace::SI_top()
 }
 //----------------------------------------------------------------------------
 int
@@ -507,7 +507,7 @@ int pc = get_PC();
 #ifdef apl_TARGET_LIBAPL
 typedef int (*result_callback)(const Value * result, int committed);
 extern "C" result_callback res_callback;
-result_callback res_callback = 0;
+result_callback res_callback = nullptr;
 #endif
 
 #ifdef apl_TARGET_PYTHON

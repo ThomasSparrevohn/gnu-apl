@@ -10,7 +10,7 @@ const char * commands[] =
 {
 #define cmd_def(cmd, ...) cmd,
 #include "../src/Command.def"
-   0
+   nullptr
 };
 
 //────────────────────────────────────────────────────────────────────────────

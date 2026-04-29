@@ -95,7 +95,7 @@ struct stat st;
       }
 
 UTF8 * buffer = new UTF8[st.st_size];
-   if (buffer == 0)
+   if (buffer == nullptr)
       {
         ::close(fd);
         WS_FULL;
@@ -766,7 +766,7 @@ double dval = 0;
 
    // always scan the double value
    //
-   dval = strtod(cc, 0);
+   dval = strtod(cc, nullptr);
 
    if (dval > LARGE_INT || dval < SMALL_INT)   need_fract = true;
 
@@ -783,7 +783,7 @@ double dval = 0;
       }
    else
       {
-        const long long int ival = strtoll(cc, 0, 10);
+        const long long int ival = strtoll(cc, nullptr, 10);
         Z.next_ravel_Int(ival);
         return;
       }
@@ -865,7 +865,7 @@ char cc[5];
    cc[3] = ucs_B[b++];
    cc[4] = 0;
 
-   return Unicode(strtoll(cc, 0, 16));
+   return Unicode(strtoll(cc, nullptr, 16));
 }
 //----------------------------------------------------------------------------
 void

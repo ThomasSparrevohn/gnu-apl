@@ -61,7 +61,7 @@ public:
               if (!sym->is_erased())      return sym;
             }
 
-        return 0;
+        return nullptr;
       }
 
    /// return a \b Symbol with name \b name in \b this \b SymbolTable.
@@ -85,19 +85,19 @@ public:
    void add_symbol(T * sym)
        {
          const uint32_t hash = compute_hash(sym->get_name());
-         if (symbol_table[hash] == 0)   // unused slot
+         if (symbol_table[hash] == nullptr)   // unused slot
             {
               symbol_table[hash] = sym;
-              sym->next = 0;
+              sym->next = nullptr;
               return;
             }
 
          for (T * t = symbol_table[hash]; ; t = t->next)
              {
-               if (t->next == 0)   // append new_symbol at the end
+               if (t->next == nullptr)   // append new_symbol at the end
                   {
                     t->next = sym;
-                    sym->next = 0;
+                    sym->next = nullptr;
                     return;
                   }
              }
@@ -245,12 +245,12 @@ public:
 
    /// add \b function to the symbol table
    void add_function(const UCS_string & name, Id id, QuadFunction * function)
-      { add_fun_or_var(name, id, function, 0); }
+      { add_fun_or_var(name, id, function, nullptr); }
 
    /// add \b variable to the symbol table
    void add_variable(const UCS_string & name, Id id,
                      SystemVariable * variable)
-      { add_fun_or_var(name, id, 0, variable); }
+      { add_fun_or_var(name, id, nullptr, variable); }
 
    /// don't add ⍺ and friends
    void add_variable(const UCS_string & name, Id id, Symbol * variable)

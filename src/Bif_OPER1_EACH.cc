@@ -125,7 +125,7 @@ cFunction_P LO = _LO.get_function();
          const bool extend_A = A->is_scalar_or_len1_vector() && !B->is_scalar();
          const bool extend_B = B->is_scalar_or_len1_vector();
 
-         Macro * macro = 0;
+         Macro * macro = nullptr;
          if (LO->has_result())
             {
               if (extend_A)
@@ -207,7 +207,7 @@ cFunction_P LO = _LO.get_function();
 const int inc_A = A->get_increment();
 const int inc_B = B->get_increment();
 
-const Shape * shape_Z = 0;
+const Shape * shape_Z = nullptr;
    if      (A->is_scalar())      shape_Z = &B->get_shape();
    else if (B->is_scalar())      shape_Z = &A->get_shape();
    else if (inc_A == 0)          shape_Z = &B->get_shape();

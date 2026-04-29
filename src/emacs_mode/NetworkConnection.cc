@@ -60,7 +60,7 @@ static void add_command( std::map<std::string, NetworkCommand *> &commands, Netw
 NetworkConnection::NetworkConnection( int socket_in )
     : socket_fd(socket_in), buffer_pos(0), buffer_length(0)
 {
-    pthread_mutex_init( &connection_lock, NULL );
+    pthread_mutex_init( &connection_lock, nullptr );
 
     add_command( commands, new SiCommand( "si" ) );
     add_command( commands, new SicCommand( "sic" ) );

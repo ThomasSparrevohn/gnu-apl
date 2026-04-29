@@ -183,7 +183,7 @@ const size_t bytes_B = items_B * sizeof(t0);
    // allocate storage for A and B
    //
 char * work_AB = new char[bytes_A + bytes_B];
-   if (work_AB == 0)   WS_FULL;
+   if (work_AB == nullptr)   WS_FULL;
 
 char * work_A = work_AB;
 char * work_B = work_A + bytes_A;
@@ -276,7 +276,7 @@ char * work_B = new char[bytes_B + bytes_HR + bytes_R + bytes_Ri];
 char * work_HR = work_B  + bytes_B;
 char * work_R  = work_HR + bytes_HR;
 char * work_Ri = work_R  + bytes_R;
-   if (work_B == 0)   WS_FULL;
+   if (work_B == nullptr)   WS_FULL;
 
 fMatrix<T>  B(work_B,  M, N, /* LDB */ M);
 fMatrix<T> HR(work_HR, M, N, /* LDB */ M);
@@ -1799,9 +1799,9 @@ LA_pack::PTVVy<T>::PTVVy(Ccol N, bool with_pivot)
         y        = reinterpret_cast<T *>(tau      + N);
         work_min = reinterpret_cast<T *>(y        + N);
         work_max = reinterpret_cast<T *>(work_min + N);
-        pivot    = 0;   // as to figure with_pivot later on
-        vn1      = 0;
-        vn2      = 0;
+        pivot    = nullptr;   // as to figure with_pivot later on
+        vn1      = nullptr;
+        vn2      = nullptr;
       }
 }
 //----------------------------------------------------------------------------

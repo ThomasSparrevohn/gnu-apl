@@ -1141,14 +1141,14 @@ char * b = buffer;
 
    if (need_float)
       {
-        return Int_or_Double(APL_Float(strtod(buffer, 0)));
+        return Int_or_Double(APL_Float(strtod(buffer, nullptr)));
       }
    else
       {
         errno = 0;
-        const long long  result = strtoll(buffer, 0, 10);   // may set errno
+        const long long  result = strtoll(buffer, nullptr, 10);   // may set errno
         if (errno)   // strtoll() failed (int_digits too large)
-           return Int_or_Double(APL_Float(strtod(buffer, 0)));
+           return Int_or_Double(APL_Float(strtod(buffer, nullptr)));
         else
            return Int_or_Double(APL_Integer(result));
       }
@@ -1183,7 +1183,7 @@ UCS_string symbol;
         while (src.has_more() && *src <= UNI_SPACE)   src.get();   // spaces
         UCS_string symbol1(symbol, 2);   // without S∆/T∆
         Value_P AB(symbol1, LOC);
-        cFunction_P ST = 0;
+        cFunction_P ST = nullptr;
         if (symbol[0] == UNI_S) ST = &Quad_STOP::fun;
         else                    ST = &Quad_TRACE::fun;
 

@@ -47,18 +47,18 @@
 //----------------------------------------------------------------------------
 Symbol::Symbol(Id id)
    : NamedObject(id),
-     next(0),
+     next(nullptr),
      name(ID::get_name_UCS(id)),
-     monitor_callback(0)
+     monitor_callback(nullptr)
 {
    push();
 }
 //----------------------------------------------------------------------------
 Symbol::Symbol(const UCS_string & ucs, Id id)
    : NamedObject(id),
-     next(0),
+     next(nullptr),
      name(ucs),
-     monitor_callback(0)
+     monitor_callback(nullptr)
 {
    push();
 }
@@ -548,7 +548,7 @@ Symbol::cant_be_defined() const
         return cc;
       }
 
-   if (value_stack.back().get_NC() & NC_DEFINABLE)   return 0;   // OK
+   if (value_stack.back().get_NC() & NC_DEFINABLE)   return nullptr;   // OK
 
    return "bad name class";
 }
@@ -567,7 +567,7 @@ const Cell *
 Symbol::get_first_cell() const
 {
    Assert(value_stack.size() > 0);
-   if (value_stack.back().get_NC() != NC_VARIABLE)   return 0;
+   if (value_stack.back().get_NC() != NC_VARIABLE)   return nullptr;
    return &value_stack.back().get_val_cptr()->get_cfirst();
 }
 //----------------------------------------------------------------------------
@@ -627,7 +627,7 @@ Symbol::get_function() const
    Assert(value_stack.size() > 0);
    if (value_stack.back().get_NC() & NC_FUN_OPER)
       return value_stack.back().get_function();
-   return 0;
+   return nullptr;
 }
 //----------------------------------------------------------------------------
 cFunction_P
@@ -636,7 +636,7 @@ Symbol::get_function(unsigned int si) const
    Assert(value_stack.size() > 0);
    if (value_stack[si].get_NC() & NC_FUN_OPER)
       return value_stack[si].get_function();
-   return 0;
+   return nullptr;
 }
 //----------------------------------------------------------------------------
 cFunction_P
@@ -646,7 +646,7 @@ const ValueStackItem & vs = value_stack.back();
 
    if (vs.get_NC() & NC_FUN_OPER)   return vs.get_function();
 
-   return 0;
+   return nullptr;
 }
 //----------------------------------------------------------------------------
 void
@@ -1199,7 +1199,7 @@ const ValueStackItem & vs = value_stack[0];
    else if (vs.get_NC() & NC_FUN_OPER)
       {
         cFunction_P fun = vs.get_function();
-        if (fun == 0)
+        if (fun == nullptr)
            {
              out << "⍝ function " << get_name() << " has function pointer 0!"
                  << endl << endl;
@@ -1207,7 +1207,7 @@ const ValueStackItem & vs = value_stack[0];
            }
 
         const UserFunction * ufun = fun->get_func_ufun();
-        if (ufun == 0)
+        if (ufun == nullptr)
            {
              out << "⍝ function " << get_name() << " has ufun1 pointer 0!"
                  << endl << endl;
@@ -1406,13 +1406,13 @@ const TCP_socket tcp = Svar_DB::get_DB_tcp();
 
    ASSIGN_VALUE_c request(tcp, get_SV_key(), data);
 
-char * del = 0;
+char * del = nullptr;
 char buffer[2*MAX_SIGNAL_CLASS_SIZE];
-const char * err_loc = 0;
+const char * err_loc = nullptr;
 const Signal_base * response =
-      Signal_base::recv_TCP(tcp, buffer, sizeof(buffer), del, 0, &err_loc);
+      Signal_base::recv_TCP(tcp, buffer, sizeof(buffer), del, nullptr, &err_loc);
 
-   if (response == 0)
+   if (response == nullptr)
       {
         cerr << "TIMEOUT on signal ASSIGN_VALUE" << endl;
         if (del)   delete del;
@@ -1487,14 +1487,14 @@ const TCP_socket tcp = Svar_DB::get_DB_tcp();
         //
         READ_WSWS_VAR_c(tcp, get_SV_key());
 
-        char * del = 0;
+        char * del = nullptr;
         char buffer[MAX_SIGNAL_CLASS_SIZE + 40000];
-        const char * err_loc = 0;
+        const char * err_loc = nullptr;
         const Signal_base * response =
               Signal_base::recv_TCP(tcp, buffer, sizeof(buffer),
-                                    del, 0, &err_loc);
+                                    del, nullptr, &err_loc);
 
-        if (response == 0)
+        if (response == nullptr)
            {
              if (del)   delete del;
              CERR << "no response to signal READ_WSWS_VAR" << endl;
@@ -1525,13 +1525,13 @@ const TCP_socket tcp = Svar_DB::get_DB_tcp();
 
 GET_VALUE_c request(tcp, get_SV_key());
 
-char * del = 0;
+char * del = nullptr;
 char buffer[MAX_SIGNAL_CLASS_SIZE + 40000];
-const char * err_loc = 0;
+const char * err_loc = nullptr;
 const Signal_base * response =
-      Signal_base::recv_TCP(tcp, buffer, sizeof(buffer), del, 0, &err_loc);
+      Signal_base::recv_TCP(tcp, buffer, sizeof(buffer), del, nullptr, &err_loc);
 
-   if (response == 0)
+   if (response == nullptr)
       {
         CERR << "TIMEOUT on signal GET_VALUE" << endl;
         VALUE_ERROR;

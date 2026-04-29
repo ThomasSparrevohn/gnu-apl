@@ -44,7 +44,7 @@ UCS_string fname = args.front();
    args.pop_back();
 
 const LibRef_name lib_name(LIB0, fname);
-const UTF8_string filename = LibPaths::get_filename(lib_name, true, ".atf", 0);
+const UTF8_string filename = LibPaths::get_filename(lib_name, true, ".atf", nullptr);
 
 FileReader in(filename.c_str());
    if (!in)   // open failed: try filename.atf unless already .atf
@@ -218,7 +218,7 @@ int idx = get_nrs(var_name, shape);
 
    if (objects.size() && !objects.contains(var_name))   return;
 
-Symbol * sym = 0;
+Symbol * sym = nullptr;
    if (Avec::is_quad(var_name.front()))   // system variable.
       {
         int len = 0;
@@ -277,7 +277,7 @@ int idx = get_nrs(var_name, shape);
 
    if (objects.size() && !objects.contains(var_name))   return;
 
-Symbol * sym = 0;
+Symbol * sym = nullptr;
    if (Avec::is_quad(var_name.front()))   // system variable.
       {
         int len = 0;

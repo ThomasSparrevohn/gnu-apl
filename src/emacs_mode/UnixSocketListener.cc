@@ -148,7 +148,7 @@ void UnixSocketListener::wait_for_connection( void )
             else {
                 NetworkConnection *conn = new NetworkConnection( socket );
                 pthread_t thread_id;
-                int ret = pthread_create( &thread_id, NULL, connection_loop, conn );
+                int ret = pthread_create( &thread_id, nullptr, connection_loop, conn );
                 if( ret != 0 ) {
                     CERR << "Error creating thread" << endl;
                     delete conn;

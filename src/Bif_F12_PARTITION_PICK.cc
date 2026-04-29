@@ -357,9 +357,9 @@ Bif_F12_PICK::disclose_item(Value & Z, ShapeItem b,
            or with 0.
         */
         Cell * target = B_item.get_lval_value();
-        if (target == 0)                           // case 1.
+        if (target == nullptr)                           // case 1.
            {
-             loop(c, item_len)   Z.next_ravel_Lval(0, 0);
+             loop(c, item_len)   Z.next_ravel_Lval(nullptr, nullptr);
            }
         else if (target->is_pointer_cell())        // case 2.
            {
@@ -371,7 +371,7 @@ Bif_F12_PICK::disclose_item(Value & Z, ShapeItem b,
            {
              Z.next_ravel_Cell(B_item);
              for (ShapeItem c = 1; c < item_len; ++c)
-             Z.next_ravel_Lval(0, 0);
+             Z.next_ravel_Lval(nullptr, nullptr);
            }
       }
    else if (B_item.is_character_cell())   // simple char scalar

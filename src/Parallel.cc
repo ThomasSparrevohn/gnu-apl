@@ -23,6 +23,7 @@
 
 #include <sched.h>
 #include <signal.h>
+#include <unistd.h>
 
 #include "Common.hh"
 #include "Parallel.hh"
@@ -34,7 +35,7 @@
 # define sem_init(x, y, z)   /* NO-OP */
 #endif // PARALLEL_ENABLED
 
-const char * Parallel_job_list_base::started_loc = 0;
+const char * Parallel_job_list_base::started_loc = nullptr;
 
 #if cfg_CORE_COUNT_WANTED == 0
 bool Parallel::run_parallel = false;
@@ -84,10 +85,12 @@ Parallel::init(bool logit)
               return;
             }
 
+#if HAVE_PTHREAD_SETNAME_NP && !defined(__APPLE__)
          // pthread_setname_np() fails for names ≥ 16 chars (including \0).
          char worker_name[40];   // max 16 chars!
          SPRINTF(worker_name, "apl/pool-%d", w);
          pthread_setname_np(tctx->thread, worker_name);
+#endif
          // wait until new thread has reached its work loop
          sem_wait(pthread_create_sema);
        }
@@ -204,7 +207,7 @@ CoreCount count = CoreCount(cfg_CORE_COUNT_WANTED);
    return;
 
 #elif cfg_CORE_COUNT_WANTED == -1   // handled below
-# if ! HAVE_AFFINITY_NP
+# if ! HAVE_AFFINITY_NP && ! MACOS_PARALLEL_WITHOUT_AFFINITY
 #  error "CORE_COUNT_WANTED == -1 on platform without pthread_getaffinity_np"
 # endif
 
@@ -215,7 +218,7 @@ CoreCount count = CoreCount(cfg_CORE_COUNT_WANTED);
    return;
 
 #elif cfg_CORE_COUNT_WANTED == -3   // handled below
-# if ! HAVE_AFFINITY_NP
+# if ! HAVE_AFFINITY_NP && ! MACOS_PARALLEL_WITHOUT_AFFINITY
 #  error "CORE_COUNT_WANTED == -3 on platform without pthread_getaffinity_np"
 # endif
 
@@ -228,7 +231,27 @@ CoreCount count = CoreCount(cfg_CORE_COUNT_WANTED);
    // at this point cfg_CORE_COUNT_WANTED is -1 (all cores) or -3 (⎕SYL)
    // Figure how many cores we have.
    //
-#if ! HAVE_AFFINITY_NP
+#if MACOS_PARALLEL_WITHOUT_AFFINITY
+
+long nproc = sysconf(_SC_NPROCESSORS_ONLN);
+   if (nproc < 1)   nproc = 1;
+
+   Parallel::run_parallel = true;
+   loop(c, nproc)   add_CPU(CPU_Number(c));
+
+   if (count < 0)   count = get_count();
+   if (get_count() > count)   resize(count);
+
+   Log(LOG_Parallel || logit)
+      {
+        CERR << "detected " << get_count() << " cores:";
+        loop(cc, get_count())   CERR << " #" << get_CPU(cc);
+        CERR << " (CPU affinity binding disabled on macOS)" << endl;
+      }
+
+   return;
+
+#elif ! HAVE_AFFINITY_NP
 
    Log(LOG_Parallel || logit)
       {
@@ -242,7 +265,7 @@ CoreCount count = CoreCount(cfg_CORE_COUNT_WANTED);
    loop(c, 64)   add_CPU(CPU_Number(c));
    return;
 
-#endif
+#else
 
 cpu_set_t CPUs;
    CPU_ZERO(&CPUs);
@@ -303,6 +326,7 @@ const int err = pthread_getaffinity_np(pthread_self(), sizeof(CPUs), &CPUs);
         loop(cc, get_count())   CERR << " #" << get_CPU(cc);
         CERR << endl;
       }
+#endif
 }
 
 #else   // not PARALLEL_ENABLED
@@ -360,6 +384,12 @@ Parallel::worker_main(void * arg)
 {
 Thread_context & tctx = *reinterpret_cast<Thread_context *>(arg);
 
+#if defined(__APPLE__)
+   char worker_name[40];
+   SPRINTF(worker_name, "apl/pool-%d", int(tctx.get_N()));
+   pthread_setname_np(worker_name);
+#endif
+
    Log(LOG_Parallel)
       {
         PRINT_LOCKED(CERR << "worker #" << tctx.get_N() << " started" << endl)
@@ -389,6 +419,6 @@ Thread_context & tctx = *reinterpret_cast<Thread_context *>(arg);
        }
 
    /* not reached */
-   return 0;
+   return nullptr;
 }
 //============================================================================

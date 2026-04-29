@@ -32,7 +32,7 @@
 
 CoreCount Thread_context::active_core_count = CCNT_1;   // the master
 
-Thread_context * Thread_context::thread_contexts = 0;
+Thread_context * Thread_context::thread_contexts = nullptr;
 CoreCount Thread_context::thread_contexts_count = CCNT_0;
 
 Thread_context::PoolFunction * Thread_context::do_work =
@@ -42,7 +42,7 @@ volatile _Atomic_word Thread_context::busy_worker_count = 0;
 //============================================================================
 Thread_context::Thread_context()
    : N(CNUM_INVALID),
-     thread(0),
+     thread(nullptr),
      job_number(0),
      job_name("no-job-name"),
      blocked(false)
@@ -56,7 +56,7 @@ Thread_context::~Thread_context()
    // if (thread && N)   pthread_kill(thread, SIGKILL);   prints "Killed"
 
    if (thread && N)   pthread_cancel(thread);
-   thread = 0;
+   thread = nullptr;
 }
 //----------------------------------------------------------------------------
 void
@@ -74,7 +74,7 @@ Thread_context::cleanup()
    thread_contexts_count = CCNT_0;
 
     delete [] thread_contexts;
-   thread_contexts = 0;
+   thread_contexts = nullptr;
 }
 //----------------------------------------------------------------------------
 void
@@ -176,7 +176,18 @@ Thread_context::init_parallel(CoreCount count, bool logit)
 void
 Thread_context::bind_to_cpu(CPU_Number core, bool logit)
 {
-#if ! HAVE_AFFINITY_NP
+#if MACOS_PARALLEL_WITHOUT_AFFINITY
+
+   CPU = core;
+
+   Log(LOG_Parallel || logit)
+      {
+        PRINT_LOCKED(CERR << "Not binding thread #" << N
+                          << " to core " << core
+                          << " (CPU affinity disabled on macOS)" << endl;);
+      }
+
+#elif ! HAVE_AFFINITY_NP
 
    CPU = CPU_0;
 

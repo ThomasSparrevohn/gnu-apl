@@ -43,7 +43,7 @@ Nabla nabla(cmd);
 //----------------------------------------------------------------------------
 Nabla::Nabla(const UCS_string & cmd)
    : defn_line_no(InputFile::current_line_no()),
-     fun_symbol(0),
+     fun_symbol(nullptr),
      ecmd(ECMD_NOP),
      edit_from(-1),
      edit_to(-1),
@@ -196,10 +196,10 @@ UserFunction * ufun;
       }
    catch (...)
       {
-        ufun = 0;
+        ufun = nullptr;
       }
 
-   if (ufun == 0)
+   if (ufun == nullptr)
       {
         const UCS_string & MORE = Workspace::more_error();
         if (InputFile::running_script())
@@ -351,7 +351,7 @@ UCS_string::iterator c(first_command);
         if (InputFile::running_script())   // case 1a.
            {
              if (const char * loc = open_new_function())   return loc;
-             return 0;
+             return nullptr;
            }
       }
 
@@ -462,22 +462,22 @@ bool hdr_has_vars;
          */
          while (c.has_more())   current_text << c.next();
          execute_oper();
-         return 0;   // OK
+         return nullptr;   // OK
       }
 
    if (c.has_more())
       {
-        if (ecmd == ECMD_NOP)    return 0;
+        if (ecmd == ECMD_NOP)    return nullptr;
         if (ecmd != ECMD_SHOW)   return "illegal command between ∇ ... ∇";
         if (const char * loc = execute_oper())
            UERR << "execute_oper() failed at " << loc << endl;
-        return 0;   // OK
+        return nullptr;   // OK
       }
 
    if (const char * loc = execute_oper())
       UERR << "execute_oper() failed at " << loc << endl;
 
-   return 0;   // no error
+   return nullptr;   // no error
 }
 //----------------------------------------------------------------------------
 bool
@@ -523,7 +523,7 @@ Nabla::parse_oper(UCS_string & oper, bool initial)
    current_text.clear();
    ecmd = ECMD_NOP;
 
-   if (oper.size() == 0 && do_close)   return 0;
+   if (oper.size() == 0 && do_close)   return nullptr;
 
 UCS_string::iterator c(oper);
 Unicode cc = c.has_more() ? c.next() : Invalid_Unicode;
@@ -544,7 +544,7 @@ UCS_string text = oper;
         edit_from = current_line;
         current_text = text;
 //      for (; c.has_more(); cc = c.next())   current_text <<cc;
-        return 0;
+        return nullptr;
       }
 
    // a loop over multiple commands, like
@@ -636,12 +636,12 @@ again:
            {
              case UNI_NABLA:           // ∇
                   do_close = true;
-                  return 0;
+                  return nullptr;
 
              case UNI_DEL_TILDE:       // ⍫
                   locked = true;
                   do_close = true;
-                  return 0;
+                  return nullptr;
 
              case UNI_DOUBLE_QUOTE:  // "
                   current_text << cc;
@@ -650,7 +650,7 @@ again:
                         if (!c.has_more())   // premature end of input
                            {
                              current_text << UNI_DOUBLE_QUOTE;
-                             return 0;
+                             return nullptr;
                            }
                         cc = c.next();
 
@@ -662,7 +662,7 @@ again:
                                 {
                                   current_text << UNI_BACKSLASH
                                                << UNI_DOUBLE_QUOTE;
-                                  return 0;
+                                  return nullptr;
                                 }
                              cc = c.next();
                              current_text << cc;
@@ -681,7 +681,7 @@ again:
                         if (!c.has_more())   // premature end of input
                            {
                              current_text << UNI_SINGLE_QUOTE;
-                             return 0;
+                             return nullptr;
                            }
                         cc = c.next();
                         current_text << cc;
@@ -694,7 +694,7 @@ again:
            }
       }
 
-   return 0;   // OK
+   return nullptr;   // OK
 }
 //----------------------------------------------------------------------------
 LineLabel
@@ -734,7 +734,7 @@ Nabla::open_new_function()
 
    function_existed = false;
    lines.push_back(FunLine(0, fun_header));
-   return 0;
+   return nullptr;
 }
 //----------------------------------------------------------------------------
 const char *
@@ -767,7 +767,7 @@ cFunction_P function = fun_symbol->get_function();
       return "function is used, pendent or suspended";
 
 const UserFunction * ufun = function->get_func_ufun();
-   if (ufun == 0)
+   if (ufun == nullptr)
       return "function is not editable at " LOC;
 
 const UCS_string ftxt = function->canonical(false);
@@ -807,7 +807,7 @@ UCS_string_vector tlines;
 
    current_line = LineLabel(tlines.size());
 
-   return 0;
+   return nullptr;
 }
 //----------------------------------------------------------------------------
 const char *
@@ -817,7 +817,7 @@ Nabla::execute_oper()
       {
         Log(LOG_nabla)
            UERR << "Nabla::execute_oper(NOP)" << endl;
-        return 0;
+        return nullptr;
       }
 
 const bool have_from = edit_from.ln_major != -1;
@@ -889,7 +889,7 @@ const LineLabel user_edit_to = edit_to;
       UERR << "Nabla::execute_oper(SHOW) done with current_line '"
            << current_line << "'" << endl;
 
-   return 0;
+   return nullptr;
 }
 //----------------------------------------------------------------------------
 const char *
@@ -905,7 +905,7 @@ const int idx_to = find_line(LineLabel(edit_to));
    if (edit_from == -1)   // [∆N] : delete single line
       {
         lines.erase(lines.begin() + idx_to);
-        return 0;
+        return nullptr;
       }
 
    // [N∆M] : delete multiple lines
@@ -916,7 +916,7 @@ const int idx_from = find_line(LineLabel(edit_from));
 
    loop(j, 1 + idx_to - idx_from)   lines.erase(lines.begin() + idx_from);
    current_line = lines.back().label;
-   return 0;
+   return nullptr;
 }
 //----------------------------------------------------------------------------
 const char *
@@ -933,9 +933,9 @@ Nabla::execute_edit()
    if (current_text.size() == 0)   // empty line (we MAY need it)
       {
         if (!UserPreferences::uprefs.new_multi_line_strings)
-           return 0;   // we do not
+           return nullptr;   // we do not
         if (out_of_order)
-           return 0;   // we do not;
+           return nullptr;   // we do not;
       }
 
    // check that current_text is valid
@@ -954,7 +954,7 @@ UserFunction_header header(current_text, false);
       {
         CERR << "BAD FUNCTION HEADER";
         COUT << endl;
-        return 0;
+        return nullptr;
       }
 
    // check if the function name has changed
@@ -977,7 +977,7 @@ const UCS_string & new_name = header.get_name();
            {
              CERR << "BAD FUNCTION HEADER";
              COUT << endl;
-             return 0;
+             return nullptr;
            }
       }
 
@@ -985,7 +985,7 @@ const UCS_string & new_name = header.get_name();
 
    lines[0].text = current_text;
    current_line.next();
-   return 0;
+   return nullptr;
 }
 //----------------------------------------------------------------------------
 const char *
@@ -1046,7 +1046,7 @@ UCS_string parse_text = current_text;   // a copy that can be modified.
                   CERR << "+" << endl << Workspace::more_error();
                 }
              COUT << endl;
-             return 0;
+             return nullptr;
            }
       }
 
@@ -1083,7 +1083,7 @@ const int idx_from = find_line(edit_from);
 
    current_line.next();
 
-   return 0;
+   return nullptr;
 }
 //----------------------------------------------------------------------------
 const char *
@@ -1116,7 +1116,7 @@ Nabla::execute_escape()
         current_line = LineLabel(1);
       }
 
-   return 0;
+   return nullptr;
 }
 //----------------------------------------------------------------------------
 int

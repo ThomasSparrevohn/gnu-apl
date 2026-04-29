@@ -79,7 +79,7 @@ using namespace std;
 
 Svar_DB_server db;
 int verbosity = 0;
-ostream * debug = 0;
+ostream * debug = nullptr;
 
 #define Log(x) if (verbosity > 0)
 bool LOG_shared_variables = false;
@@ -305,7 +305,7 @@ char popen_arg[APL_PATH_MAX + 1];
  
 
 FILE * fp = popen(popen_arg, "r");
-   if (fp == 0)
+   if (fp == nullptr)
       {
         cerr << "popen(" << popen_arg << ") failed: " << strerror(errno)
              << endl;
@@ -452,7 +452,7 @@ do_signal(TCP_socket fd, Signal_base * request)
    // set ProcessorID::id to the ID of the other end of fd, so that we
    // impersonate that processor
    //
-AP3_fd * ap_fd = 0;
+AP3_fd * ap_fd = nullptr;
    for (size_t j = 0; j < connected_procs.size(); ++j)
        {
          if (connected_procs[j].fd == fd)
@@ -493,7 +493,7 @@ AP3_fd * ap_fd = 0;
              {
                // find connected_procs entry for fd...
                //
-               if (ap_fd == 0)   // not found
+               if (ap_fd == nullptr)   // not found
                   {
                     cerr << prog << ": could not find fd " << fd
                          << " in connected_procs" << endl;
@@ -841,14 +841,14 @@ AP3_fd * ap_fd = 0;
 
                GET_VALUE_c(ap_sock, key);
 
-               char * del = 0;
+               char * del = nullptr;
                char buffer[2*MAX_SIGNAL_CLASS_SIZE + 40000];
-               const char * loc = 0;
+               const char * loc = nullptr;
                Signal_base * response =
                              Signal_base::recv_TCP(ap_sock, buffer,
                                                    sizeof(buffer), del,
                                                    debug, &loc);
-               if (response == 0)
+               if (response == nullptr)
                   {
                     if (verbosity > 0)
                        {
@@ -903,12 +903,12 @@ static void
 connection_readable(TCP_socket fd)
 {
 char buffer[50000];
-char * del = 0;
-ostream * debug = verbosity ? &cerr : 0;
-const char * loc = 0;
+char * del = nullptr;
+ostream * debug = verbosity ? &cerr : nullptr;
+const char * loc = nullptr;
 Signal_base * request = Signal_base::recv_TCP(fd, buffer, sizeof(buffer),
                                               del, debug, &loc);
-   if (request == 0)
+   if (request == nullptr)
       {
         if (verbosity > 0)
            {
@@ -1037,7 +1037,7 @@ bool auto_start = false;
    for (int a = 1; a < argc; )
        {
          const char * opt = argv[a++];
-         const char * val = (a < argc) ? argv[a] : 0;
+         const char * val = (a < argc) ? argv[a] : nullptr;
 
          if (!strcmp(opt, "-h"))
             {
@@ -1247,7 +1247,7 @@ const int listen_sock = got_path ? open_UNIX_socket(listen_name)
 
             timeval timeout = { 1, 0 };   // one second
 
-            const int count = select(max_fd + 1, &read_fds, 0, 0, &timeout);
+            const int count = select(max_fd + 1, &read_fds, nullptr, nullptr, &timeout);
             if (count < 0)
                {
                  if (errno == EINTR)   continue;

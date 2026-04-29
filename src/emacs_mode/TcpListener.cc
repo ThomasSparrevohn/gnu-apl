@@ -50,9 +50,9 @@ std::string TcpListener::start( void )
     hints.ai_protocol = 0;
     hints.ai_flags = 0;
     hints.ai_addrlen = 0;
-    hints.ai_addr = NULL;
-    hints.ai_canonname = NULL;
-    hints.ai_next = NULL;
+    hints.ai_addr = nullptr;
+    hints.ai_canonname = nullptr;
+    hints.ai_next = nullptr;
 
     ret = getaddrinfo( "127.0.0.1", serv_name.str().c_str(), &hints, &addr );
     if( ret != 0 ) {
@@ -132,7 +132,7 @@ void TcpListener::wait_for_connection( void )
         else {
             NetworkConnection *conn = new NetworkConnection( socket );
             pthread_t thread_id;
-            int ret = pthread_create( &thread_id, NULL, connection_loop, conn );
+            int ret = pthread_create( &thread_id, nullptr, connection_loop, conn );
             if( ret != 0 ) {
                 CERR << "Error creating thread" << endl;
                 delete conn;

@@ -77,7 +77,7 @@ struct termios new_tios;
                FD_SET(STDIN_FILENO, &in_fds);
                timeval tv = { 0, 20000 };   // 20 ms
 
-               int count = select(STDIN_FILENO + 1, &in_fds, 0, 0, &tv);
+               int count = select(STDIN_FILENO + 1, &in_fds, nullptr, nullptr, &tv);
                if (count < 1)   break;
 
                const ssize_t len = read(STDIN_FILENO, buffer + buflen,

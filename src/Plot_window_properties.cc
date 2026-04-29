@@ -82,7 +82,7 @@ Plot_window_properties::Plot_window_properties(const Plot_data * data,
 
    line_properties = new Plot_line_properties *[line_count + 1];
    loop (l, line_count)   line_properties[l] = new Plot_line_properties(l);
-   line_properties[line_count] = 0;
+   line_properties[line_count] = nullptr;
 
    // set the origin_X and origin_Y properties back to 0 so that they
    // affect only surface plots.
@@ -326,7 +326,7 @@ Plot_window_properties::set_attribute(const char * att_and_val)
    // find ':' which separates the attribute name and the attribute value.
    //
 const char * colon = strchr(att_and_val, ':');
-   if (colon == 0)   return "Expecting 'attribute: value' but no : found";
+   if (colon == nullptr)   return "Expecting 'attribute: value' but no : found";
 
    // skip leading whitespace before the attribute value
    //
@@ -348,10 +348,10 @@ int line_number = -1;
         //
         if (!strncmp(att_and_val, "color_level-", 12))
            {
-             const int level = strtoll(minus + 1, 0, 10);
+             const int level = strtoll(minus + 1, nullptr, 10);
              if (level < 0)     return "color gradient level < 0%";
              if (level > 100)   return "color gradient level > 100%";
-             const char * error = 0;
+             const char * error = nullptr;
               const Color color = Plot_data::Color_from_str(value, error);
               if (error)   return error;
 
@@ -368,17 +368,17 @@ int line_number = -1;
                     if (gradient[g].level > grad.level)
                        {
                          gradient.insert(gradient.begin() + g, grad);
-                         return 0;
+                         return nullptr;
                        }
                   }
               gradient.push_back(grad);
-              return 0;   // OK
+              return nullptr;   // OK
            }
 
         // figure the line number in the attribute name, for example in
         // line_color-2. No line number means all lines.
         //
-        const int line1 = strtoll(minus + 1, 0, 10);    // ⎕IO..⎕IO+line_count
+        const int line1 = strtoll(minus + 1, nullptr, 10);    // ⎕IO..⎕IO+line_count
         const int line0 = line1 - Workspace::get_IO();   // 0..line_count - 1
         if (line0 < 0)
            {
@@ -399,7 +399,7 @@ int line_number = -1;
 # define ldef(ty,  na,  val, _descr)                                       \
          ++propnum;                                                        \
          if (Plot_line_properties::is_line_property(att_and_val, #na))     \
-            { const char * error = 0;                                      \
+            { const char * error = nullptr;                                \
               if (line_number == -1)                                       \
                  set_all_ ## na(Plot_data::ty ## _from_str(value, error),  \
                                 propnum); \
@@ -412,7 +412,7 @@ int line_number = -1;
 
 # define gdef(ty,  na,  _val, _descr) \
          if (!strncmp(#na, att_and_val, colon - att_and_val))         \
-            { const char * error = 0;                                 \
+            { const char * error = nullptr;                           \
               set_ ## na(Plot_data::ty ## _from_str(value, error));   \
               na ## _provided = true;                                 \
               return error;                                           \
@@ -535,7 +535,7 @@ Plot_window_properties::round_up_seconds(double val)
 {
 const time_t seconds(val);
 const tm * tile = localtime(&seconds);
-   if (tile == 0)   return round_up_1_2_5(val);   // localtime() failed
+   if (tile == nullptr)   return round_up_1_2_5(val);   // localtime() failed
 
    // call broken-down 'tm tile' odd if more than one of its primary units
    // (year/month/day/hour/minute/second) is set
@@ -644,4 +644,3 @@ const Pixel_X py = valY2pixel(Y - get_min_Y())                  + pz*sin(phi);
    return Pixel_XY(px, py);
 }
 //----------------------------------------------------------------------------
-

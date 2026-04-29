@@ -87,11 +87,11 @@ ID::get_name(Id id)
 #define st(i,  u, _v) all_IDs.push_back(ID(ID_      ## i,  u));
 #include "Id.def"
 
-        Heapsort<ID>::sort(all_IDs, ID::greater_id, 0);
+        Heapsort<ID>::sort(all_IDs, ID::greater_id, nullptr);
       }
 
    if (const ID * found = Heapsort<ID>
-                          ::search<Id>(id, all_IDs, ID::compare_id, 0))
+                          ::search<Id>(id, all_IDs, ID::compare_id, nullptr))
       { return found->name_utf; }
 
    return reinterpret_cast<const UTF8 *>("unknown ID");
@@ -119,7 +119,7 @@ ID::get_system_function(Id id)
         default: break;
       }
 
-   return 0;
+   return nullptr;
 }
 //----------------------------------------------------------------------------
 Symbol *
@@ -139,7 +139,7 @@ ID::get_system_variable(Id id)
         default: break;
       }
 
-   return 0;
+   return nullptr;
 }
 //----------------------------------------------------------------------------
 TokenTag

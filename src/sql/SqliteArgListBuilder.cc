@@ -33,7 +33,7 @@ SqliteArgListBuilder::init_sql()
 const char * sql_charptr = sql.c_str();
    if (sqlite3_prepare_v2(connection->get_db(),
                           sql_charptr, strlen(sql_charptr) + 1,
-                          &statement, NULL) == SQLITE_OK)   return;
+                          &statement, nullptr) == SQLITE_OK)   return;
 
    connection->raise_sqlite_error( "Error preparing query" );
 }
@@ -66,7 +66,7 @@ void
 SqliteArgListBuilder::append_string( const string &arg, int pos )
 {
     char *text = strdup( arg.c_str() );
-    if( text == NULL ) {
+    if( text == nullptr ) {
         CERR << "Failed to allocate memory for bind arg" << endl;
         abort();
     }

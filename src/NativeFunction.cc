@@ -45,16 +45,16 @@ std::vector<NativeFunction *> NativeFunction::valid_functions;
 NativeFunction::NativeFunction(const UCS_string & so_name,
                                const UCS_string & apl_name)
    : Function(ID_USER_SYMBOL, TOK_FUN2),
-     handle(0),
+     handle(nullptr),
      name(apl_name),
      original_so_path(so_name),
      so_path(so_name),
      valid(false),
-     close_fun(0)
+     close_fun(nullptr)
 {
 UCS_string t4;
    handle = open_so_file(t4, so_path);
-   if (handle == 0)
+   if (handle == nullptr)
       {
          MORE_ERROR() << t4;
          return;
@@ -102,7 +102,7 @@ void * (*get_function_mux)(const char *) =
      void * cfun = get_function_mux("close_fun");
      if (cfun)   close_fun = reinterpret_cast
                              <bool (*)(Cause, const NativeFunction *)>(cfun);
-     else        close_fun = 0;
+     else        close_fun = nullptr;
    }
 
    // create an entry in the symbol table
@@ -189,7 +189,7 @@ const int t4_len = t4.size();
       {
         while (t4.ssize() < t4_len + 44)     t4 << UNI_SPACE;
         t4 << " (" << strerror(errno) << ")\n";
-        return 0;
+        return nullptr;
       }
 
    if (void * handle = dlopen(filename, RTLD_LAZY))   return handle;
@@ -199,7 +199,7 @@ const char * err = dlerror();
 
    while (t4.ssize() < t4_len + 44)     t4 << UNI_SPACE;
    t4 << " (" << err << " )\n";
-   return 0;
+   return nullptr;
 #endif
 }
 //----------------------------------------------------------------------------
@@ -222,7 +222,7 @@ NativeFunction::open_so_file(UCS_string & t4, UCS_string & so_path)
         UTF8_string filename(so_path);
         void * handle = try_one_file(filename.c_str(), t4);
 
-        if (handle == 0)
+        if (handle == nullptr)
            {
              t4 << "NOTE: Filename extensions are NOT automatically added "
                    "when a full path\n"
@@ -248,12 +248,12 @@ const char * dirs[] =
    // most likely apl_DIR__pkglib is /usr/lib/apl or /usr/local/lib/apl.
    // don't try them twice.
    //
-   if (!strcmp(apl_DIR__pkglib, dirs[1]))   dirs[1] = 0;
-   if (!strcmp(apl_DIR__pkglib, dirs[2]))   dirs[2] = 0;
+   if (!strcmp(apl_DIR__pkglib, dirs[1]))   dirs[1] = nullptr;
+   if (!strcmp(apl_DIR__pkglib, dirs[2]))   dirs[2] = nullptr;
 
    loop(d, sizeof(dirs) / sizeof(*dirs))
        {
-         if (dirs[d] == 0)   continue;
+         if (dirs[d] == nullptr)   continue;
 
          UTF8_string dir_so_path(dirs[d]);
          dir_so_path += '/';
@@ -304,7 +304,7 @@ const char * dirs[] =
              }
        }
 
-   return 0;
+   return nullptr;
 }
 //----------------------------------------------------------------------------
 void
@@ -328,7 +328,7 @@ NativeFunction::cleanup()
 #else
                   dlclose(fun->handle);
 #endif
-                  fun->handle = 0;
+                  fun->handle = nullptr;
                 }
            }
 
@@ -346,14 +346,14 @@ NativeFunction::destroy()
         if (do_dlclose)
            {
              dlclose(handle);
-             handle = 0;
-             close_fun = 0;
+             handle = nullptr;
+             close_fun = nullptr;
            }
       }
    else if (handle)
       {
         dlclose(handle);
-        handle = 0;
+        handle = nullptr;
       }
 
    delete this;
@@ -380,7 +380,7 @@ NativeFunction::fix(const UCS_string & so_name,
              if (why)
                 {
                   MORE_ERROR() << why;
-                  return 0;
+                  return nullptr;
                 }
 
              if (fun->is_operator())   sym->set_NC(NC_OPERATOR, fun);
@@ -399,7 +399,7 @@ NativeFunction * new_function = new NativeFunction(so_name, function_name);
         Log(LOG_delete)
           CERR << "delete " << voidP(new_function) << " at " LOC << endl;
         delete new_function;
-        return 0;
+        return nullptr;
       }
 
    return new_function;
@@ -456,13 +456,13 @@ UCS_string so_path(U"libemacs");
 UCS_string t4;
 
 void * handle = open_so_file(t4, so_path);
-   if (handle == 0)   return t4;
+   if (handle == nullptr)   return t4;
 
    t4 = UCS_ASCII_string("found emacs library ");
    t4 << so_path;
 
 void * emacs_start = dlsym(handle, "emacs_start");
-   if (emacs_start == 0)
+   if (emacs_start == nullptr)
       {
         t4 << ", but it\n   it is lacking the mandatory "
                        "function emacs_start()\n";

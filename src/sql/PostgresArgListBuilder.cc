@@ -29,7 +29,7 @@
 template<class T>
 PostgresBindArg<T>::~PostgresBindArg()
 {
-    if( string_arg != NULL ) {
+    if( string_arg != nullptr ) {
         free( string_arg );
     }
 }
@@ -41,7 +41,7 @@ void PostgresBindArg<string>::update( Oid *types, const char **values, int *leng
     stringstream out;
     out << arg;
     string_arg = strdup( out.str().c_str() );
-    if( string_arg == NULL ) {
+    if( string_arg == nullptr ) {
         abort();
     }
     values[pos] = string_arg;
@@ -56,7 +56,7 @@ void PostgresBindArg<long>::update( Oid *types, const char **values, int *length
     stringstream out;
     out << arg;
     string_arg = strdup( out.str().c_str() );
-    if( string_arg == NULL ) {
+    if( string_arg == nullptr ) {
         abort();
     }
     values[pos] = string_arg;
@@ -71,7 +71,7 @@ void PostgresBindArg<double>::update( Oid *types, const char **values, int *leng
     stringstream out;
     out << setprecision(20) << arg;
     string_arg = strdup( out.str().c_str() );
-    if( string_arg == NULL ) {
+    if( string_arg == nullptr ) {
         abort();
     }
     values[pos] = string_arg;
@@ -82,7 +82,7 @@ void PostgresBindArg<double>::update( Oid *types, const char **values, int *leng
 void PostgresNullArg::update( Oid *types, const char **values, int *lengths, int *formats, int pos )
 {
     types[pos] = 0;
-    values[pos] = NULL;
+    values[pos] = nullptr;
     lengths[pos] = 0;
     formats[pos] = 0;
 }
@@ -152,7 +152,7 @@ update_int_cell(Value & Z, char * content)
 static void
 update_double_cell(Value & Z, char * content )
 {
-char *endptr = 0;
+char *endptr = nullptr;
 const double D = strtod(content, &endptr);
     if (endptr == content)   // strtod failed
        {
@@ -168,7 +168,7 @@ PostgresArgListBuilder::run_query()
 {
 const int n = args.size();
 const int array_len = n == 0 ? 1 : n;
-const char * cp_null = 0;
+const char * cp_null = nullptr;
 vector<Oid>          types  (array_len, 0);
 vector<const char *> values (array_len, cp_null);
 vector<int>          lengths(array_len, 0);
@@ -181,7 +181,7 @@ vector<int>          formats(array_len, 0);
         }
 
           PostgresResultWrapper result(PQexecParams(connection->get_db(),
-                                       sql.c_str(), n, NULL,
+                                       sql.c_str(), n, nullptr,
                                        &values[0], &lengths[0],
                                        &formats[0], 0));
 
@@ -220,7 +220,7 @@ Value_P db_result_value;
                            }
                      else if (col_type == 1700)   // NUMERICOID
                            {
-                             if (strchr(value, '.' ) == NULL)
+                             if (strchr(value, '.' ) == nullptr)
                                 {
                                   update_int_cell(*db_result_value, value);
                                 }

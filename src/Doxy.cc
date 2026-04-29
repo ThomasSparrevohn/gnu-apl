@@ -168,10 +168,10 @@ std::vector<const Symbol *> variables;
       }
 
    if (all_functions.size() > 1)
-      Heapsort<const Symbol *>::sort(all_functions, symcomp, 0);
+      Heapsort<const Symbol *>::sort(all_functions, symcomp, nullptr);
 
    if (variables.size() > 1)
-      Heapsort<const Symbol *>::sort(variables, symcomp, 0);
+      Heapsort<const Symbol *>::sort(variables, symcomp, nullptr);
 
 UTF8_string index_filename(root_dir);
    index_filename << "/index.html";
@@ -198,9 +198,9 @@ ofstream page(index_filename.c_str());
    variables_table(variables, page);
    SI_table(page);
 
-   set_call_graph_root(0);
+   set_call_graph_root(nullptr);
 const UCS_string alias(U"all_functions");
-   if (write_call_graph(0, alias, false) == 0)
+   if (write_call_graph(nullptr, alias, false) == 0)
       {
         page <<
 "   <H3>Global Function Call Graph</H3>"                                  CRLF
@@ -221,7 +221,7 @@ const UCS_string alias(U"all_functions");
            for (;;)
                {
                       const char * s = reader.fgets(buffer, sizeof(buffer));
-                      if (s == 0)   break;
+                      if (s == nullptr)   break;
                       buffer[sizeof(buffer) - 1] = 0;
                       page << "    " << buffer;
                }
@@ -275,7 +275,7 @@ Doxy::functions_table_entry(const Symbol * fun_sym, ofstream & page,
        {
          cFunction_P fun = fun_sym->get_function(si);
          const UserFunction * ufun = fun->get_func_ufun();
-         if (fun == 0)   continue;
+         if (fun == nullptr)   continue;
 
          const int si_level = fun_sym->get_SI_level(fun);
 
@@ -623,7 +623,7 @@ ofstream page(fun_filename.c_str());
            for (;;)
                {
                  const char * s = reader.fgets(buffer, sizeof(buffer));
-                 if (s == 0)   break;
+                 if (s == nullptr)   break;
                  buffer[sizeof(buffer) - 1] = 0;
                  page << "    " << buffer;
                }
@@ -706,7 +706,7 @@ ofstream page(fun_filename.c_str());
           for (;;)
               {
                 const char * s = reader.fgets(buffer, sizeof(buffer));
-                if (s == 0)   break;
+                if (s == nullptr)   break;
                 buffer[sizeof(buffer) - 1] = 0;
                 page << "    " << buffer;
               }
@@ -734,7 +734,7 @@ ofstream page(fun_filename.c_str());
            for (;;)
                {
                  const char * s = reader.fgets(buffer, sizeof(buffer));
-                 if (s == 0)   break;
+                 if (s == nullptr)   break;
                  buffer[sizeof(buffer) - 1] = 0;
                  page << "    " << buffer;
                }
@@ -868,7 +868,7 @@ UCS_string root_name(U"all");
         // root is the top-level (i.e. fun == 0), then add all nodes
         // to nodes.
         //
-        if (fun == 0)
+        if (fun == nullptr)
            {
              nodes.clear();
              aliases.clear();
@@ -889,7 +889,7 @@ UCS_string root_name(U"all");
        {
         fcall_edge & edge = call_graph[cg];
         if (edge.caller == fun)   edge.value = 0;     // root
-        else if (fun == 0)        edge.value = 1;     // no root, all edges
+        else if (fun == nullptr)        edge.value = 1;     // no root, all edges
         else                       edge.value = MAX;   // unreachable
        }
 

@@ -129,7 +129,7 @@ public:
 
            /// return the per-window thread (for GUIs that have one, i.e. XCB).
            virtual pthread_t get_thread() const
-              { return 0; }
+              { return nullptr; }
 
            /// close the plot window in the GUI
            virtual void plot_stop() = 0;

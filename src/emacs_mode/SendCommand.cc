@@ -66,7 +66,7 @@ void SendCommand::run_command(NetworkConnection &conn,
     if( args.size() > 1 ) {
         name = args[1];
         if( args.size() > 2 ) {
-            line = strtol( args[2].c_str(), NULL, 10 );
+            line = strtol( args[2].c_str(), nullptr, 10 );
             if( line < 0 ) {
                 throw ConnectionError( "Illegal value for line" );
             }
@@ -83,7 +83,7 @@ void SendCommand::run_command(NetworkConnection &conn,
 
     try {
         FILE *handle = fopen( fd.get_name().c_str(), "r" );
-        if( handle == NULL ) {
+        if( handle == nullptr ) {
             throw ConnectionError( "Unable to open generated temp file" );
         }
         const UTF8_string utfname( name.c_str() );

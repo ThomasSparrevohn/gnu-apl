@@ -43,13 +43,13 @@
 UserFunction_header::UserFunction_header(const UCS_string & text0, bool macro)
   : error(E_DEFN_ERROR),   // assume bad headr
     error_info("Bad header"),
-    sym_Z(0),
-    sym_A(0),
-    sym_LO(0),
-    sym_FUN(0),
-    sym_RO(0),
-    sym_X(0),
-    sym_B(0)
+    sym_Z(nullptr),
+    sym_A(nullptr),
+    sym_LO(nullptr),
+    sym_FUN(nullptr),
+    sym_RO(nullptr),
+    sym_X(nullptr),
+    sym_B(nullptr)
 {
 UCS_string text(text0);
    text.remove_comment();
@@ -93,13 +93,13 @@ UCS_string lvar_text;
 UserFunction_header::UserFunction_header(Fun_signature sig, int lambda_num)
   : error(E_DEFN_ERROR),
     error_info("Bad header"),
-    sym_Z(0),
-    sym_A(0),
-    sym_LO(0),
-    sym_FUN(0),
-    sym_RO(0),
-    sym_X(0),
-    sym_B(0)
+    sym_Z(nullptr),
+    sym_A(nullptr),
+    sym_LO(nullptr),
+    sym_FUN(nullptr),
+    sym_RO(nullptr),
+    sym_X(nullptr),
+    sym_B(nullptr)
 {
    function_name << UNI_LAMBDA << lambda_num;
 
@@ -116,7 +116,7 @@ UserFunction_header::UserFunction_header(Fun_signature sig, int lambda_num)
    if (sig & SIG_B)    sym_B  = &Workspace::get_v_OMEGA();
    if (sig & SIG_X)    sym_X  = &Workspace::get_v_CHI();
 
-   error_info = 0;
+   error_info = nullptr;
    error = E_NO_ERROR;
 }
 //-------------------------------------------------------------------------
@@ -187,7 +187,7 @@ size_t len   = tos.size();
 
              sym_FUN = tos[start].get_sym_ptr();
              function_name = sym_FUN->get_name();
-             return 0;   // OK
+             return nullptr;   // OK
            }
 
         if (len == 2)   // F1 B
@@ -201,7 +201,7 @@ size_t len   = tos.size();
              sym_FUN = tos[start].get_sym_ptr();
              sym_B = tos[start + 1].get_sym_ptr();
              function_name = sym_FUN->get_name();
-             return 0;   // OK
+             return nullptr;   // OK
            }
 
           // otherwise: A F2 B
@@ -217,7 +217,7 @@ size_t len   = tos.size();
              sym_FUN = tos[start + 1].get_sym_ptr();
              sym_B   = tos[start + 2].get_sym_ptr();
              function_name = sym_FUN->get_name();
-             return 0;   // OK
+             return nullptr;   // OK
       }
 
    // at this point the signature has 4 or more token after the
@@ -258,7 +258,7 @@ size_t len   = tos.size();
 
         sym_FUN = tos[start].get_sym_ptr();
         function_name = sym_FUN->get_name();
-        return 0;   // OK
+        return nullptr;   // OK
       }
 
    // cases 2-6
@@ -279,7 +279,7 @@ size_t len   = tos.size();
 
         sym_FUN = tos[start].get_sym_ptr();
         function_name = sym_FUN->get_name();
-        return 0;   // OK
+        return nullptr;   // OK
       }
 
    // cases 3-6
@@ -301,7 +301,7 @@ size_t len   = tos.size();
    sym_FUN = tos[start + 2].get_sym_ptr();
    function_name = sym_FUN->get_name();
 
-   if (len == 4)   return 0;   // OK: ( LO OP1 )
+   if (len == 4)   return nullptr;   // OK: ( LO OP1 )
 
    if (len != 5)   // ( LO OP2 RO )
       return "Bad length in (F2 OPn ... )";
@@ -310,7 +310,7 @@ size_t len   = tos.size();
       return "Bad G2 in (F2 OP2 G2)";
 
    sym_RO = tos[start + 3].get_sym_ptr();
-   return 0;
+   return nullptr;
 }
 //--------------------------------------------------------------------------
 const char *
@@ -366,7 +366,7 @@ Token_string tos;
    //
    remove_duplicate_local_variables();
 
-   return 0;
+   return nullptr;
 }
 //----------------------------------------------------------------------------
 void
@@ -435,7 +435,7 @@ UserFunction_header::remove_duplicate_local_var(const Symbol * sym, size_t pos)
    // remove sym from the vector of local variables. Only the local vars
    // at pos or higher are being removed
    //
-   if (sym == 0)   return;   // unused symbol
+   if (sym == nullptr)   return;   // unused symbol
 
    while (pos < local_vars.size())
        {

@@ -155,7 +155,7 @@ Quad_GTK::eval_B(Value_P B) const
    if (B->is_char_array())
       {
          const UCS_string gui_filename = B->get_UCS_ravel();
-         const int fd = open_window(gui_filename, /* no CSS */ 0);
+         const int fd = open_window(gui_filename, /* no CSS */ nullptr);
          return Token(TOK_APL_VALUE1, IntScalar(fd, LOC));
       }
 
@@ -469,14 +469,14 @@ char * V = TLV + 8;
 
         event_queue.push_back(data_ucs);
 
-        return Value_P();   // i.e. NULL
+        return Value_P();   // i.e. nullptr
       }
 
    if (expected_tag == -1)   // not waiting for a specific tag (function result)
       {
         // unexpected, so we complain unconditionally.
         CERR << "*** ⎕GTK: ignoring event: " << V << endl;
-        return Value_P();   // i.e. NULL
+        return Value_P();   // i.e. nullptr
       }
 
    if (V_len == 0)   // result of void function()
@@ -501,7 +501,7 @@ const UTF8 Z_type = V[0];   // s, d, or f (like conversion char in snprintf())
       {
         Value_P Z(2, LOC);
         Z->next_ravel_Int(TLV_tag - Response_0);   // function that sent V
-        Z->next_ravel_Int(strtoll(V + 1, 0, 10));   // function result
+        Z->next_ravel_Int(strtoll(V + 1, nullptr, 10));   // function result
         Z->check_value(LOC);
         return  Z;
       }
@@ -510,7 +510,7 @@ const UTF8 Z_type = V[0];   // s, d, or f (like conversion char in snprintf())
       {
         Value_P Z(2, LOC);
         Z->next_ravel_Int(TLV_tag - Response_0);   // function that sent V
-        Z->next_ravel_Float(strtod(V + 1, 0));     // function result
+        Z->next_ravel_Float(strtod(V + 1, nullptr));     // function result
         Z->check_value(LOC);
         return  Z;
       }
@@ -533,7 +533,7 @@ const UTF8 Z_type = V[0];   // s, d, or f (like conversion char in snprintf())
 Value_P
 Quad_GTK::fnum_to_function_name(Fnum fnum)
 {
-const char * fname = 0;
+const char * fname = nullptr;
    switch(fnum)
       {
         case FNUM_INVALID:         break;
@@ -561,7 +561,7 @@ const char * fname = 0;
 Value_P
 Quad_GTK::fnum_to_widget_class(Fnum fnum)
 {
-const char * cname = 0;
+const char * cname = nullptr;
    switch(fnum)
       {
         case FNUM_INVALID:         break;
@@ -878,7 +878,7 @@ const char * bin_dir = LibPaths::get_APL_bin_path();
    SPRINTF(path1, "%s/Gtk/Gtk_server", bin_dir);
    SPRINTF(path2, "%s/Gtk_server", bin_dir);
 
-const char * path = 0;
+const char * path = nullptr;
    if      (!access(path1, X_OK))   path = path1;
    else if (!access(path2, X_OK))   path = path2;
    else
@@ -891,7 +891,7 @@ const char * path = 0;
 const char * evars[] = { "DISPLAY", "XAUTHORITY", "XAUTHLOCALHOST" };
 enum { evar_count = sizeof(evars) / sizeof(*evars) };
 
-char * envp[evar_count + 1] = { 0 };
+char * envp[evar_count + 1] = { nullptr };
 int envp_idx = 0;
    loop(c, evar_count)
        {
@@ -905,7 +905,7 @@ int envp_idx = 0;
               envp[envp_idx++] = env;
             }
        }
-   envp[envp_idx] = 0;   // 0-terminator
+   envp[envp_idx] = nullptr;   // 0-terminator
 
 const int fd = Quad_FIO::do_FIO_57(UTF8_string(path), envp);
    loop(c, evar_count)   delete envp[c];
@@ -918,7 +918,7 @@ Quad_GTK::send_name_or_data(int fd, int tag, const UCS_string & name_or_data)
 UTF8_string name_or_data_utf8(name_or_data);
 const size_t Vlen = name_or_data_utf8.size();
 const size_t TLV_len = 8 + Vlen;   // 4 nyte tag + byte 4 len + value
-char * del = 0;
+char * del = nullptr;
 char short_path[1000];
 char * path = short_path;
 

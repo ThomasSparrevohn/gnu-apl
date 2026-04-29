@@ -63,7 +63,7 @@ public:
    const char * get_error_info() const   { return error_info; }
 
    /// return true if the header indicates a result (Z←)
-   bool has_result() const   { return sym_Z != 0; }
+   bool has_result() const   { return sym_Z != nullptr; }
 
    /// return true if the header contains variables (result, arguments,
    /// or local variables
@@ -72,10 +72,10 @@ public:
                local_vars.size(); }
 
    /// return true iff the function returns a value
-   int has_axis() const   { return sym_X != 0; }
+   int has_axis() const   { return sym_X != nullptr; }
 
    /// return true if this defined function header is an operator
-   bool is_operator() const   { return sym_LO != 0; }
+   bool is_operator() const   { return sym_LO != nullptr; }
 
    /// return the name of the function
    UCS_string get_name() const   { return function_name; }
@@ -161,7 +161,7 @@ public:
 
    /// clear the function symbol (e.g. after a DEFN_ERROR)
    void clear_FUN()
-      { sym_FUN = 0; }
+      { sym_FUN = nullptr; }
 
 protected:
    /// init the signature from text

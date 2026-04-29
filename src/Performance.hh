@@ -182,11 +182,11 @@ public:
 
    /// return the statistics for the first passes
    virtual const Statistics_record * get_first_record() const
-      { return 0; }
+      { return nullptr; }
 
    /// return the statistics for the subsequent passes
    virtual const Statistics_record * get_record() const
-      { return 0; }
+      { return nullptr; }
 
    /// return the name of \b this statistics
    const char * get_name() const

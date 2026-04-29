@@ -126,11 +126,11 @@ public:
 
    /// return the current monadic function (if any)
    const Function * get_dyadic_fun() const
-      { return at1().get_ValueType() == TV_FUN ? at1().get_function() : 0; }
+      { return at1().get_ValueType() == TV_FUN ? at1().get_function() : nullptr; }
 
    /// return the current dyadic function (if any)
    const Function * get_monadic_fun() const
-      { return at0().get_ValueType() == TV_FUN ? at0().get_function() : 0; }
+      { return at0().get_ValueType() == TV_FUN ? at0().get_function() : nullptr; }
 
    /// execute one context (user defined function or operator, execute,
    /// or immediate execution)

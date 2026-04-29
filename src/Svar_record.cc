@@ -226,7 +226,7 @@ usleep(50000);
    //
 const int control = offering.get_control() | accepting.get_control();
 Svar_event event = SVE_NO_EVENTS;
-Svar_partner * peer = 0;
+Svar_partner * peer = nullptr;
 
    if (ProcessorID::get_id() == offering.id)
       {

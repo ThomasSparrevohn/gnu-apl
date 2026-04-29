@@ -42,7 +42,7 @@ XML_node::XML_node(XML_node * anchor, const UCS_string & string_B,
     src_len(slen),
     next(this),
     prev(this),
-    err_loc(0),
+    err_loc(nullptr),
     level(-1),     // set in translate()
     position(-1)   // set in collect()
 {
@@ -278,7 +278,7 @@ Quad_XML::add_sorted_entities(vector<const UCS_string *> & entities,
    Assert(B.is_structured());
 
 std::vector<ShapeItem> member_indices;
-   B.sorted_members(member_indices, /* filter */ 0);
+   B.sorted_members(member_indices, /* filter */ nullptr);
 
 UCS_string start_tag_name;   // for constructing the corresponding end tag
 UCS_string start_tag;        // the start tag
@@ -432,8 +432,8 @@ ShapeItem dest_B = 0;
    Assert(dest_B <= len_B);
    string_B.resize(dest_B);
 
-XML_node anchor(0,  string_B, 0, 0);
-XML_node garbage(0, string_B, 0, 0);
+XML_node anchor(nullptr,  string_B, 0, 0);
+XML_node garbage(nullptr, string_B, 0, 0);
 ShapeItem text_start = 0;
 Value_P Z = EmptyStruct(LOC);
 bool error = true;
@@ -586,7 +586,7 @@ int level = 0;
 bool
 XML_node::collect(XML_node & anchor, XML_node & garbage, Value * Z)
 {
-XML_node * root = 0;
+XML_node * root = nullptr;
 
 vector<XML_node *> stack;   // a stack of start tags
 vector<size_t> pos_stack;   // a stack of node positions
@@ -656,7 +656,7 @@ vector<size_t> pos_stack;   // a stack of node positions
 
               case NT_start_tag:
                    {
-                     if (root == 0)   root = node;   // remember the root
+                     if (root == nullptr)   root = node;   // remember the root
                      else if (stack.size() == 0)   // subsequent root
                         {
                           MORE_ERROR() << "⎕XML: more than one root";
@@ -696,7 +696,7 @@ vector<size_t> pos_stack;   // a stack of node positions
                    break;
 
               case NT_leaf_tag:
-                   if (root == 0)   root = node;   // remember the root
+                   if (root == nullptr)   root = node;   // remember the root
                    break;
 
               case NT_error: FIXME;
@@ -1283,7 +1283,7 @@ struct stat st;
       }
 
 UTF8 * buffer = new UTF8[st.st_size];
-   if (buffer == 0)
+   if (buffer == nullptr)
       {
         ::close(fd);
         WS_FULL;
@@ -1508,7 +1508,7 @@ Quad_XML::tree(const Value & B, UCS_string & z, UCS_string & prefix,
 
 std::vector<ShapeItem> member_indices;
    if (flags & tf_with_decl)   // all (no filter)
-      B.sorted_members(member_indices, /* filter */ 0);
+      B.sorted_members(member_indices, /* filter */ nullptr);
    else
       {
         const Unicode filter[] = { UNI_UNDERSCORE, Unicode_0 };
@@ -1711,7 +1711,7 @@ const Value & A1 = *A.get_cravel(1).get_pointer_value();
         // an empty A1 shall return the smallest element
         //
         std::vector<ShapeItem> member_indices;
-        B.sorted_members(member_indices, /* filters */ 0);
+        B.sorted_members(member_indices, /* filters */ nullptr);
 
         const Cell & cell = B.get_cravel(2*member_indices[0]);
         Value * name =  cell.get_pointer_value().get();
@@ -1735,7 +1735,7 @@ const Value * container = &B;
        {
          const UCS_string member(path->get_cravel(path_idx));
          const Cell * data_cell = container->get_member_data(member);
-         if (data_cell == 0)
+         if (data_cell == nullptr)
             {
               MORE_ERROR() << "(14 PATH) ⎕XML: could not find the "
                            << int(path_idx+1) << ". member '" << member
@@ -1758,12 +1758,12 @@ const Value & last_path_item = path_length == 1
                                     .get_pointer_value();
 ShapeItem leaf_position;
    {
-     const int weight = split_name(0, &leaf_position, 0, last_path_item);
+     const int weight = split_name(nullptr, &leaf_position, nullptr, last_path_item);
      leaf_position += weight * B_total;
    }
 
 std::vector<ShapeItem> member_indices;
-   container->sorted_members(member_indices, /* filters */ 0);
+   container->sorted_members(member_indices, /* filters */ nullptr);
 
    loop(m, member_indices.size())
       {
@@ -1772,7 +1772,7 @@ std::vector<ShapeItem> member_indices;
 
         Value * name_m =  cell.get_pointer_value().get();
         ShapeItem position_m;
-        const int weight = split_name(0, &position_m, 0, *name_m);
+        const int weight = split_name(nullptr, &position_m, nullptr, *name_m);
         position_m += weight*B_total;
 
         if (position_m > leaf_position)   // next item after leaf

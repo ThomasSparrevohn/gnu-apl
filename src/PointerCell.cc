@@ -191,7 +191,7 @@ Value_P val = get_pointer_value();
 
    if (pctx.get_style() & PST_QUOTE_CHARS)
       {
-        if (val->is_char_vector())   return PrintBuffer(*val, pctx, 0);
+        if (val->is_char_vector())   return PrintBuffer(*val, pctx, nullptr);
       }
 
    if (pctx.get_style() == PR_APL_FUN)   // APL function display
@@ -244,7 +244,7 @@ Value_P val = get_pointer_value();
         return ret;
       }
 
-PrintBuffer ret(*val, pctx, 0);
+PrintBuffer ret(*val, pctx, nullptr);
    ret.get_info().flags &= ~CT_MASK;
    ret.get_info().flags |= CT_POINTER;
 
@@ -283,7 +283,7 @@ PrintBuffer ret(*val, pctx, 0);
              loop(rv, len)   proto_reshaped->next_ravel_Value(proto.get());
 
              proto_reshaped->check_value(LOC);
-             ret = PrintBuffer(*proto_reshaped, pctx, 0);
+             ret = PrintBuffer(*proto_reshaped, pctx, nullptr);
              ret.add_frame(PrintStyle(style), proto_reshaped->get_shape(),
                            proto_reshaped->compute_depth());
            }

@@ -1491,9 +1491,9 @@ ExecuteList * fun = new ExecuteList(data, loc);
                         << Error::error_name(err->get_error_code()) << endl;
                 }
      
-             err->set_parser_loc(0);
+             err->set_parser_loc(nullptr);
              delete fun;
-             return 0;
+             return nullptr;
            }
       }
 
@@ -1506,7 +1506,7 @@ ExecuteList * fun = new ExecuteList(data, loc);
         if (Error * werr = Workspace::get_error())   *werr = err;
 
         delete fun;
-        return 0;
+        return nullptr;
       }
 
    fun->setup_lambdas();
@@ -1522,7 +1522,7 @@ ExecuteList * fun = new ExecuteList(data, loc);
    if (fun->compute_if_else_targets())
       {
         delete fun;
-        return 0;
+        return nullptr;
       }
 
    Log(LOG_UserFunction__fix)   fun->print(CERR);
@@ -1541,7 +1541,7 @@ StatementList * fun = new StatementList(data, loc);
              << "------------------- StatementList::fix() --" << endl;
       }
 
-   if (Error * err = Workspace::get_error())   err->set_parser_loc(0);
+   if (Error * err = Workspace::get_error())   err->set_parser_loc(nullptr);
 
    try
       {
@@ -1611,7 +1611,7 @@ StatementList * fun = new StatementList(data, loc);
    if (fun->compute_if_else_targets())
       {
         delete fun;
-        return 0;
+        return nullptr;
       }
 
    Log(LOG_UserFunction__fix)   fun->print(CERR);

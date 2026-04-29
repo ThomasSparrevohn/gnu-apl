@@ -195,7 +195,7 @@ const char * why = strerror(errno);
 
    MORE_ERROR() << "Could not open the directory '" << path << ".\n"
                 << "Reason: " << why;
-   return 0;   // error
+   return nullptr;   // error
 }
 //----------------------------------------------------------------------------
 bool
@@ -212,7 +212,7 @@ UTF8_string entry_name(entry->d_name);
 
 DIR * dir = opendir(filename.c_str());
    if (dir) closedir(dir);
-   return dir != 0;
+   return dir != nullptr;
 }
 //----------------------------------------------------------------------------
 void
@@ -221,7 +221,7 @@ Cmd_LIB::LIB_common(ostream & out, const UCS_string_vector & cmd_args, bool dbg)
    // check for (and then extract) optional range and sort parameters...
    //
 UCS_string_vector args;
-const UCS_string * range = 0;
+const UCS_string * range = nullptr;
 SORT_ORDER sort = SORT_NONE;
    loop(a, cmd_args.size())
       {
@@ -296,7 +296,7 @@ UCS_string to;
    //
 UTF8_string path;
 DIR * dir = open_LIB_dir(path, out, args);
-   if (dir == 0)   return;
+   if (dir == nullptr)   return;
 
    // 3. collect the WS files and sub-directories in the )LIBS N directory
    //
@@ -306,7 +306,7 @@ UCS_string_vector directories;
    for (;;)
        {
          const dirent * entry = readdir(dir);
-         if (entry == 0)   break;   // directory loop done
+         if (entry == nullptr)   break;   // directory loop done
          const size_t dlen = strlen(entry->d_name);
          if (entry->d_name[0] == '.')   continue;   // ignore hidden files
 

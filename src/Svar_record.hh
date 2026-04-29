@@ -239,7 +239,7 @@ struct Svar_record
 
    /// return the name of the variable, or 0 if fetching it has failed
    const uint32_t * get_svar_name() const
-      { return *varname ? varname : 0; }
+      { return *varname ? varname : nullptr; }
 
    /// update the state when using or setting this variable, and clear events
    void set_state(bool used, const char * loc);

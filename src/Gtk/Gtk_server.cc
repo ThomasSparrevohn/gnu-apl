@@ -343,7 +343,7 @@ const bool from_file = !strchr(gui, UNI_LF);
 
    // connect the <signal ...>  in .ui
    //
-   gtk_builder_connect_signals(builder, /* user_data */ NULL);
+   gtk_builder_connect_signals(builder, /* user_data */ nullptr);
 
    verbosity > 0 && cerr << "GUI signals connected.\n";
 }
@@ -1033,7 +1033,7 @@ generic_callback(GtkWidget * widget, const char * callback, const char * sig)
    //
 char none[] = { 0 };
 gchar * widget_name = none;
-   g_object_get(widget, "name", &widget_name, NULL);
+   g_object_get(widget, "name", &widget_name, nullptr);
    verbosity > 0 && cerr << "    widget_name is: " << widget_name << endl
                          << "    callback is: " << callback << endl;
 

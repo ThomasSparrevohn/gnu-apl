@@ -48,8 +48,8 @@ public:
    PJob_scalar_B()
    : len_Z(0),
      error(E_NO_ERROR),
-     fun(0),
-     fun1(0)
+     fun(nullptr),
+     fun1(nullptr)
    {}
 
    /// constructor
@@ -58,8 +58,8 @@ public:
      value_Z(Z, LOC),
      len_Z(Z->nz_element_count()),
      error(E_NO_ERROR),
-     fun(0),
-     fun1(0)
+     fun(nullptr),
+     fun1(nullptr)
    {}
 
    /// destructor
@@ -106,8 +106,8 @@ public:
      inc_A(0),
      inc_B(0),
      error(E_NO_ERROR),
-     fun(0),
-     fun2(0)
+     fun(nullptr),
+     fun2(nullptr)
    {}
 
    /// constructor
@@ -119,8 +119,8 @@ public:
      inc_A(A->get_increment()),
      inc_B(B->get_increment()),
      error(E_NO_ERROR),
-     fun(0),
-     fun2(0)
+     fun(nullptr),
+     fun2(nullptr)
    {}
 
    /// destructor
@@ -216,7 +216,7 @@ public:
    void cancel_jobs()
       {
         jobs.clear();
-        started_loc = 0;
+        started_loc = nullptr;
       }
 
    /// set current job. CAUTION: jobs may be modified by the
@@ -226,8 +226,8 @@ public:
       {
         if (jobs.size() == 0)   // joblist done
            {
-             started_loc = 0;
-             return 0;
+             started_loc = nullptr;
+             return nullptr;
            }
 
         current_job = jobs.back();
@@ -249,7 +249,7 @@ public:
 
    /// return true if not all jobs are done yet
    bool busy()
-      { return started_loc != 0; }
+      { return started_loc != nullptr; }
 
    /// where joblist was started (also an indicator if all jobs were done)
    const char * get_started_loc()

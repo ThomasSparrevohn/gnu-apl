@@ -37,7 +37,7 @@ void FnTagCommand::run_command( NetworkConnection &conn, const std::vector<std::
 
     UCS_string ucs_name = ucs_string_from_string(name);
     const NamedObject * obj = Workspace::lookup_existing_name(ucs_name);
-    if( obj == NULL ) {
+    if( obj == nullptr ) {
         out << "undefined\n";
     }
     else if( !obj->is_user_defined() ) {
@@ -45,7 +45,7 @@ void FnTagCommand::run_command( NetworkConnection &conn, const std::vector<std::
     }
     else {
         const Function *function = obj->get_function();
-        if( function == NULL ) {
+        if( function == nullptr ) {
             out << "symbol is not a function\n";
         }
         else if( function->get_exec_properties()[0] != 0 ) {
@@ -53,7 +53,7 @@ void FnTagCommand::run_command( NetworkConnection &conn, const std::vector<std::
         }
         else {
             const UserFunction *ufun = function->get_func_ufun();
-            if( ufun == NULL ) {
+            if( ufun == nullptr ) {
                 out << "not a user function";
             }
             else {

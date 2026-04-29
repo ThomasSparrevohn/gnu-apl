@@ -27,7 +27,7 @@
 Color
 Plot_data::Color_from_str(const char * str, const char * & error)
 {
-   error = 0;   // assume no error
+   error = nullptr;   // assume no error
 
 uint32_t r, g, b;
    if (3 == sscanf(str, " %u %u %u", &r, &b, &g))
@@ -37,18 +37,18 @@ uint32_t r, g, b;
       {
         if (strlen(h) == 4)   // #RGB
            {
-             const int v = strtoll(str + 1, 0, 16);
+             const int v = strtoll(str + 1, nullptr, 16);
              return (0x11*(v >> 8 & 0x0F)) << 16
                   | (0x11*(v >> 4 & 0x0F)) << 8
                   | (0x11*(v      & 0x0F)  << 0);
            }
         else if (strlen(h) == 7)   // #RRGGBB
            {
-             return strtoll(str + 1, 0, 16);
+             return strtoll(str + 1, nullptr, 16);
            }
         else if (strlen(h) == 9)   // #xxRRGGBB
            {
-             return strtoll(str + 1, 0, 16);
+             return strtoll(str + 1, nullptr, 16);
            }
       }
 

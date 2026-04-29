@@ -116,7 +116,7 @@ static struct sigaction new_WINCH_action;       // new WINCH handler
  **/
 
 /// when this file  was built
-static const char * build_tag[] = { BUILDTAG, 0 };
+static const char * build_tag[] = { BUILDTAG, nullptr };
 
 //----------------------------------------------------------------------------
 /// signal handler for segfaults
@@ -193,7 +193,7 @@ static void
 signal_TERM_handler(int)
 {
    cleanup(true);
-   sigaction(SIGTERM, &old_TERM_action, 0);
+   sigaction(SIGTERM, &old_TERM_action, nullptr);
    raise(SIGTERM);
 }
 //----------------------------------------------------------------------------
@@ -218,7 +218,7 @@ static void
 signal_HUP_handler(int)
 {
    cleanup(true);
-   sigaction(SIGHUP, &old_HUP_action, 0);
+   sigaction(SIGHUP, &old_HUP_action, nullptr);
    raise(SIGHUP);
 }
 //----------------------------------------------------------------------------
@@ -390,7 +390,7 @@ init_apl(const std::vector<const char *> & args)
      // make curses happy
      //
      const char * term = getenv("TERM");
-     if (term == 0 || *term == 0)   setenv("TERM", "dumb", 1);
+     if (term == nullptr || *term == 0)   setenv("TERM", "dumb", 1);
    }
 
   // collect all user preferences.
@@ -566,7 +566,7 @@ const UserPreferences & uprefs = UserPreferences::uprefs;
         //
         UCS_string lx(uprefs.latent_expression);
         if (log_startup)   CERR << "executing --LX '" << lx << "'" << endl;
-        Command::process_line(lx, 0);
+        Command::process_line(lx, nullptr);
       }
 
    // maybe )LOAD the CONTINUE or SETUP workspace. Do that unless the user 
@@ -588,7 +588,7 @@ const UserPreferences & uprefs = UserPreferences::uprefs;
               // CONTINUE workspace exists and was not inhibited by --noCONT
               //
               UCS_string load_cmd(U")LOAD CONTINUE");
-              Command::process_line(load_cmd, 0);
+              Command::process_line(load_cmd, nullptr);
               return 0;
             }
 
@@ -602,7 +602,7 @@ const UserPreferences & uprefs = UserPreferences::uprefs;
               // SETUP workspace exists and was not inhibited by --noCONT
               //
               UCS_string load_cmd(U")LOAD SETUP");
-              Command::process_line(load_cmd, 0);
+              Command::process_line(load_cmd, nullptr);
               return 0;
             }
       }
@@ -617,7 +617,7 @@ const UserPreferences & uprefs = UserPreferences::uprefs;
          const UTF8_string utf(cmd);
          UCS_string load_cmd(utf);
          load_cmd << init_ws;
-         Command::process_line(load_cmd, 0);
+         Command::process_line(load_cmd, nullptr);
       }
 
    Quad_TZ::compute_offset();
@@ -655,7 +655,7 @@ std::vector<const char *> args(argc);
               const UTF8_string expr_utf(expr);
               UCS_string expr_ucs(expr_utf);
               try
-                 { Command::process_line(expr_ucs, 0); }
+                 { Command::process_line(expr_ucs, nullptr); }
               catch (...)
                  {
                    CERR << "*** --eval '" << expr << "' failed.";

@@ -44,12 +44,12 @@ int LineInput::initial_termios_errno = 0;
 
 // hooks for external editors (emacs)
 extern void (*start_input)();
-void (*start_input)() = 0;
+void (*start_input)() = nullptr;
 
 extern void (*end_input)();
-void (*end_input)() = 0;
+void (*end_input)() = nullptr;
 
-LineInput * LineInput::the_line_input = 0;
+LineInput * LineInput::the_line_input = nullptr;
 
 bool LineInput::map_next = false;
 bool LineInput::map_all  = false;
@@ -60,7 +60,7 @@ LineHistory LineHistory::quad_INP_history(2);
 
 UCS_string LineEditContext::cut_buffer;
 
-get_line_cb * InputMux::get_line_callback = 0;
+get_line_cb * InputMux::get_line_callback = nullptr;
 
 //============================================================================
 
@@ -285,11 +285,11 @@ LineHistory::replace_line(const UCS_string & line)
 const UCS_string *
 LineHistory::up()
 {
-   if (hist_lines.size() == 0)   return 0;   // no history
+   if (hist_lines.size() == 0)   return nullptr;   // no history
 
 int new_current_line = current_line - 1;
     if (new_current_line < 0)   new_current_line += hist_lines.size();   // wrap
-    if (new_current_line == put)   return 0;
+    if (new_current_line == put)   return nullptr;
 
    return &hist_lines[current_line = new_current_line];
 }
@@ -297,14 +297,14 @@ int new_current_line = current_line - 1;
 const UCS_string *
 LineHistory::down()
 {
-   if (hist_lines.size() == 0)     return 0;   // no history
-   if (current_line == put)   return 0;
+   if (hist_lines.size() == 0)     return nullptr;   // no history
+   if (current_line == put)   return nullptr;
 
 int new_current_line = current_line + 1;
    if (new_current_line >= int(hist_lines.size()))
       new_current_line = 0;   // wrap
    current_line = new_current_line;
-   if (current_line == put)   return 0;
+   if (current_line == put)   return nullptr;
 
    return &hist_lines[current_line];
 }
@@ -324,7 +324,7 @@ LineHistory::update_search(UCS_string &cur_line)
 const UCS_string *
 LineHistory::search(UCS_string &cur_line)
 {
-    if( hist_lines.size() == 0 ) return 0;  // no history
+    if( hist_lines.size() == 0 ) return nullptr;  // no history
 
     // For now, a simple substring search of hist_lines[]
     int search_start_line = last_search_line - 1;
@@ -354,7 +354,7 @@ LineHistory::search(UCS_string &cur_line)
     }
 
     last_search_line = idx;
-    if( idx == 0 ) return 0;
+    if( idx == 0 ) return nullptr;
 
     return &hist_lines[current_line];
 }
@@ -611,7 +611,7 @@ LineEditContext::cursor_UP()
    Log(LOG_get_line)   history.info(CERR << "cursor_UP()") << endl;
 
 const UCS_string * ucs = history.up();
-   if (ucs == 0)   // no line above
+   if (ucs == nullptr)   // no line above
       {
         Log(LOG_get_line)   CERR << "hit top of history()" << endl;
         Log(LOG_get_line)   history.info(CERR << "cursor_UP() done" << endl);
@@ -639,7 +639,7 @@ LineEditContext::cursor_DOWN()
    Log(LOG_get_line)   history.info(CERR << "cursor_DOWN()" << endl);
 
 const UCS_string * ucs = history.down();
-   if (ucs == 0)   // no line below
+   if (ucs == nullptr)   // no line below
       {
         Log(LOG_get_line)   CERR << "hit bottom of history()" << endl;
         // if inside history: restore user_line
@@ -678,7 +678,7 @@ LineEditContext::cursor_SEARCH()
     history_entered = true;
 
     const UCS_string * ucs = history.search(user_line_before_history);
-    if (ucs == 0)   // no line above
+    if (ucs == nullptr)   // no line above
     {
         Log(LOG_get_line)
            {
@@ -841,7 +841,7 @@ bool interactive = (mode == LIM_Quote_Quad) || (mode == LIM_Quad_Quad);
          const char * s = fgets(buffer, sizeof(buffer) - 1, stdin);
          Workspace::add_wait(now() - from);
 
-        if (s == 0)
+        if (s == nullptr)
            {
              eof = true;
              return;

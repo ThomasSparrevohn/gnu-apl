@@ -62,7 +62,7 @@ struct SVAR_context
   {}
 
    ~SVAR_context()
-      { assert(file == 0); }
+      { assert(file == nullptr); }
 
    /// the (open) file to be read or written
    FILE * file;
@@ -287,10 +287,10 @@ const int nelm = cdr.header().get_nelm();
       {
         // close file
         fclose(ctx.file);
-        ctx.file = 0;
+        ctx.file = nullptr;
 
         // return to command mode
-        ctx.var_C.context = ctx.var_D.context = 0;
+        ctx.var_C.context = ctx.var_D.context = nullptr;
         set_ACK(ctx.var_C, 0);
 
         delete &ctx;
@@ -403,11 +403,11 @@ open_pipe(const char * filename, const char * mode)
 struct stat st;
    if (stat(filename, &st) == 0)   // file exists
       {
-        FILE * pipe = 0;
+        FILE * pipe = nullptr;
         if (S_ISFIFO(st.st_mode))
            {
              pipe = fopen(filename, mode);
-             if (pipe == 0 && debug_log)
+             if (pipe == nullptr && debug_log)
                 get_CERR() << "Could not open pipe " << filename << ": "
                            << strerror(errno) << endl;
            }
@@ -424,7 +424,7 @@ struct stat st;
       return fopen(filename, mode);
 #endif // MINGW_SRC
 
-   return 0;
+   return nullptr;
 }
 //-----------------------------------------------------------------------------
 void
@@ -439,7 +439,7 @@ read_pipe(const char * filename, int code,
       }
 
 FILE * f = open_pipe(filename, "r");
-   if (f == 0)
+   if (f == nullptr)
       {
        set_ACK(var_C, 2);          //  2 := FILE NOT FOUND
        return;
@@ -462,7 +462,7 @@ write_pipe(const char * filename, int code, Coupled_var & var_C, Coupled_var & v
       }
 
 FILE * f = open_pipe(filename, "a+");
-   if (f == 0)
+   if (f == nullptr)
       {
        set_ACK(var_C, 2);          // 2 := FILE NOT FOUND
        return;
@@ -486,7 +486,7 @@ read_file(const char * filename, int code, Coupled_var & var_C,
       }
 
 FILE * f = fopen(filename, "r");
-   if (f == 0)
+   if (f == nullptr)
       {
         if (debug_log)
            get_CERR() << "Could not open file " << filename << " for reading: "
@@ -516,7 +516,7 @@ write_file(const char * filename, int code, Coupled_var & var_C, Coupled_var & v
       }
 
 FILE * f = fopen(filename, "w");
-   if (f == 0)
+   if (f == nullptr)
       {
         if (debug_log)
            get_CERR() << "Could not open file " << filename << " for writing: "
@@ -678,7 +678,7 @@ const uint32_t * varname = Svar_DB::get_svar_name(var.key);
 
 SV_key key_D = Svar_DB::find_pairing_key(var.key);
    if (key_D == 0)   { error_loc = LOC;   return E_VALUE_ERROR; }
-Coupled_var * var_D = 0;
+Coupled_var * var_D = nullptr;
    for (size_t c = 0; c < coupled_vars.size(); ++c)
        {
          if (coupled_vars[c].key == key_D)
@@ -688,7 +688,7 @@ Coupled_var * var_D = 0;
             }
        }
 
-   if (var_D == 0)
+   if (var_D == nullptr)
       {
         get_CERR() << "Could not find matching data variable for key "
                    << var.key << " (svar " << varname
@@ -743,7 +743,7 @@ SVAR_context * ctx = var.context;
 APL_error_code
 get_value(Coupled_var & var, string & data)
 {
-   if (var.data == 0)   return E_VALUE_ERROR;
+   if (var.data == nullptr)   return E_VALUE_ERROR;
 
    data = string(reinterpret_cast<const char *>(var.data->get_items()),
                  var.data->size());
@@ -757,9 +757,9 @@ SVAR_context * ctx = var.context;
    if (ctx)
       {
         if (ctx->file)   fclose(ctx->file);
-        ctx->file = 0;
+        ctx->file = nullptr;
 
-        ctx->var_C.context = ctx->var_D.context = 0;
+        ctx->var_C.context = ctx->var_D.context = nullptr;
         delete ctx;
         --var_count_210;
         if (var_count_210 == 0)   exit(0);

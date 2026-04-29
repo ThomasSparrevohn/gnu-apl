@@ -57,7 +57,7 @@ get_function_mux(const char * function_name)
       return reinterpret_cast<void *>(&eval_XB);
    if (!strcmp(function_name, "eval_AXB"))
       return reinterpret_cast<void *>(&eval_AXB);
-   return 0;
+   return nullptr;
 }
 //-----------------------------------------------------------------------------
 /// a mandatory function that returns the signature of the eval_XXX()

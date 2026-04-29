@@ -103,7 +103,7 @@ ShapeItem inc_2 = 0;              // increment after result m*l items
                 {
                   if (lval)
                      {
-                       loop(l, shape_Z3.l())   Z->next_ravel_Lval(0, 0);
+                       loop(l, shape_Z3.l())   Z->next_ravel_Lval(nullptr, nullptr);
                      }
                   else
                      {

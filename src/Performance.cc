@@ -69,11 +69,11 @@ Performance::get_statistics(Pfstat_ID id)
 #define perfo_4(id, ab, name, _thr)    \
         case PFS_ ## id ## ab:   return &fs_ ## id ## ab;
 #include "Performance.def"
-        default: return 0;
+        default: return nullptr;
       }
 
    // not reached
-   return 0;
+   return nullptr;
 }
 //----------------------------------------------------------------------------
 int
@@ -109,7 +109,7 @@ Statistics::get_name(Pfstat_ID id)
       }
 
    // not reached
-   return 0;
+   return nullptr;
 }
 //----------------------------------------------------------------------------
 void

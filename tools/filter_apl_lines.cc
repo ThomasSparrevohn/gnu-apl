@@ -70,7 +70,7 @@ char buffer[BUFLEN];
    for (;;)
        {
           const char * s = fgets(buffer, sizeof(buffer), stdin);
-          if (s == 0)   break;
+          if (s == nullptr)   break;
           buffer[BUFLAST] = 0;   // just in case buffer is not 0-termonated.
 
           int last = strlen(buffer) - 1;
@@ -136,7 +136,7 @@ char buffer[BUFLEN];
                {
                  const char * colon = strchr(buffer, ':');
                  assert(colon);
-                 src_line = strtoll(colon+1, 0, 10);
+                 src_line = strtoll(colon+1, nullptr, 10);
                 continue;
                }
 

@@ -121,7 +121,7 @@ public:
       }
 
    /// print properties
-   void debug(ostream & out, const char * loc = 0) const
+   void debug(ostream & out, const char * loc = nullptr) const
       {
         const int error = check();
         out << "CDR record";

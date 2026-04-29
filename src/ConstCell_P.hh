@@ -38,7 +38,7 @@ class ConstCell_P
 public:
    /// default constructor
    ConstCell_P()
-   : base(0),
+   : base(nullptr),
      end(0),
      offset(0),
      increment(false)
@@ -95,7 +95,7 @@ public:
 
    /// return a pointer to the current Cell (or 0 at the end)
    const Cell * operator ->() const
-      { return operator +() ? base + offset : 0; }
+      { return operator +() ? base + offset : nullptr; }
 
    /// move to the next Cell
    void operator ++()
@@ -155,7 +155,7 @@ public:
 
    /// return a pointer to the current Cell (or 0 at the end)
    const Cell * operator ->() const
-      { return operator +() ? &owner.get_cravel(offset) : 0; }
+      { return operator +() ? &owner.get_cravel(offset) : nullptr; }
 
    /// move to the next Cell
    void operator ++()

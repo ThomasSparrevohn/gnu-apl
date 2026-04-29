@@ -104,7 +104,7 @@ UserFunction::UserFunction(const UCS_string txt, const char * loc,
       }
 
    error_line = -1;   // no error
-   error_info = 0;
+   error_info = nullptr;
 }
 //----------------------------------------------------------------------------
 // conatructor for a lambda
@@ -148,7 +148,7 @@ UserFunction::UserFunction(Fun_signature sig, Lambda_number lambda_num,
    line_starts.push_back(Function_PC(lambda_body.ssize() - 1));
    line_starts.push_back(Function_PC_0);
    error_line = -1;   // no error
-   error_info = 0;
+   error_info = nullptr;
 }
 //----------------------------------------------------------------------------
 UserFunction::~UserFunction()
@@ -541,7 +541,7 @@ UCS_string message_2(error.get_error_line_2());
         if (+val_A)
            {
              PrintContext pctx(PR_BOXED_GRAPHIC);
-             PrintBuffer pb(*val_A, pctx, 0);
+             PrintBuffer pb(*val_A, pctx, nullptr);
              message_2 << UCS_string(pb, 1, DEFAULT_Quad_PW) << UNI_SPACE;
            }
 #endif
@@ -558,7 +558,7 @@ UCS_string message_2(error.get_error_line_2());
         if (+val_B)
            {
              PrintContext pctx(PR_APL_FUN);
-             PrintBuffer pb(*val_B, pctx, 0);
+             PrintBuffer pb(*val_B, pctx, nullptr);
              message_2 << UNI_SPACE << UCS_string(pb, 1, DEFAULT_Quad_PW);
            }
 #endif
@@ -790,7 +790,7 @@ Lit_DB literals;
 UserFunction *
 UserFunction::load(const char * workspace, const char * function)
 {
-UserFunction * fun = 0;
+UserFunction * fun = nullptr;
 
    try
       {
@@ -806,7 +806,7 @@ UserFunction * fun = 0;
       {
         delete fun;
         CERR << "Caught unexpected exception at " << LOC << endl;
-        return 0;
+        return nullptr;
       }
 
    return fun;
@@ -1025,7 +1025,7 @@ off_t len = 0;
    }
 
 const UTF8 * start = Sys::mmap(fd, len);
-   if (start == 0)
+   if (start == nullptr)
       {
         CERR << "Can't mmap() workspace file '" 
              << filename << "': " << strerror(errno) << endl;
@@ -1100,7 +1100,7 @@ const bool bad_function = info || err_line != -1;
            }
 
         delete ufun;
-        return 0;
+        return nullptr;
       }
 
 const Symbol * symbol = Workspace::lookup_symbol(ufun->header.get_name());
@@ -1117,7 +1117,7 @@ const Symbol * symbol = Workspace::lookup_symbol(ufun->header.get_name());
                 }
              err_line = 0;
              delete ufun;
-             return 0;
+             return nullptr;
            }
 
         // check that the function is allowed to be defined,
@@ -1133,7 +1133,7 @@ const Symbol * symbol = Workspace::lookup_symbol(ufun->header.get_name());
 
              err_line = 0;
              delete ufun;
-             return 0;
+             return nullptr;
            }
 
         if (old_function->is_native())
@@ -1153,7 +1153,7 @@ const Symbol * symbol = Workspace::lookup_symbol(ufun->header.get_name());
    if (ufun->compute_if_else_targets())
       {
         delete ufun;
-        return 0;
+        return nullptr;
       }
 
    // finally: bind function to symbol
@@ -1219,7 +1219,7 @@ int signature = SIG_FUN | SIG_Z;
                    break;
 
               case UNI_LF:   // end of header
-                   dest = 0;
+                   dest = nullptr;
                    for (++t; t < text.ssize();)   body_text << text[t++];
                    break;                          // header line done
               default:                                        break;
@@ -1244,7 +1244,7 @@ Token_string body;
    if (const ErrorCode ec = parser.parse(body_text, body, true))
       {
         CERR << "Parsing '" << body_text << "' failed (" << ec << ")." << endl;
-        return 0;
+        return nullptr;
       }
 
 Function_PC last_statement = Function_PC(-1);

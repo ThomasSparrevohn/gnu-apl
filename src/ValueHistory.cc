@@ -111,7 +111,7 @@ int cidx = VH_entry::idx;
       }
 
 int flags = 0;
-const VH_entry * previous = 0;
+const VH_entry * previous = nullptr;
    loop(e, var_events.size())
       {
         const VH_entry * vev = var_events[var_events.size() - e - 1];
@@ -142,8 +142,8 @@ VH_entry::print(int & flags, ostream & out, const Value & val,
 {
 const ValueFlags flags_before = ValueFlags(flags);
 
-   if (previous == 0                            ||
-       previous->testcase_file == 0             ||
+   if (previous == nullptr                            ||
+       previous->testcase_file == nullptr             ||
        previous->testcase_line != testcase_line ||
        strcmp(previous->testcase_file, testcase_file))
       {

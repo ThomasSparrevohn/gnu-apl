@@ -168,7 +168,7 @@ operator <<(ostream & out, const IndexExpr & idx)
              // value::print() may print a trailing LF that we don't want here.
              // We therefore print the index values ourselves.
              const PrintContext pctx = Workspace::get_PrintContext(PR_APL_MIN);
-             PrintBuffer pb(*ival, pctx, 0);
+             PrintBuffer pb(*ival, pctx, nullptr);
 
              UCS_string ucs(pb, ival->get_rank(), Workspace::get_PW());
              out << ucs;

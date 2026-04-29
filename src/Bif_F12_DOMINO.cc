@@ -192,7 +192,7 @@ double EPS = Workspace::get_CT();
 #endif
         else if (x0 ==  7)   return Token(TOK_APL_VALUE1, print_polynomial(*B));
         else if (x0 == 11)   return Token(TOK_APL_VALUE1, scan_polynomial(*B));
-        else if (x0 == 20)   return Token(TOK_APL_VALUE1, integral(0, *B));
+        else if (x0 == 20)   return Token(TOK_APL_VALUE1, integral(nullptr, *B));
       }
 
    if (algo == ALGO_BAD)   // none of the above
@@ -432,7 +432,7 @@ const APL_Integer X0 = X->get_sole_integer();
         case  7: return Token(TOK_APL_VALUE1, print_polynomial(*A, *B));
         case  8: return Token(TOK_APL_VALUE1, polynomial_product(*A, *B));
         case  9: return Token(TOK_APL_VALUE1, poly_quotient(*A, *B));
-        case 10: return Token(TOK_APL_VALUE1, poly_quotient_NO(*A, *B, 0, 0));
+        case 10: return Token(TOK_APL_VALUE1, poly_quotient_NO(*A, *B, nullptr, nullptr));
         case 11: return Token(TOK_APL_VALUE1, scan_polynomial(*A, *B));
         case 12: return Token(TOK_APL_VALUE1, poly_quotient_N(*A, *B));
         case 20: return Token(TOK_APL_VALUE1, integral(A.get(), *B));
@@ -520,7 +520,7 @@ const ShapeItem base_S  = 1 + base_R  + CPLX*len_QR + 1;
 const ShapeItem end     = 1 + base_S  + CPLX*len_QR + 1;
 #define base_AUG  base_Q   /* reuse Q */
 
-double * data = new double[end*CPLX];   if (data == 0)   WS_FULL;
+double * data = new double[end*CPLX];   if (data == nullptr)   WS_FULL;
    memset(data, 0, end*sizeof(double));
    data[base_B - 1]  = 42.0;   data[base_B  + CPLX*len_B] = 43.0;
    data[base_Q - 1]  = 44.0;   data[base_Q  + CPLX*len_QR]   = 45.0;

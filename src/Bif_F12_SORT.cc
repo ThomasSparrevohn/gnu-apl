@@ -144,7 +144,7 @@ const CollatingCacheEntry * entries = &at(0);
 const CollatingCacheEntry * entry =
 
    Heapsort<CollatingCacheEntry>::search<Unicode>(uni, *this,
-                                         CollatingCacheEntry::compare_chars, 0);
+                                         CollatingCacheEntry::compare_chars, nullptr);
 
    if (entry)   return entry - entries;
    return size() - 1;   // the entry for characters not in A

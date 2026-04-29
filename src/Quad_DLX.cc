@@ -151,7 +151,7 @@ public:
    : DLX_Node(true, -1, C, this, this, l, r),
      count(0),
      col_type(Col_UNKNOWN),
-     item_r(0)
+     item_r(nullptr)
    {}
 
    /// the number of '1's remaining in this column
@@ -328,7 +328,7 @@ DLX_Root_Node::DLX_Root_Node(ShapeItem rs, ShapeItem cs, ShapeItem max_sol,
      level(0),
      pick_count(0),
      cover_count(0),
-     first_0(0)
+     first_0(nullptr)
 {
    // count the number of non-zero elements in the matrix
    //

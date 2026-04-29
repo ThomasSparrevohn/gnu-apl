@@ -90,7 +90,7 @@ SqliteConnection::fill_tables(vector<string> & tables)
 {
 sqlite3_stmt * statement;
 const char * SELECT = "select name from sqlite_master where type = 'table'";
-   if (SQLITE_OK != sqlite3_prepare_v2(get_db(), SELECT, -1, &statement, NULL))
+   if (SQLITE_OK != sqlite3_prepare_v2(get_db(), SELECT, -1, &statement, nullptr))
       {
         raise_sqlite_error("Error getting table names");
       }
@@ -125,7 +125,7 @@ sqlite3_stmt * statement;
 char * statement_content = sqlite3_mprintf("pragma table_info('%q')",
                                            table.c_str() );
 int result = sqlite3_prepare_v2(get_db(), statement_content,
-        -1, &statement, NULL);
+        -1, &statement, nullptr);
 
     sqlite3_free(statement_content);
 

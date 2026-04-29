@@ -51,11 +51,11 @@ public:
 
    /// return true if the pointer is valid
    bool operator+() const
-      { return value_p != 0; }
+      { return value_p != nullptr; }
 
    /// return true if the pointer is invalid
    bool operator!() const
-      { return value_p == 0; }
+      { return value_p == nullptr; }
 
    /// return a const pointer to the Value (overloaded *)
    const Value * operator->()  const
@@ -84,7 +84,7 @@ public:
    /// init the pointer (without adding an event)
    inline void init_pointer()
       {
-         value_p = 0;
+         value_p = nullptr;
       }
 
    /// clear the pointer (and possibly add an event)
@@ -110,7 +110,7 @@ class Value_P : public Value_P_Base
 public:
    /// Constructor: 0 pointer
    Value_P()
-      { value_p = 0; }
+      { value_p = nullptr; }
 
    /// a new scalar value with un-initialized ravel
    inline Value_P(const char * loc);

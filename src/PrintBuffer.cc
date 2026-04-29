@@ -152,7 +152,7 @@ const ShapeItem ec = value.element_count();
    //
 const ShapeItem cols = value.get_last_shape_item();
 
-PrintBuffer * item_matrix = 0;
+PrintBuffer * item_matrix = nullptr;
    try { item_matrix = new PrintBuffer[ec]; }
    catch (...)
       {
@@ -1204,7 +1204,7 @@ PrintBuffer::align_dot(ColInfo & COL_INFO)
              << " f-" << col_info.fract_len
              << " r-" << col_info.real_len
              << " ÷"  << col_info.denom_len << endl;
-        debug(CERR, 0);
+        debug(CERR, nullptr);
       }
 
    Assert(buffer.size() > 0);
@@ -1297,7 +1297,7 @@ PrintBuffer::align_j(ColInfo & COL_INFO)
              << ", this col = " << col_info.int_len
              << ":" << col_info.fract_len
              << ":" << col_info.real_len << endl;
-        debug(CERR, 0);
+        debug(CERR, nullptr);
       }
 
    Assert(buffer.size() > 0);
@@ -1400,7 +1400,7 @@ PrintBuffer::align_left(ColInfo & COL_INFO)
              << ", this col = " << col_info.int_len
              << ":" << col_info.fract_len
              << ":" << col_info.real_len << endl;
-        debug(CERR, 0);
+        debug(CERR, nullptr);
       }
 
    if (col_info.int_len == COL_INFO.int_len)   return;   // no padding needed.

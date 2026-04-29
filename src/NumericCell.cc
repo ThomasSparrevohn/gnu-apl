@@ -1166,7 +1166,7 @@ const uint64_t N_choose_33[] = { (66), 1, 34, 595, 7140, 66045, 0x7A8B6,
     The tables below handle all cases where 8 ≤ K ≤ 33 and the result is small
     enough to fit into an APL integer.
  **/
-static const uint64_t * N_choose_K[] = { 0, 0, 0, 0, 0, 0, 0, 0,
+static const uint64_t * N_choose_K[] = { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
  N_choose_8,  N_choose_9,  N_choose_10, N_choose_11, N_choose_12, N_choose_13, 
  N_choose_14, N_choose_15, N_choose_16, N_choose_17, N_choose_18, N_choose_19, 
  N_choose_20, N_choose_21, N_choose_22, N_choose_23, N_choose_24, N_choose_25, 

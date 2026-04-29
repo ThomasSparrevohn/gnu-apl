@@ -176,7 +176,7 @@ ShapeItem repeat_cnt = N->get_cfirst().get_checked_near_int();
    if (repeat_cnt < 0)   // inverse
       {
         cFunction_P inverse = LO->get_dyadic_inverse();
-        if (inverse == 0)   DOMAIN_ERROR;   // no inverse for LO
+        if (inverse == nullptr)   DOMAIN_ERROR;   // no inverse for LO
 
         LO = inverse;
         repeat_cnt = - repeat_cnt;

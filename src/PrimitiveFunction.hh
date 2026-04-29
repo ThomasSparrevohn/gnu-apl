@@ -49,8 +49,8 @@ class PrimitiveFunction : public Function
 public:
    /// Construct a PrimitiveFunction with \b TokenTag \b tag
    PrimitiveFunction(TokenTag tag,
-                     CellFunctionStatistics * stat_AB = 0, 
-                     CellFunctionStatistics * stat_B = 0)
+                     CellFunctionStatistics * stat_AB = nullptr,
+                     CellFunctionStatistics * stat_B = nullptr)
    : Function(tag),
        statistics_AB(stat_AB),
        statistics_B(stat_B)

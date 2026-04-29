@@ -819,7 +819,7 @@ unsigned int hash[4] = { at0().get_Class() };
          if (best_phrase->phrase_hash == hash_s)   return;   // found
        }
 
-   best_phrase = 0;   // not found
+   best_phrase = nullptr;   // not found
 }
 #endif
 
@@ -949,7 +949,7 @@ again:   // aka. REDUCE
    // search longest prefixes in phrase table...
    //
    find_best_phrase();                  // set best_phrase
-   if (best_phrase == 0)   goto grow;   // no best_phrase
+   if (best_phrase == nullptr)   goto grow;   // no best_phrase
 
    /* found a reducible prefix. See if the next token class binds stronger
       than best_phrase->prio.
@@ -1189,7 +1189,7 @@ Prefix::locate_L(UCS_string & function) const
       {
         // e.g. DOMAIN ERROR in × ÷ 0. ssize() is 2 and at0() is ÷
         function = at0().get_function()->get_name();
-        return 0;
+        return nullptr;
       }
 
    if (ssize() > 1 && at1().get_ValueType() == TV_FUN)
@@ -1202,10 +1202,10 @@ Prefix::locate_L(UCS_string & function) const
         return at0().get_apl_valp();
       }
 
-   if (ssize() < 3)   return 0;
+   if (ssize() < 3)   return nullptr;
 
    if (at0().get_Class() == TC_VALUE)   return at0().get_apl_valp();
-   return 0;
+   return nullptr;
 }
 //----------------------------------------------------------------------------
 Value_P *
@@ -1213,23 +1213,23 @@ Prefix::locate_R(UCS_string & function) const
 {
    // ⎕R requires at least f B (so we have at0() and at1()
 
-   if (ssize() < 2)   return 0;
+   if (ssize() < 2)   return nullptr;
 
    if (ssize() == 2 && at1().get_Class() == TC_INDEX)   // B[X]
       {
         function = UCS_ASCII_string("[]");   // valid function
-        return 0;                      // but no ⎕R.
+        return nullptr;                      // but no ⎕R.
       }
 
    // either at0() (for monadic f B) or at1() (for dyadic A f B) must
    // be a function or operator
    //
    if (at0().get_ValueType() != TV_FUN &&
-       at1().get_ValueType() != TV_FUN)   return 0;
+       at1().get_ValueType() != TV_FUN)   return nullptr;
 
 const Token & ret = content[ssize() - prefix_len].get_token();
    if (ret.get_Class() == TC_VALUE)   return ret.get_apl_valp();
-   return 0;
+   return nullptr;
 }
 //----------------------------------------------------------------------------
 Value_P *
@@ -1237,7 +1237,7 @@ Prefix::locate_X(UCS_string & function) const
 {
    // ⎕X requires at least X B (so we have at0() and at1()
 
-   if (ssize() < 2)   return 0;
+   if (ssize() < 2)   return nullptr;
 
    // either at0() (for monadic f X B) or at1() (for dyadic A f X B) must
    // be a function or operator
@@ -1260,7 +1260,7 @@ Prefix::locate_X(UCS_string & function) const
             }
        }
 
-   return 0;
+   return nullptr;
 }
 //----------------------------------------------------------------------------
 void
@@ -2057,7 +2057,7 @@ const bool member_assign = prefix_len == 4;   // assume member reference
       number corresponding for the subfunction name subfun. Dito for ⎕FIO.
     */
 vector<const UCS_string *>members;
-Symbol * top_sym = 0;
+Symbol * top_sym = nullptr;
    members.push_back(at1().get_sym_ptr()->get_name_ptr());
    while (PC + 1 < body.ssize())   // at least 2 more token
          {
@@ -2117,7 +2117,7 @@ Symbol * top_sym = 0;
               }
          }
 
-   if (top_sym == 0)
+   if (top_sym == nullptr)
       {
         MORE_ERROR() << "member access: no top-level variable name";
         syntax_error(LOC);
@@ -2159,7 +2159,7 @@ Value_P top_val = top_sym->get_var_value();
 
    if (member_assign)   // (direct) member assignment e.g. A.B.C←V
       {
-        Value * member_owner = 0;
+        Value * member_owner = nullptr;
         Cell * member_cell = top_val->get_member(members, member_owner, true);
         Assert(member_owner);
 

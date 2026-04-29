@@ -40,7 +40,7 @@
 
 #include "Value.hh"
 
-static const char * build_tag[] = { BUILDTAG, 0 };
+static const char * build_tag[] = { BUILDTAG, nullptr };
 UserPreferences UserPreferences::uprefs;
 
 /// CYGWIN defines _B
@@ -68,14 +68,14 @@ UserPreferences::UserPreferences()
      do_Color(true),
      do_not_echo(false),
      echo_CIN(false),
-     emacs_arg(0),
+     emacs_arg(nullptr),
      emacs_mode(false),
      initial_PW(DEFAULT_Quad_PW),
      initial_PW_by_user(false),
      line_history_len(500),
      no_xmodmap(false),
      line_history_path(".apl.history"),
-     mem_arg(0),  // no --mem and mo MEMORY preference
+     mem_arg(nullptr),  // no --mem and mo MEMORY preference
      old_multi_line_strings(true),
      new_multi_line_strings(true),
      multi_line_literals(true),
@@ -97,7 +97,7 @@ UserPreferences::UserPreferences()
      wait_ms(0),
      WINCH_sets_pw(false)
 {
-   gettimeofday(&session_start, 0);
+   gettimeofday(&session_start, nullptr);
 }
 //----------------------------------------------------------------------------
 bool
@@ -330,7 +330,7 @@ UserPreferences::parse_args_0(const std::vector<const char *> & args)
 {
    for (size_t a = 1; (a + 1) < args.size(); ++a)
        {
-         if (!strcmp(args[a], "-l") && strtol(args[a+1], 0, 10) == LID_startup)
+         if (!strcmp(args[a], "-l") && strtol(args[a+1], nullptr, 10) == LID_startup)
             return true;
        }
 
@@ -348,7 +348,7 @@ bool log_startup = false;
    for (size_t a = 1; a < expanded_args.size(); )
        {
          const char * opt = expanded_args[a++];
-         const char * val = (a < expanded_args.size()) ? expanded_args[a] : 0;
+         const char * val = (a < expanded_args.size()) ? expanded_args[a] : nullptr;
 
          IFOPT( -l )
             {
@@ -416,7 +416,7 @@ bool log_startup = false;
                    exit(a);
                  }
 #if ! MINGW_SRC
-              if (setuid(strtoll(val, 0, 10)))
+              if (setuid(strtoll(val, nullptr, 10)))
                  {
                    CERR << "setuid(" << val << ") failed: "
                         << strerror(errno) << endl;
@@ -462,7 +462,7 @@ UserPreferences::parse_args_2(bool logit)
          if (a == script_argc)   { ++a;   continue; }   // skip scriptname
 
          const char * opt = expanded_args[a++];
-         const char * val = (a < expanded_args.size()) ? expanded_args[a] : 0;
+         const char * val = (a < expanded_args.size()) ? expanded_args[a] : nullptr;
 
          // at this point, argv[a] is the string after opt, i.e. either the
          // next option or an argument of the current option
@@ -584,7 +584,7 @@ UserPreferences::parse_args_2(bool logit)
                  }
 
               const UTF8_string & filename(val);
-              InputFile fam(filename, 0, false, !do_not_echo, true, no_LX);
+              InputFile fam(filename, nullptr, false, !do_not_echo, true, no_LX);
               InputFile::files_todo.push_back(fam);
               InputFile::files_orig.push_back(fam);
               continue;
@@ -846,7 +846,7 @@ UserPreferences::parse_args_2(bool logit)
 
                        }
                     const UTF8_string & filename = expanded_args[a];
-                    InputFile fam(filename, 0, true, true, false, no_LX);
+                    InputFile fam(filename, nullptr, true, true, false, no_LX);
                     InputFile::files_todo.push_back(fam);
                     InputFile::files_orig.push_back(fam);
                   }
@@ -986,7 +986,7 @@ UserPreferences::parse_args_2(bool logit)
    if (script_argc > 0)                     // (case D.)
       {
         const UTF8_string & filename = expanded_args[script_argc];
-        InputFile fam(filename, 0, false, !do_not_echo, true, no_LX);
+        InputFile fam(filename, nullptr, false, !do_not_echo, true, no_LX);
         InputFile::files_todo.insert(InputFile::files_todo.begin(), fam);
       }
 
@@ -1272,11 +1272,11 @@ UserPreferences::open_user_file(const char * fname, char * filename,
    else       // try $HOME/.gnu_apl
       {
         const char * HOME = getenv("HOME");
-        if (HOME == 0)
+        if (HOME == nullptr)
            {
              if (log_startup)
                 CERR << "environment variable 'HOME' is not defined!" << endl;
-             return 0;
+             return nullptr;
            }
 
         snprintf(filename, APL_PATH_MAX, "%s/.gnu-apl/%s", HOME, fname);
@@ -1295,12 +1295,12 @@ UserPreferences::open_user_file(const char * fname, char * filename,
    filename[APL_PATH_MAX] = 0;
 
 FILE * f = fopen(filename, "r");
-   if (f == 0)
+   if (f == nullptr)
       {
          if (log_startup)
             CERR << "Not reading config file " << filename
                  << " (" << strerror(errno) << ")" << endl;
-         return 0;
+         return nullptr;
       }
 
    if (log_startup)
@@ -1325,7 +1325,7 @@ int file_profile = 0;   // the current profile in the preferences file
          enum { BUFSIZE = 200 };
          char buffer[BUFSIZE + 1];
          const char * s = reader.fgets(buffer, BUFSIZE);
-         if (s == 0)   break;   // end of file
+         if (s == nullptr)   break;   // end of file
 
          buffer[BUFSIZE] = 0;
          ++line;
@@ -1368,7 +1368,7 @@ int file_profile = 0;   // the current profile in the preferences file
                    << " of config file " << filename << " (ignored)" << endl;
               continue;
             }
-         d[0] = strtoll(arg, 0, 16);
+         d[0] = strtoll(arg, nullptr, 16);
          const bool yes = !strcasecmp(arg, "YES"     )
                        || !strcasecmp(arg, "ENABLED" )
                        || !strcasecmp(arg, "ON"      );
@@ -1463,7 +1463,7 @@ int file_profile = 0;   // the current profile in the preferences file
             }
          else if (!strcasecmp(opt, "LOGGING"))
             {
-              d[0] = strtoll(arg, 0, 10);   // decimal!
+              d[0] = strtoll(arg, nullptr, 10);   // decimal!
               Log_control(LogId(d[0]), true);
               log_startup && CERR << "    logging facility " << d[0]
                                   << " enabled in " << filename << endl;
@@ -1601,7 +1601,7 @@ int file_profile = 0;   // the current profile in the preferences file
               if (arg[0] == '~' && arg[1] == '/') 
                  {
                    const char * HOME = getenv("HOME");
-                   if (HOME == 0)
+                   if (HOME == nullptr)
                       {
                         if (log_startup)
                            CERR << "environment variable 'HOME' is not "
@@ -1645,7 +1645,7 @@ int file_profile = 0;   // the current profile in the preferences file
             }
          else if (!strcasecmp(opt, "plot-ASCII-background"))
             {
-              plot_ASCII_background = strtol(arg, 0, 0);
+              plot_ASCII_background = strtol(arg, nullptr, 0);
             }
          else if (!strcasecmp(opt, "KEYBOARD_LAYOUT_FILE"))
             {
@@ -1760,7 +1760,7 @@ UserPreferences::decode_ASCII(const char * strg)
    if (!strcmp(strg, "US"))    return 0x1F;
 
    if (strlen(strg) == 1)   return *strg;                  // single char
-   if (strlen(strg) == 2)   return strtoll(strg, 0, 16);   // hex value, e.g. 4C
+   if (strlen(strg) == 2)   return strtoll(strg, nullptr, 16);   // hex value, e.g. 4C
    CERR << "invalid parameter " << strg << " in preferences file" << endl;
    return -1;
 }
@@ -1780,7 +1780,7 @@ int line = 0;
          enum { BUFSIZE = 200 };
          char buffer[BUFSIZE + 1];
          const char * s = reader.fgets(buffer, BUFSIZE);
-         if (s == 0)   break;   // end of file
+         if (s == nullptr)   break;   // end of file
 
          buffer[BUFSIZE] = 0;
          ++line;
@@ -1795,7 +1795,7 @@ int line = 0;
          // eg. perfo_2(F12_MINUS, _AB, "A - B",  25 )
          //
          const char * p = strstr(s, "perfo_");
-         if (p == 0)   continue;
+         if (p == nullptr)   continue;
 
          p += 6;   // skip "perfo_"
          const int macro_type = *p++ - '0';
@@ -1810,23 +1810,23 @@ int line = 0;
          //
          {
            const char * param = strchr(p, '(');
-           if (param == 0)   goto param_error;
+           if (param == nullptr)   goto param_error;
            skip_spaces(++param);
 
            const char * p_ab = strchr(param, ',');
-           if (p_ab == 0)   goto param_error;
+           if (p_ab == nullptr)   goto param_error;
            skip_spaces(++p_ab);
            const int i_ab = p_ab[1] == 'A' ? 2 : 1;
 
            const char * p_txt = strchr(p_ab, ',');
-           if (p_txt == 0)   goto param_error;
+           if (p_txt == nullptr)   goto param_error;
            skip_spaces(++p_txt);
 
            const char * p_be = strchr(p_txt, ',');
-           if (p_be == 0)   goto param_error;
+           if (p_be == nullptr)   goto param_error;
            skip_spaces(++p_be);
 
-           const ShapeItem value = strtoll(p_be, 0, 0);
+           const ShapeItem value = strtoll(p_be, nullptr, 0);
 
          enum { _B = 1, _AB = 2 };
 #define perfo_1(bif, ab, _name, th)   if (!strncmp(param, #bif, strlen(#bif))) \
@@ -1850,7 +1850,7 @@ void
 UserPreferences::set_threshold(cFunction_P fun, int ab, int i_ab,
                                ShapeItem threshold)
 {
-   if (fun == 0)    return;
+   if (fun == nullptr)    return;
    if (ab != i_ab)  return;
 
    if (ab == 1)   const_cast<Function *>(fun)->set_monadic_threshold(threshold);

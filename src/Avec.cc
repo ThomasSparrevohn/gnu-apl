@@ -652,9 +652,9 @@ static vector<Unicode_to_IBM_codepoint> inverse;
         loop(j, 256)   inverse.push_back(inverse_ibm_av[j]);
       }
 const void * where = Heapsort<Unicode_to_IBM_codepoint>
-                     ::search<uint32_t>(uni, inverse, compare_uni, 0);
+                     ::search<uint32_t>(uni, inverse, compare_uni, nullptr);
 
-   if (where == 0)
+   if (where == nullptr)
       {
         // the workspace being )OUT'ed can contain characters that are not
         // in IBM's APL character set. We replace such characters by 0xB0

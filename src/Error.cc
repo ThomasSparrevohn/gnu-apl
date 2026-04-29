@@ -36,11 +36,11 @@
 Error::Error(ErrorCode ec, const char * loc)
    : error_code(ec),
      throw_loc(loc),
-     parser_loc(0),
+     parser_loc(nullptr),
      show_locked(false),
      left_caret(-1),
      right_caret(-1),
-     print_loc(0)
+     print_loc(nullptr)
 {
 const bool have_more = Workspace::more_error().size();
    if (have_more && Workspace::more_error().back() != UNI_PLUS)
@@ -227,7 +227,7 @@ Error::print_em(ostream & out, const char * loc)
 void
 throw_apl_error(ErrorCode code, const char * loc)
 {
-   ADD_EVENT(0, VHE_Error, code, loc);
+   ADD_EVENT(nullptr, VHE_Error, code, loc);
 
 StateIndicator * si = Workspace::SI_top();   // the current )SI entry
 

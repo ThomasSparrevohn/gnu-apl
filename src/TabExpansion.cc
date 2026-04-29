@@ -102,7 +102,7 @@ ExpandResult
 TabExpansion::expand_APL_command(UCS_string & user_input)
 {
 ExpandHint ehint = EH_NO_PARAM;
-const char * shint = 0;
+const char * shint = nullptr;
 UCS_string cmd = user_input;   // command and argument
 UCS_string arg;                // argument
    cmd.split_ws(arg);          // command only
@@ -617,14 +617,14 @@ TabExpansion::expand_filename(UCS_string & user_input,
      else if (arg[0] == UNI_FULLSTOP && slash_at_1) // relative path ./xxx
         {
           const char * pwd = getenv("PWD");
-          if (pwd == 0)   goto nothing;
+          if (pwd == nullptr)   goto nothing;
           const UTF8_string dir_utf(pwd);
           dir_ucs = UCS_string(dir_utf) + arg.drop(1);
         }
      else if (tilde_at_0 && slash_at_1)                 // user's home ~/
         {
           const char * home = getenv("HOME");
-          if (home == 0)   goto nothing;
+          if (home == nullptr)   goto nothing;
           const UTF8_string home_utf(home);
           dir_ucs = UCS_string(home_utf) + arg.drop(1);
         }
@@ -638,14 +638,14 @@ TabExpansion::expand_filename(UCS_string & user_input,
 
      const char * dir_dirname = dir_utf.c_str();
      const char * dir_basename = strrchr(dir_dirname, '/');
-     if (dir_basename == 0)   goto nothing;
+     if (dir_basename == nullptr)   goto nothing;
 
      UTF8_string base_utf = UTF8_string(++dir_basename);
      dir_utf.resize(dir_basename - dir_dirname);
      dir_ucs = UCS_string(dir_utf);
 
      DIR * dir = opendir(dir_utf.c_str());
-     if (dir == 0)   goto nothing;
+     if (dir == nullptr)   goto nothing;
 
      UCS_string_vector matches;
      read_matching_filenames(dir, dir_utf, base_utf, ehint, matches);
@@ -692,7 +692,7 @@ UTF8_string path = LibPaths::get_lib_dir(lib);
       }
 
 DIR * dir = opendir(path.c_str());
-   if (dir == 0)
+   if (dir == nullptr)
       {
         CIN << endl;
         CERR
@@ -762,7 +762,7 @@ const bool only_workspaces = (ehint == EH_oLIB_WSNAME) ||
    for (;;)
        {
           struct dirent * dent = readdir(dir);
-          if (dent == 0)   break;
+          if (dent == nullptr)   break;
 
           const size_t dlen = strlen(dent->d_name);
           if (dlen == 1 && dent->d_name[0] == '.')   continue;

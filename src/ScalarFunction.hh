@@ -131,7 +131,7 @@ protected:
 };
 
 #define PERF_A(x)   TOK_F2_ ## x,                           \
-                  & Performance::cfs_F2_    ## x ## _AB, 0, \
+                  & Performance::cfs_F2_    ## x ## _AB, nullptr, \
                     Performance::thresh_F2_ ## x ## _AB, -1
 
 #define PERF_AB(x)  TOK_F12_ ## x,                    \
@@ -141,7 +141,7 @@ protected:
                     Performance::thresh_F12_ ## x ## _B
 
 #define PERF_B(x)   TOK_F12_ ## x,                          \
-                  0, & Performance::cfs_F12_    ## x ## _B, \
+                  nullptr, & Performance::cfs_F12_    ## x ## _B, \
                   -1,  Performance::thresh_F12_ ## x ## _B
 
 //============================================================================
@@ -599,7 +599,7 @@ protected:
 
    /// overloaded Function::get_scalar_f2()
    virtual prim_f2 get_scalar_f2() const
-      { return 0; }
+      { return nullptr; }
 
    /// Return true iff A is contained in B.
    static bool contained(const Shape & shape_A, const Cell * cA,
@@ -873,7 +873,7 @@ protected:
 
    /// overloaded Function::get_scalar_f2
    virtual prim_f2 get_scalar_f2() const
-      { return 0; }
+      { return nullptr; }
 
    /// overloaded ScalarFunction::may_parallel()
    virtual bool may_parallel() const   { return false; }
@@ -914,7 +914,7 @@ protected:
 
    /// overloaded Function::get_scalar_f2
    virtual prim_f2 get_scalar_f2() const
-      { return 0; }
+      { return nullptr; }
 
    /// eval_AB for large A and/or B
    static Value_P large_eval_AB(const Value & A, const Value & B);

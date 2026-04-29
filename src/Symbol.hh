@@ -85,7 +85,7 @@ public:
    /// delete the function
    void clear_function()
       {
-        sym_val.function = 0;
+        sym_val.function = nullptr;
         name_class = NC_UNUSED_USER_NAME;
       }
 
@@ -351,11 +351,11 @@ public:
 
    /// return the top-most item on the value stack
    const ValueStackItem * top_of_stack() const
-      { return value_stack.size() ? &value_stack.back() : 0; }
+      { return value_stack.size() ? &value_stack.back() : nullptr; }
 
    /// return the top-most item on the value stack
    ValueStackItem * top_of_stack()
-      { return value_stack.size() ? &value_stack.back() : 0; }
+      { return value_stack.size() ? &value_stack.back() : nullptr; }
 
    /// return the idx'th item on stack (higher index = newer item)
    const ValueStackItem & operator [](int idx) const

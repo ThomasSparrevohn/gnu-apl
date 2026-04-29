@@ -180,10 +180,10 @@ Quad_PLOT::eval_AB(Value_P A, Value_P B) const
    // plot window with default attributes
    //
 Plot_data * data = setup_data(*B);
-   if (data == 0)   DOMAIN_ERROR;
+   if (data == nullptr)   DOMAIN_ERROR;
 
 Plot_window_properties * w_props = new Plot_window_properties(data, verbosity);
-   if (w_props == 0)
+   if (w_props == nullptr)
       {
         delete data;
         WS_FULL;
@@ -335,10 +335,10 @@ Quad_PLOT::eval_B(Value_P B) const
    // plot window with default attributes
    //
 Plot_data * data = setup_data(*B);
-   if (data == 0)   DOMAIN_ERROR;
+   if (data == nullptr)   DOMAIN_ERROR;
 
 Plot_window_properties * w_props = new Plot_window_properties(data, verbosity);
-   if (w_props == 0)
+   if (w_props == nullptr)
       {
         delete data;
          WS_FULL;
@@ -492,7 +492,7 @@ const ShapeItem len_B = rows_B * cols_B;
    // all items of B shall be simple numbers (integer, real, or complex).
    loop(b, len_B)
        {
-         if (!B.get_cravel(b).is_numeric())   return 0;
+         if (!B.get_cravel(b).is_numeric())   return nullptr;
        }
 
    // split B into X=real B, Y=imag Y
@@ -657,7 +657,7 @@ const ShapeItem cols   = B.get_shape_item(2);
    if (rows < 1)                    LENGTH_ERROR;
    if (cols < 1)                    LENGTH_ERROR;
 
-Plot_data * data = 0;
+Plot_data * data = nullptr;
 
 const ShapeItem data_points = rows * cols;
 
@@ -722,7 +722,7 @@ const ShapeItem data_points = rows * cols;
                   }
               const double * pX = X + r*cols;
               const double * pY = Y + r*cols;
-              const Plot_data_row * pdr = new Plot_data_row(pX, pY, 0, r, cols);
+              const Plot_data_row * pdr = new Plot_data_row(pX, pY, nullptr, r, cols);
               data->add_row(pdr);
             }
       }
@@ -745,7 +745,7 @@ const ShapeItem data_points = rows * cols;
                     Y[p] = cY.get_real_value();
                   }
               const double * pY = Y + r*cols;
-              const Plot_data_row * pdr = new Plot_data_row(0, pY, 0, r, cols);
+              const Plot_data_row * pdr = new Plot_data_row(nullptr, pY, nullptr, r, cols);
               data->add_row(pdr);
             }
       }
@@ -800,7 +800,7 @@ const string driver_attr = w_props->get_gui_driver();
         // expose_sema after its plot window was exposed.
         //
         pthread_t th;
-        pthread_create(&th, 0, plot_main_XCB, w_props);
+        pthread_create(&th, nullptr, plot_main_XCB, w_props);
         sem_wait(expose_sema);   // blocks until window shown
         sem_post(expose_sema);   // for the next window (if any)
         Log(LOG_Quad_PLOT)   CERR << "Plot driver XCB loaded." << endl;

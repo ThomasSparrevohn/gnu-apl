@@ -58,7 +58,7 @@ Value::set_default(const Value & B, const char * loc)
      {
        Assert1(this->get_cproto().is_integer_cell());   // by constructor
        const Cell & cell = B.get_cproto();
-       if (cell.is_lval_cell())   new (&get_wproto()) LvalCell(0, 0);
+       if (cell.is_lval_cell())   new (&get_wproto()) LvalCell(nullptr, nullptr);
        else                       get_wproto().init_type(cell, *this, loc);
      }
 }
@@ -67,7 +67,7 @@ void
 Value::set_default(const Cell & cB, const char * loc)
 {
    Assert1(this->get_cproto().is_integer_cell());   // by constructor
-   if (cB.is_lval_cell())   new (&get_wproto()) LvalCell(0, 0);
+   if (cB.is_lval_cell())   new (&get_wproto()) LvalCell(nullptr, nullptr);
    else                     get_wproto().init_type(cB, *this, loc);
 }
 //----------------------------------------------------------------------------

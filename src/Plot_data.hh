@@ -342,26 +342,26 @@ public:
 
    /// convert a string to a Pixel
    static Pixel_X Pixel_X_from_str(const char * str, const char * & error)
-      { error = 0;   return strtoll(str, 0, 10); }
+      { error = nullptr;   return strtoll(str, nullptr, 10); }
 
    /// convert a string to a Pixel
    static Pixel_Y Pixel_Y_from_str(const char * str, const char * & error)
-      { error = 0;   return strtoll(str, 0, 10); }
+      { error = nullptr;   return strtoll(str, nullptr, 10); }
 
    /// convert a string to a double
    static double double_from_str(const char * str, const char * & error)
-      { error = 0;   return strtod(str, 0); }
+      { error = nullptr;   return strtod(str, nullptr); }
 
    /// convert a string like "#RGB" or "#RRGGB" to a color
    static Color Color_from_str(const char * str, const char * & error);
 
   /// convert a string to a uint32_t
    static uint32_t uint32_t_from_str(const char * str, const char * & error)
-      { error = 0;   return strtoll(str, 0, 10); }
+      { error = nullptr;   return strtoll(str, nullptr, 10); }
 
    /// convert a string to a String
    static String String_from_str(const char * str, const char * & error)
-      { error = 0;   return str; }
+      { error = nullptr;   return str; }
 
    /// true for surface plots
    bool surface;

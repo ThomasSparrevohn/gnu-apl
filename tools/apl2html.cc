@@ -53,7 +53,7 @@ const char * prog1 = strrchr(prog, '/');
 const char * author = "??????";
 const char * desc = "??????";
 const char * keyw = "APL, GNU";
-const char * copyr = 0;
+const char * copyr = nullptr;
 
 void
 print_header(const char * filename, int day, int mon, int year)
@@ -92,13 +92,13 @@ print_header(const char * filename, int day, int mon, int year)
 int
 main(int argc, char * argv[])
 {
-const char * filename = 0;
+const char * filename = nullptr;
 bool apl_to_html = true;
 int year, mon, day;
 
    {
      timeval tv;
-     gettimeofday(&tv, 0);
+     gettimeofday(&tv, nullptr);
      tm * t = localtime(&tv.tv_sec);
      year = 1900 + t->tm_year;
      mon = 1 + t->tm_mon;
@@ -108,7 +108,7 @@ int year, mon, day;
    for (int a = 1; a < argc; )
        {
          const char * opt = argv[a++];
-         const char * val = (a < argc) ? argv[a] : 0;
+         const char * val = (a < argc) ? argv[a] : nullptr;
 
          if (!strcmp(opt, "-h"))        { return usage(argv[0]); }
          if (!strcmp(opt, "--help"))    { return usage(argv[0]); }
@@ -118,7 +118,7 @@ int year, mon, day;
          else if (!strcmp(opt, "-k"))   { keyw = val;   ++a;     }
          else   // filename ?
             {
-              if (val == 0 && access(opt, R_OK) == 0)   // last argv: filename
+              if (val == nullptr && access(opt, R_OK) == 0)   // last argv: filename
                  {
                    filename = opt;
                    if (!strcmp(filename + strlen(filename) -4, ".apl"))
@@ -139,7 +139,7 @@ int year, mon, day;
             }
        }
 
-   if (filename == 0)
+   if (filename == nullptr)
       {
         cerr << "missing filename" << endl;
         usage(argv[0]);
@@ -147,14 +147,14 @@ int year, mon, day;
       }
 
 FILE * fin = fopen(filename, "r");
-   if (fin == 0)   // file exists
+   if (fin == nullptr)   // file exists
       {
         cerr << "cannot open " << filename << strerror(errno) << endl;
         usage(argv[0]);
         return 1;
       }
 
-   if (copyr == 0)   copyr = author;
+   if (copyr == nullptr)   copyr = author;
 
    print_header(filename, day, mon, year);
    for (;;)

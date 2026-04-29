@@ -49,7 +49,7 @@ void TraceData::remove_listener( NetworkConnection *connection )
     Assert( n == 1 );
 
     if( active_listeners.empty() ) {
-        symbol->set_monitor_callback( NULL );
+        symbol->set_monitor_callback( nullptr );
     }
 }
 

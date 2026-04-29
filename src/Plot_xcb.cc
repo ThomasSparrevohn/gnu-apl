@@ -102,7 +102,7 @@ public:
    XCB_context(const Plot_window_properties & props, Quad_PLOT::Handle h)
    : Quad_PLOT::PLOT_context(h),
      thread(pthread_self()),
-     caption(0),
+     caption(nullptr),
      w_props(props),
      window_goon(true),
      file_saved(false)
@@ -183,7 +183,7 @@ const xcb_query_text_extents_cookie_t cookie =
    xcb_query_text_extents(pctx.conn, pctx.font, string_length, xcb_str);
 
    if ( xcb_query_text_extents_reply_t * reply =
-        xcb_query_text_extents_reply(pctx.conn, cookie, 0))
+        xcb_query_text_extents_reply(pctx.conn, cookie, nullptr))
       {
         width  = reply->overall_width;
         height = reply->font_ascent + reply->font_descent;
@@ -331,7 +331,7 @@ const char * end = cc + sizeof(cc);
         val = -val;
       }
 
-const char * unit = 0;
+const char * unit = nullptr;
    if (val >= 1e3)
       {
         if      (val >= 1e15)   ;
@@ -350,7 +350,7 @@ const char * unit = 0;
         else if (val >= 1e-12)  { unit = "p";   val *= 1e12;  }
       }
 
-   if (unit == 0)   // very large or very small
+   if (unit == nullptr)   // very large or very small
       {
         snprintf(cp, end - cc, "%.2E", val);
         NULL_TERMINATE(cc)
@@ -1144,7 +1144,7 @@ get_atom_ID(xcb_connection_t * conn, int only_existing, const char * name)
 {
 xcb_intern_atom_cookie_t cookie = xcb_intern_atom(conn, only_existing,
                                                   strlen(name), name);
-xcb_intern_atom_reply_t & reply = *xcb_intern_atom_reply(conn, cookie, 0);
+xcb_intern_atom_reply_t & reply = *xcb_intern_atom_reply(conn, cookie, nullptr);
    return reply.atom;
 }
 //----------------------------------------------------------------------------
@@ -1213,7 +1213,7 @@ XImage * image = XGetImage(display, XRootWindow(display, screen),
                             x - geo_x, y - geo_y,
                             width, height, plane_mask, format);
 
-   if (image == 0)
+   if (image == nullptr)
       {
         MORE_ERROR() << "XGetImage() failed in save_file()";
         DOMAIN_ERROR;
@@ -1328,7 +1328,7 @@ const Plot_data & data = w_props.get_plot_data();
 
    // open a connection to the X server
    //
-   pctx.display = XOpenDisplay(0);
+   pctx.display = XOpenDisplay(nullptr);
 # if XCB_WINDOWS_WITH_UTF8_CAPTIONS
    pctx.conn = XGetXCBConnection(pctx.display);
 
@@ -1336,7 +1336,7 @@ const Plot_data & data = w_props.get_plot_data();
    pctx.conn = xcb_connect(0, 0);
 # endif  // XCB_WINDOWS_WITH_UTF8_CAPTIONS
 
-   if (pctx.conn == 0 || xcb_connection_has_error(pctx.conn))
+   if (pctx.conn == nullptr || xcb_connection_has_error(pctx.conn))
       {
         xcb_disconnect(pctx.conn);
         MORE_ERROR() << "could not connect to the X-server ";
@@ -1420,7 +1420,7 @@ XSizeHints size_hints;
    size_hints.base_height = w_props.get_pw_pos_Y();
 
    Xutf8SetWMProperties(pctx.display, pctx.window, pctx.caption,
-                        "icon", 0, 0, &size_hints, 0, 0);
+                        "icon", nullptr, 0, &size_hints, nullptr, nullptr);
 
 # else   // not XCB_WINDOWS_WITH_UTF8_CAPTIONS
 
@@ -1443,7 +1443,7 @@ const xcb_atom_t WM_protocols   = get_atom_ID(pctx.conn, 1, "WM_PROTOCOLS");
    // remember who has the focus before mapping a new window
    //
 const xcb_get_input_focus_reply_t * focusReply =
-   xcb_get_input_focus_reply(pctx.conn, xcb_get_input_focus(pctx.conn), 0);
+   xcb_get_input_focus_reply(pctx.conn, xcb_get_input_focus(pctx.conn), nullptr);
 
    // map the window on the screen and flush
    //
@@ -1464,7 +1464,7 @@ const xcb_get_input_focus_reply_t * focusReply =
              xcb_client_message_event_t   * client_message_event_t;
            } event;
         event.generic_event_t = xcb_poll_for_event(pctx.conn);
-        if (event.vp == 0)   // nothing happened
+        if (event.vp == nullptr)   // nothing happened
            {
              if (pctx.window_goon)   usleep(200000);
              continue;
@@ -1517,7 +1517,7 @@ const xcb_get_input_focus_reply_t * focusReply =
                         */
                        xcb_set_input_focus(pctx.conn, XCB_INPUT_FOCUS_PARENT,
                                            focusReply->focus, XCB_CURRENT_TIME);
-                       focusReply = 0;
+                       focusReply = nullptr;
                     }
                   xcb_flush(pctx.conn);
                   sem_post(Quad_PLOT::expose_sema);   // unleash the interpreter
@@ -1615,7 +1615,7 @@ const xcb_get_input_focus_reply_t * focusReply =
    xcb_disconnect(pctx.conn);
    free(const_cast<char *>(outfile));
 
-   return 0;
+   return nullptr;
 }
 // ===========================================================================
 

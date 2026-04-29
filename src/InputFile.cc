@@ -44,7 +44,7 @@ int64_t InputFile::next_file_seq = 0;
 void
 InputFile::open_current_file()
 {
-   if (files_todo.size() && files_todo[0].file == 0)
+   if (files_todo.size() && files_todo[0].file == nullptr)
       {
         if (!strcmp(current_filename(), "-"))
            files_todo[0].file = stdin;
@@ -73,7 +73,7 @@ InputFile::close_current_file()
              if (files_todo[0].file != stdin)
                 {
                   fclose(files_todo[0].file);
-                  files_todo[0].file = 0;
+                  files_todo[0].file = nullptr;
                   files_todo[0].line_no = -1;
                 }
            }
@@ -86,7 +86,7 @@ InputFile::randomize_files()
 #if ! MINGW_SRC
    {
      timeval now;
-     gettimeofday(&now, 0);
+     gettimeofday(&now, nullptr);
      srandom(now.tv_sec + now.tv_usec);
    }
 

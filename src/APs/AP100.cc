@@ -72,7 +72,7 @@ const CDR_string * cdr = new CDR_string(_cdr, sizeof(_cdr));
 void
 handle_var(Coupled_var & var)
 {
-FILE * fp = 0;
+FILE * fp = nullptr;
 const CDR_string & cdr = *var.data;
 const CDR_header & header = cdr.header();
    if (cdr.size() < 20)   // less than min. size of CDR header
@@ -104,7 +104,7 @@ const string cmd(reinterpret_cast<const char *> (cdr.get_items()) + 20,
                              << cmd << "'" << endl;
 
    fp = popen(cmd.c_str(), "r");
-   if (fp == 0)   // bad command
+   if (fp == nullptr)   // bad command
       {
         get_CERR() << pref << " popen() failed" << endl;
         set_ACK(var, 1);  // 1 := INVALID COMMAND
@@ -170,7 +170,7 @@ assign_value(Coupled_var & var, const string & data)
 APL_error_code
 get_value(Coupled_var & var, string & data)
 {
-   if (var.data == 0)   return E_VALUE_ERROR;
+   if (var.data == nullptr)   return E_VALUE_ERROR;
 
    data = string(reinterpret_cast<const char *>(var.data->get_items()),
                  var.data->size());

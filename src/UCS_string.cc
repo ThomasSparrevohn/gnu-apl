@@ -1190,7 +1190,7 @@ UCS_string ret;
                      if (s >= ssize() - 1)   break;
                      const int dig = at(s+1);
                      const char * pos = strchr(hex, dig);
-                     if (pos == 0)   break;   // non-hex character
+                     if (pos == nullptr)   break;   // non-hex character
 
                      value = value << 4 | (pos - hex);
                      ++s;
@@ -1737,7 +1737,7 @@ UCS_string
 UCS_string::sort() const
 {
 UCS_string ret(*this);
-   Heapsort<Unicode>::sort(ret, greater_uni, 0);
+   Heapsort<Unicode>::sort(ret, greater_uni, nullptr);
    return ret;
 }
 //----------------------------------------------------------------------------
@@ -1756,7 +1756,7 @@ UCS_string ret;
          if (sorted[j] != ret.back())   ret << sorted[j];
        }
 
-   Heapsort<Unicode>::sort(ret, greater_uni, 0);
+   Heapsort<Unicode>::sort(ret, greater_uni, nullptr);
    return ret;
 }
 //----------------------------------------------------------------------------

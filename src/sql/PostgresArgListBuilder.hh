@@ -39,7 +39,7 @@ template<class T>
 class PostgresBindArg : public PostgresArg
 {
 public:
-    PostgresBindArg( const T &arg_in ) : arg( arg_in ), string_arg( NULL ) {}
+    PostgresBindArg( const T &arg_in ) : arg( arg_in ), string_arg( nullptr ) {}
     virtual ~PostgresBindArg();
     virtual void update( Oid *types, const char **values, int *lengths, int *formats, int pos );
 

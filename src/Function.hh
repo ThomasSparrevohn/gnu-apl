@@ -79,7 +79,7 @@ protected:
 public:
    /// default constructor (for functions that are NOT function groups)
    FunctionGroup()
-   : group_name(0),
+   : group_name(nullptr),
      subfun_count(0),
      max_function_name_length(0)
    {}
@@ -151,13 +151,13 @@ protected:
    static bool greater_function_name(const function_info * const & info1,
                                      const function_info * const & info2,
                                      const void *)
-      { return compare_function_name(info1->function_name, info2, 0) > 0; }
+      { return compare_function_name(info1->function_name, info2, nullptr) > 0; }
 
    /// compare axes. Return \b true if info1 > info2
    static bool greater_function_axis(const function_info * const & info1,
                                      const function_info * const & info2,
                                      const void *)
-      { return compare_function_axis(info1->axis, info2, 0) > 0; }
+      { return compare_function_axis(info1->axis, info2, nullptr) > 0; }
  
    /// return the function_info for function name \b name
    const function_info * get_info_by_name(const char * name) const;
@@ -242,19 +242,19 @@ public:
 
    /// return \b a bool_f1() (if any), otherwise 0.
    virtual bool_f1 get_bool_f1() const
-      { return 0; }
+      { return nullptr; }
 
    /// return \b a bool_f2() (if any), otherwise 0.
    virtual bool_f2 get_bool_f2() const
-      { return 0; }
+      { return nullptr; }
 
    /// return \b a bool_f1() (if any), otherwise 0.
    virtual bool_f1_bool get_bool_f1_bool() const
-      { return 0; }
+      { return nullptr; }
 
    /// return \b a bool_f2() (if any), otherwise 0.
    virtual bool_f2_bool get_bool_f2_bool() const
-      { return 0; }
+      { return nullptr; }
 
    /// return \b true iff \b this function returns a (possibly nested)
    /// boolean result and takes (only) boolean arguments.
@@ -292,10 +292,10 @@ public:
    virtual const Function * get_function() const   { return this; }
 
    /// the monadic inverse function of \b this function (if any)
-   virtual cFunction_P get_monadic_inverse() const   { return 0; }
+   virtual cFunction_P get_monadic_inverse() const   { return nullptr; }
 
    /// the dyadic inverse function of \b this function (if any)
-   virtual cFunction_P get_dyadic_inverse() const   { return 0; }
+   virtual cFunction_P get_dyadic_inverse() const   { return nullptr; }
 
    /// GMT when this function was created; 0 for system functions
    APL_time_us get_creation_time() const
@@ -316,7 +316,7 @@ public:
    virtual void get_attributes(int mode, Value & Z) const;
 
    /// return a pointer to \b this UserFunction (if it is one)
-   virtual const UserFunction * get_func_ufun() const   { return 0; }
+   virtual const UserFunction * get_func_ufun() const   { return nullptr; }
 
    /// return true if this function has a name with alphabetic chars,
    /// i.e. the function is either a defined function or a ⎕-function
@@ -327,7 +327,7 @@ public:
 
    /// return the dyadic scalar primitive if \b this function
    virtual prim_f2 get_scalar_f2() const
-      { return 0; }
+      { return nullptr; }
 
    /// an associative cell function
    typedef ErrorCode (Cell::*assoc_f2)(Cell *, const Cell *) const;
@@ -335,7 +335,7 @@ public:
    /// if this function is an associative scalar function then return
    /// its associative cell function, otherwise 0.
    virtual assoc_f2 get_assoc() const
-      { return 0; }
+      { return nullptr; }
 
    /// return a \b Token for \b this function.
    Token get_token() const { return Token(tag, this); }
@@ -406,7 +406,7 @@ public:
 
    /// return axis (non-0 only for derived functions)
    virtual Value_P * locate_X() const
-      { return 0; }
+      { return nullptr; }
 
    /// return the signature of this function (currently only valid
    /// for user-defined functions)

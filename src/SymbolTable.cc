@@ -45,7 +45,7 @@
 Symbol *
 SymbolTable::lookup_symbol(const UCS_string & sym_name)
 {
-   if (sym_name.size() == 0)   return 0;
+   if (sym_name.size() == 0)   return nullptr;
    if (Avec::is_quad(sym_name[0]))   // should not be called for ⎕xx
       {
         CERR << "Symbol is: '" << sym_name << "' at " << LOC << endl;
@@ -54,7 +54,7 @@ SymbolTable::lookup_symbol(const UCS_string & sym_name)
 
 const uint32_t hash = compute_hash(sym_name);
 
-   if (symbol_table[hash] == 0)   // unused hash value
+   if (symbol_table[hash] == nullptr)   // unused hash value
       {
         // sym_name is the first symbol with this hash.
         // create a new symbol, insert it into symbol_table, and return it.
@@ -309,9 +309,9 @@ void
 SymbolTable::clear_slot(ostream & out, int hash)
 {
 Symbol * sym = symbol_table[hash];
-   if (sym == 0)   return;   // no symbol with this hash
+   if (sym == nullptr)   return;   // no symbol with this hash
 
-   symbol_table[hash] = 0;
+   symbol_table[hash] = nullptr;
 
 Symbol * next;   // the symbol after sym
    for (; sym; sym = next)
@@ -344,7 +344,7 @@ SymbolTable::erase_one_symbol(const UCS_string & sym)
 
 Symbol * symbol = lookup_existing_symbol(sym);
 
-   if (symbol == 0)
+   if (symbol == nullptr)
       {
         MORE_ERROR() << "Can't )ERASE symbol '" << sym << "': unknown symbol ";
         return true;
@@ -511,7 +511,7 @@ void
 SystemSymTab::clear_slot(ostream & out, int hash)
 {
 SystemName * sym = symbol_table[hash];
-   symbol_table[hash] = 0;
+   symbol_table[hash] = nullptr;
 
    while (sym)
        {

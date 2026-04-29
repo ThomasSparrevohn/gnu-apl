@@ -147,7 +147,7 @@ public:
       {
          /// default constructor
          _val_par()
-         : _val(0),
+         : _val(nullptr),
            _par(INVALID_VID),
            _depth(-1)
          {}
@@ -269,7 +269,7 @@ public:
    ~XML_Loading_Archive();
 
    /// return true iff constructor could open the file
-   bool is_open() const   { return file_start != 0; }
+   bool is_open() const   { return file_start != nullptr; }
 
    /// read an entire workspace, throw DOMAIN_ERROR on failure
    void read_Workspace(bool silent);

@@ -158,7 +158,7 @@ XML_Saving_Archive::find_vid(const Value * value)
 {
 const void * item = Heapsort<_val_par>
                     ::search<const Value *>
-                    (value, val_pars, _val_par::compare, 0);
+                    (value, val_pars, _val_par::compare, nullptr);
    Assert(item);
    return Vid(reinterpret_cast<const _val_par *>(item) - val_pars.data());
 }
@@ -842,7 +842,7 @@ XML_Saving_Archive::write_XML_header()
 {
 tm * t;
    {
-     timeval now;   gettimeofday(&now, 0);
+     timeval now;   gettimeofday(&now, nullptr);
      time_t seconds = now.tv_sec;
      t = gmtime(&seconds);
    }
@@ -1069,7 +1069,7 @@ XML_Saving_Archive::save()
    // some people use an excessive number of values. We therefore sort them
    // by the address of the value as to speed up finding them later on
    //
-   Heapsort<_val_par>::sort(val_pars, &_val_par::greater, 0);
+   Heapsort<_val_par>::sort(val_pars, &_val_par::greater, nullptr);
    loop(v, (val_pars.size() - 1))
        {
          Assert(&val_pars[v]._val < &val_pars[v + 1]._val);
@@ -1129,9 +1129,9 @@ XML_Saving_Archive::save()
                    err << endl;
 
 #if cfg_VALUE_HISTORY_WANTED
-   VH_entry::print_history(err, *sub, 0);
-   VH_entry::print_history(err, *val_pars[sub_idx]._val, 0);
-   VH_entry::print_history(err, *val_pars[p]._val, 0);
+   VH_entry::print_history(err, *sub, nullptr);
+   VH_entry::print_history(err, *val_pars[sub_idx]._val, nullptr);
+   VH_entry::print_history(err, *val_pars[p]._val, nullptr);
 #endif
 
    err << endl <<
@@ -1234,12 +1234,12 @@ XML_Loading_Archive::XML_Loading_Archive(ostream & of, ostream & ef,
                                          const char * _filename, int & dump_fd)
    : XML_Archive(of, ef),
      file_length(0),
-     file_start(0),
-     line_start(0),
+     file_start(nullptr),
+     line_start(nullptr),
      line_no(1),
      current_char(UNI_SPACE),
-     data(0),
-     file_end(0),
+     data(nullptr),
+     file_end(nullptr),
      copying(false),
      protection(false),
      reading_vids(false),
@@ -1285,7 +1285,7 @@ const int fd = open(filename, O_RDONLY);
    //
    {
      file_start = Sys::mmap(fd, file_length);
-     if (file_start == 0)
+     if (file_start == nullptr)
         {
           close(fd);
           WS_FULL;
@@ -1443,16 +1443,16 @@ const int att_len = strlen(att_name);
               << " of file " << filename;
          DOMAIN_ERROR;
       }
-   return 0;   // not found
+   return nullptr;   // not found
 }
 //----------------------------------------------------------------------------
 int64_t
 XML_Loading_Archive::find_int_attr(const char * attrib, bool optional, int base)
 {
 const UTF8 * value = find_attr(attrib, optional);
-   if (value == 0)   return -1;   // not found
+   if (value == nullptr)   return -1;   // not found
 
-const int64_t val = strtoll(charP(value), 0, base);
+const int64_t val = strtoll(charP(value), nullptr, base);
    return val;
 }
 //----------------------------------------------------------------------------
@@ -1460,7 +1460,7 @@ APL_Float
 XML_Loading_Archive::find_float_attr(const char * attrib)
 {
 const UTF8 * value = find_mandatory_attr(attrib);
-const APL_Float val = strtod(charP(value), 0);
+const APL_Float val = strtod(charP(value), nullptr);
    return val;
 }
 //----------------------------------------------------------------------------
@@ -1635,7 +1635,7 @@ const char * tag_order[] =
   "Commands",
   "StateIndicator",
   "/Workspace",
-  0
+  nullptr
 };
 const char ** tag_pos = tag_order;
 
@@ -1650,7 +1650,7 @@ const char ** tag_pos = tag_order;
               tag_pos++;
               for (;;)
                   {
-                     if (*tag_pos == 0)
+                     if (*tag_pos == nullptr)
                         {
                           MORE_ERROR() << "Unexpected Tag "
                                        << UTF8_string(tag_name,
@@ -1842,7 +1842,7 @@ bool no_copy = false;   // assume the value is needed
         Assert(vid == int(values.size()));
         if (flags & VF_packed)
            {
-             Value_P val(sh_value, /* constructor allocates */ 0, LOC);
+             Value_P val(sh_value, /* constructor allocates */ nullptr, LOC);
              values.push_back(val);
             }
         else
@@ -1865,7 +1865,7 @@ const Unicode type = UTF8_string::toUni(input, type_len, true);
    input += type_len;   // skip type in input
 
    // result pointer for strtoll()
-UTF8 * end = 0;
+UTF8 * end = nullptr;
 char **pend = reinterpret_cast<char **>(&end);
 
    switch (type)
@@ -1930,7 +1930,7 @@ char **pend = reinterpret_cast<char **>(&end);
         case UNI_PAD_U7: // cellref,                e.g. ⁷ 
              if (input[0] == '0')    // 0-cell-pointer
                 {
-                  Z.next_ravel_Lval(0, 0);
+                  Z.next_ravel_Lval(nullptr, nullptr);
                   input++;
                 }
              else
@@ -1980,7 +1980,7 @@ char **pend = reinterpret_cast<char **>(&end);
                    if (c0 == '"')   return input + 1;   // end of ravel
 
                    const char cc[3] = { char(c0), char(c1), 0 };
-                   char * end = 0;
+                   char * end = nullptr;
                    const uint8_t byte = strtoll(cc, &end, 16);
                    input += end - cc;
 
@@ -2042,7 +2042,7 @@ XML_Loading_Archive::read_XML_string(UCS_string & ucs, const UTF8 * utf)
          if (uni == UNI_PAD_U1)   // start of hex mode
             {
               char_mode = false;
-              char * end = 0;
+              char * end = nullptr;
               const int hex = strtoll(charP(utf), &end, 16);
               ucs << Unicode(hex);
               utf = utf8P(end);
@@ -2240,9 +2240,9 @@ const Fid LO_fid = find_Fid_attr("LO-fid", true, 16);
         const Vid AXIS_vid = find_Vid_attr("AXIS-vid", true, 16);
 
         symbol.push();   // placeholder (for now)
-        add_fid_function(fid, 0, LOC);
+        add_fid_function(fid, nullptr, LOC);
 
-        _derived_todo td = { 0, symbol.top_of_stack()->get_function_P(),
+        _derived_todo td = { nullptr, symbol.top_of_stack()->get_function_P(),
                              fid, LO_fid, OPER_fid, RO_fid, AXIS_vid, LOC };
         derived_todos.push_back(td);
         return;
@@ -2305,7 +2305,7 @@ UCS_string text;
         creator_UCS << UNI_COLON << line_no;
         UTF8_string creator(creator_UCS);
 
-        UserFunction * ufun = 0;
+        UserFunction * ufun = nullptr;
         if (text[0] == UNI_LAMBDA)
            {
              const char * creator = ")LOAD λ";
@@ -2330,7 +2330,7 @@ UCS_string text;
              err << "    ⎕FX " << symbol.get_name() << " failed: "
                   << Workspace::more_error() << endl;
              symbol.push();
-             add_fid_function(fid, 0, LOC);
+             add_fid_function(fid, nullptr, LOC);
            }
       }
 }
@@ -2353,7 +2353,7 @@ Function * derived = si.fun_oper_cache.get(LOC);
         return;
       }
 
-_derived_todo td = { derived, 0, fid, LO_fid, OPER_fid, RO_fid,
+_derived_todo td = { derived, nullptr, fid, LO_fid, OPER_fid, RO_fid,
                      AXIS_vid, LOC };
    add_fid_function(fid, derived, LOC);
    derived_todos.push_back(td);
@@ -2526,7 +2526,7 @@ bool no_copy = is_protected || (have_allowed_objects && !is_selected);
            }
       }
 
-   if (symbol == 0)
+   if (symbol == nullptr)
       {
         symbol = Workspace::lookup_symbol(name_UCS);
       }
@@ -2649,7 +2649,7 @@ const int pc = find_int_attr("pc", false, 10);
 
    Log(LOG_archive)   err << "    read_SI_entry() level=" << level << endl;
 
-const Executable * exec = 0;
+const Executable * exec = nullptr;
    next_tag(LOC);
    if      (is_tag("Execute"))        exec = read_SI_Execute();
    else if (is_tag("Statements"))     exec = read_SI_Statement();
@@ -2908,7 +2908,7 @@ const TokenTag tag = TokenTag(find_int_attr("tag", false, 16));
                        }
                     else                // value
                        {
-                         char * end = 0;
+                         char * end = nullptr;
                          Assert1(*vids == 'v');   ++vids;
                          Assert1(*vids == 'i');   ++vids;
                          Assert1(*vids == 'd');   ++vids;
@@ -2976,7 +2976,7 @@ const int fun_id = find_int_attr("fun-id", true, 16);
 
    // not found. This can happen when the function is optional.
    //
-   return 0;
+   return nullptr;
 }
 //----------------------------------------------------------------------------
 XML_Loading_Archive::fun_map *
@@ -2987,14 +2987,14 @@ XML_Loading_Archive::find_fun_map(Fid fid)
          if (fid_to_function[f].old_fid == fid)   return &fid_to_function[f];
        }
 
-   return 0;
+   return nullptr;
 }
 //----------------------------------------------------------------------------
 cFunction_P
 XML_Loading_Archive::find_function(Fid fid)
 {
    if (fun_map * map = find_fun_map(fid))   return map->new_fun;
-   return 0;
+   return nullptr;
 }
 //----------------------------------------------------------------------------
 void
@@ -3137,7 +3137,7 @@ const Token_string & body = exec.get_body();
 
    err << "find_lambda() failed for " << lambda
         << " at )SI level=" << si.get_level() << endl;
-   return 0;
+   return nullptr;
 }
 //============================================================================
 
